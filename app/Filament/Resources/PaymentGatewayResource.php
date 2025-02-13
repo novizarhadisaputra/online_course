@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Models\PaymentGateway;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Guava\FilamentNestedResources\Ancestor;
+use App\Filament\Resources\PaymentGatewayResource\Pages;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Guava\FilamentNestedResources\Concerns\NestedResource;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Resources\PaymentGatewayResource\RelationManagers\PaymentMethodsRelationManager;
+
+class PaymentGatewayResource extends Resource
+{
+    use NestedResource;
+
+    protected static ?string $model = PaymentGateway::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+
+    protected static ?string $navigationGroup = 'Master Data';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make()->schema([
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->multiple()
+                        ->collection('images')
+                        ->required(),
+                    TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    TextInput::make('short_description')
+                        ->maxLength(255)
+                        ->default(null),
+                    Textarea::make('description')
+                        ->columnSpanFull(),
+                    KeyValue::make('configs')
+                        ->columnSpanFull(),
+                    Toggle::make('status')
+                        ->required(),
+                ])
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                SpatieMediaLibraryImageColumn::make('image')->collection('images'),
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->searchable(),
+                TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('short_description')
+                    ->searchable(),
+                IconColumn::make('status')
+                    ->boolean(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            PaymentMethodsRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListPaymentGateways::route('/'),
+            'create' => Pages\CreatePaymentGateway::route('/create'),
+            'view' => Pages\ViewPaymentGateway::route('/{record}'),
+            'edit' => Pages\EditPaymentGateway::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getAncestor(): ?Ancestor
+    {
+        return null;
+    }
+}
