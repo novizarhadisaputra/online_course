@@ -9,7 +9,6 @@ use App\Models\Review;
 use App\Models\Address;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
-use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;

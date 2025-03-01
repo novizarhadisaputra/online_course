@@ -6,16 +6,13 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use App\Filament\Pages\Dashboard;
-use Hasnayeen\Themes\ThemesPlugin;
 use Filament\Http\Middleware\Authenticate;
-use Hasnayeen\Themes\Http\Middleware\SetTheme;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use App\Filament\Resources\UserResource\Pages\EditProfile;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -56,18 +53,14 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                SetTheme::class
             ])
             ->authMiddleware([
                 Authenticate::class,
             ])
             ->plugins(
                 [
-                    ThemesPlugin::make()
-                        ->canViewThemesPage(fn() => auth()->user()?->hasRole('Developer') ? true : false),
                     FilamentShieldPlugin::make(),
                     FilamentFullCalendarPlugin::make(),
-                    EmailTemplatesPlugin::make(),
                 ]
             )
             ->resources([])

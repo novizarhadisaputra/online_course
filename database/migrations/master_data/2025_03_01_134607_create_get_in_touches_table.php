@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lessons', function (Blueprint $table) {
+        Schema::create('get_in_touches', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->string('name');
-            $table->string('short_description')->nullable();
-            $table->text('description')->nullable();
-            $table->boolean('is_paid')->default(true);
-            $table->boolean('status')->default(false);
-
-            $table->foreignUuid('section_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('email');
+            $table->string('question');
+            $table->text('comment');
 
             $table->timestamps();
         });
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lessons');
+        Schema::dropIfExists('get_in_touches');
     }
 };

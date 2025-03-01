@@ -30,13 +30,19 @@ class LessonResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getBreadcrumbRecordLabel(Model $record)
+    {
+        return $record->name;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make()->schema([
-                    SpatieMediaLibraryFileUpload::make('image')
-                        ->collection('images')
+                    SpatieMediaLibraryFileUpload::make('attachment')
+                        ->collection('attachments')
+                        ->helperText('PDF, Image or Video')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -46,6 +52,8 @@ class LessonResource extends Resource
                         ->default(null),
                     Textarea::make('description')
                         ->columnSpanFull()
+                        ->required(),
+                    Toggle::make('is_paid')
                         ->required(),
                     Toggle::make('status')
                         ->required(),

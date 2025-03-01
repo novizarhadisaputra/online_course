@@ -72,6 +72,8 @@ class CourseResource extends Resource
                     TextInput::make('duration')
                         ->numeric()
                         ->minValue(1),
+                    Select::make('category_id')
+                        ->relationship(name: 'category', titleAttribute: 'name'),
                     TextInput::make('language')
                         ->required()
                         ->maxLength(255),
