@@ -21,8 +21,6 @@ class DatabaseSeeder extends Seeder
             ConfigAppSeeder::class,
             UserSeeder::class,
             ShieldSeeder::class,
-            EmailTemplateSeeder::class,
-            EmailTemplateThemeSeeder::class,
         ]);
     }
 }

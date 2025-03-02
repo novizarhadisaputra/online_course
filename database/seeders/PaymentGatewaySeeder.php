@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
+use App\Models\PaymentGateway;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PaymentGatewaySeeder extends Seeder
 {
@@ -12,6 +14,14 @@ class PaymentGatewaySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $paymentGateways = ['iPaymu', 'Xendit', 'Midtrans'];
+        foreach ($paymentGateways as $paymentGateway) {
+            PaymentGateway::create([
+                'name' => $paymentGateway,
+                'slug' => Str::slug($paymentGateway),
+                'description' => "",
+                'status' => true
+            ]);
+        }
     }
 }
