@@ -57,7 +57,8 @@ class CourseResource extends Resource
                         ->required(),
                     TextInput::make('name')
                         ->required()
-                        ->maxLength(255),
+                        ->unique(ignoreRecord: true)
+                        ->maxLength(150),
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),

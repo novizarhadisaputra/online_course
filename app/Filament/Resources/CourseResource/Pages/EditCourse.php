@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CourseResource\Pages;
 
 use Filament\Actions;
+use Illuminate\Support\Str;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Pages\SubNavigationPosition;
@@ -23,6 +24,12 @@ class EditCourse extends EditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['slug'] = Str::slug($data['name']);
+
+        return $data;
+    }
 
     public static function getRecordSubNavigation(Page $page): array
     {

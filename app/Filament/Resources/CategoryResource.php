@@ -3,31 +3,23 @@
 namespace App\Filament\Resources;
 
 use Filament\Tables;
-use App\Models\News;
+use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use App\Filament\Resources\NewsResource\Pages;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\NewsResource\Widgets\StatsOverview;
-use App\Filament\Resources\NewsResource\RelationManagers\TagsRelationManager;
-use App\Filament\Resources\NewsResource\RelationManagers\ReviewsRelationManager;
-use App\Filament\Resources\NewsResource\RelationManagers\CommentsRelationManager;
-use App\Filament\Resources\NewsResource\RelationManagers\PricesRelationManager;
+use App\Filament\Resources\CategoryResource\Pages;
+use Filament\Forms\Components\Section;
 
-class NewsResource extends Resource
+class CategoryResource extends Resource
 {
-    protected static ?string $model = News::class;
+    protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Master Data';
 
@@ -36,26 +28,15 @@ class NewsResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
-                    SpatieMediaLibraryFileUpload::make('image')
-                        ->multiple()
-                        ->collection('images')
-                        ->required(),
                     TextInput::make('name')
-                        ->unique(ignoreRecord: true)
                         ->required()
+                        ->unique(ignoreRecord: true)
                         ->maxLength(255),
-                    TextInput::make('short_description')
-                        ->maxLength(255)
-                        ->default(null),
                     Textarea::make('description')
                         ->columnSpanFull(),
-                    TextInput::make('order_number')
-                        ->numeric()
-                        ->default(null),
                     Toggle::make('status')
                         ->required(),
-                    KeyValue::make('meta'),
-                ]),
+                ])
             ]);
     }
 
@@ -65,11 +46,8 @@ class NewsResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
-                    ->formatStateUsing(fn(string $state): string => Str::upper($state))
                     ->searchable(),
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('short_description')
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
@@ -99,27 +77,17 @@ class NewsResource extends Resource
     public static function getRelations(): array
     {
         return [
-            PricesRelationManager::class,
-            TagsRelationManager::class,
-            ReviewsRelationManager::class,
-            CommentsRelationManager::class,
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListNews::route('/'),
-            'create' => Pages\CreateNews::route('/create'),
-            'view' => Pages\ViewNews::route('/{record}'),
-            'edit' => Pages\EditNews::route('/{record}/edit'),
-        ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            StatsOverview::class,
+            'index' => Pages\ListCategories::route('/'),
+            'create' => Pages\CreateCategory::route('/create'),
+            'view' => Pages\ViewCategory::route('/{record}'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 }

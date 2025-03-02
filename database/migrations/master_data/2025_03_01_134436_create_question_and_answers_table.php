@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('question_and_answers', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->string('question');
+            $table->string('question')->unique();
             $table->text('answer');
             $table->boolean('status')->default(true);
 

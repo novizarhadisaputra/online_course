@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\NewsResource\Pages;
+namespace App\Filament\Resources\QuestionAndAnswerCategoryResource\Pages;
 
 use Filament\Actions;
 use Illuminate\Support\Str;
-use App\Filament\Resources\NewsResource;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\QuestionAndAnswerCategoryResource;
 
-class EditNews extends EditRecord
+class EditQuestionAndAnswerCategory extends EditRecord
 {
-    protected static string $resource = NewsResource::class;
+    protected static string $resource = QuestionAndAnswerCategoryResource::class;
 
     protected function getHeaderActions(): array
     {

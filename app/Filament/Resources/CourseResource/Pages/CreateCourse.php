@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\CourseResource\Pages;
 
-use App\Filament\Resources\CourseResource;
 use Filament\Actions;
+use Illuminate\Support\Str;
+use App\Filament\Resources\CourseResource;
 use Filament\Resources\Pages\CreateRecord;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 
@@ -16,6 +17,7 @@ class CreateCourse extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->id();
+        $data['slug'] = Str::slug($data['name']);
 
         return $data;
     }

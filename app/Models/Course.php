@@ -10,6 +10,7 @@ use App\Models\Comment;
 use App\Models\Category;
 use App\Models\Taggable;
 use App\Models\PaymentLink;
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Course extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, InteractsWithMedia, ModelTrait;
 
     protected $guarded = [];
 
@@ -125,5 +126,13 @@ class Course extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get all of the tags for the post.
+     */
+    public function transactions(): MorphToMany
+    {
+        return $this->morphToMany(Transaction::class, 'model', TransactionDetail::class);
     }
 }

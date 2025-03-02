@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\NewsResource\Pages;
+namespace App\Filament\Resources\CategoryResource\Pages;
 
 use Filament\Actions;
 use Illuminate\Support\Str;
-use App\Filament\Resources\NewsResource;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\CategoryResource;
 
-class CreateNews extends CreateRecord
+class CreateCategory extends CreateRecord
 {
-    protected static string $resource = NewsResource::class;
+    protected static string $resource = CategoryResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['user_id'] = auth()->id();
         $data['slug'] = Str::slug($data['name']);
 
         return $data;

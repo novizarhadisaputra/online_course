@@ -2,41 +2,43 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\Tag;
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use App\Models\QuestionAndAnswer;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use App\Filament\Resources\TagResource\Pages;
+use App\Filament\Resources\QuestionAndAnswerResource\Pages;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 
-class TagResource extends Resource
+class QuestionAndAnswerResource extends Resource
 {
-    protected static ?string $model = Tag::class;
+    protected static ?string $model = QuestionAndAnswer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-hashtag';
+    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
     protected static ?string $navigationGroup = 'Master Data';
-
-    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make()->schema([
-                    TextInput::make('name')
+                    TextInput::make('question')
                         ->required()
-                        ->unique(ignoreRecord: true)
                         ->maxLength(255),
-                    Textarea::make('description')
+                    Textarea::make('answer')
+                        ->required()
                         ->columnSpanFull(),
+                    Select::make('question_and_answer_category_id')
+                        ->label('Category')
+                        ->relationship(name: 'category', titleAttribute: 'name')
+                        ->required(),
                     Toggle::make('status')
                         ->required(),
                 ])
@@ -50,7 +52,9 @@ class TagResource extends Resource
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable(),
-                TextColumn::make('name')
+                TextColumn::make('question')
+                    ->searchable(),
+                TextColumn::make('category.name')
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
@@ -87,10 +91,10 @@ class TagResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTags::route('/'),
-            'create' => Pages\CreateTag::route('/create'),
-            'view' => Pages\ViewTag::route('/{record}'),
-            'edit' => Pages\EditTag::route('/{record}/edit'),
+            'index' => Pages\ListQuestionAndAnswers::route('/'),
+            'create' => Pages\CreateQuestionAndAnswer::route('/create'),
+            'view' => Pages\ViewQuestionAndAnswer::route('/{record}'),
+            'edit' => Pages\EditQuestionAndAnswer::route('/{record}/edit'),
         ];
     }
 }

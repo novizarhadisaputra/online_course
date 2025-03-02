@@ -48,11 +48,11 @@ class ConfigAppResource extends Resource
                     RichEditor::make('terms_and_conditions'),
                     RichEditor::make('privacy_policy'),
                     TextInput::make('success_redirect_url')
-                        ->helperText('example : https://viralmatics.com/success')
+                        ->helperText('example : https://yourdomain/success')
                         ->maxLength(255)
                         ->default(null),
                     TextInput::make('failure_redirect_url')
-                        ->helperText('example : https://viralmatics.com/failure')
+                        ->helperText('example : https://yourdomain/failure')
                         ->maxLength(255)
                         ->default(null),
                     Toggle::make('status')
