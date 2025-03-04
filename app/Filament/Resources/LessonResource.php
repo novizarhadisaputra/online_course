@@ -54,7 +54,7 @@ class LessonResource extends Resource
                         ->columnSpanFull()
                         ->required(),
                     Toggle::make('is_paid')
-                        ->required(),
+                        ->default(true),
                     Toggle::make('status')
                         ->required(),
                 ]),
