@@ -28,7 +28,7 @@ class CourseResource extends JsonResource
             'language' => $this->language,
             'status' => $this->status,
             'is_get_certificate' => $this->is_get_certificate,
-            'author' => new AuthorResource($this->user),
+            'author' => new InstructorResource($this->user),
             'is_like' => false,
             'category' => new CategoryResource($this->category),
             'tags' => TagResource::collection($this->tags),

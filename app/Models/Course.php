@@ -133,6 +133,7 @@ class Course extends Model implements HasMedia
      */
     public function transactions(): MorphToMany
     {
-        return $this->morphToMany(Transaction::class, 'model', TransactionDetail::class);
+        return $this->morphToMany(Transaction::class, 'model', TransactionDetail::class)
+            ->withPivot(['id', 'qty', 'units', 'price']);
     }
 }

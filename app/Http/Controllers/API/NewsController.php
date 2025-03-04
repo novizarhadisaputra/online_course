@@ -9,11 +9,13 @@ use App\Http\Resources\CommentResource;
 use App\Http\Resources\NewsResource;
 use App\Http\Resources\ReviewResource;
 use App\Models\News;
+use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class NewsController extends Controller
 {
+    use ResponseTrait;
     /**
      * Display a listing of the resource.
      */
@@ -28,6 +30,39 @@ class NewsController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        try {
+            $news = News::find($id);
+            if (!$news) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
+            }
+            return $this->success(data: new NewsResource($news));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+     /**
+     * Display a listing of the resource.
+     */
+    public function likes(Request $request, string $id)
+    {
+        try {
+            $news = News::find($id);
+            if (!$news) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
+            }
+            $likes = $news->likes()->paginate($request->input('limit', 10));
+            return $this->success(data: CommentResource::collection($likes), paginate: $likes);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function comments(Request $request, string $id)
@@ -35,7 +70,7 @@ class NewsController extends Controller
         try {
             $news = News::find($id);
             if (!$news) {
-                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'new id'])]);
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
             $comments = $news->comments()->paginate($request->input('limit', 10));
             return $this->success(data: CommentResource::collection($comments), paginate: $comments);
@@ -47,19 +82,11 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function storeComment(StoreCommentRequest $request, string $id)
     {
         $news = News::find($id);
         if (!$news) {
-            throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'new id'])]);
+            throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
         }
         $transaction = $news->transactions()->where('user_id', $request->user_id)->first();
 

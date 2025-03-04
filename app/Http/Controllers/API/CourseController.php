@@ -91,7 +91,7 @@ class CourseController extends Controller
         $review = $course->reviews()->create([
             'rating' => $request->rating,
             'description' => $request->description,
-            'transaction_id' => $transaction->id,
+            'transaction_detail_id' => $transaction->pivot->id,
             'user_id' => $request->user()->id,
         ]);
 

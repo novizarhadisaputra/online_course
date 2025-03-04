@@ -56,7 +56,8 @@ class Transaction extends Model
      */
     public function courses(): MorphToMany
     {
-        return $this->morphedByMany(Course::class, 'model', TransactionDetail::class)->withPivot(['qty', 'units', 'price']);
+        return $this->morphedByMany(Course::class, 'model', TransactionDetail::class)
+            ->withPivot(['id', 'qty', 'units', 'price']);
     }
 
     /**

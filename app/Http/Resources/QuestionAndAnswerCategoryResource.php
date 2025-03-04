@@ -4,8 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\QuestionAndAnswerResource;
 
-class AuthorResource extends JsonResource
+class QuestionAndAnswerCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,6 +18,9 @@ class AuthorResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'description' => $this->description,
+            'status' => $this->status,
+            'question_answers' => QuestionAndAnswerResource::collection($this->question_answers),
         ];
     }
 }

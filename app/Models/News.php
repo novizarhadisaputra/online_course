@@ -6,6 +6,7 @@ use App\Models\Tag;
 use App\Models\Cart;
 use App\Models\Comment;
 use App\Models\PaymentLink;
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class News extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, InteractsWithMedia, ModelTrait;
 
     protected $guarded = [];
 
@@ -44,7 +45,7 @@ class News extends Model implements HasMedia
     }
 
     /**
-     * Get all of the viewers for the course.
+     * Get all of the viewers for the news.
      */
     public function viewers(): MorphToMany
     {
@@ -52,42 +53,18 @@ class News extends Model implements HasMedia
     }
 
     /**
-     * Get all of the courses's reviews.
+     * Get all of the likes for the news.
      */
-    public function reviews(): MorphMany
+    public function likes(): MorphToMany
     {
-        return $this->morphMany(Review::class, 'reviewable');
+        return $this->morphToMany(User::class, 'likeable', Like::class);
     }
 
     /**
-     * Get all of the courses's comments.
+     * Get all of the news's comments.
      */
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
-    }
-
-    /**
-     * Get all of the courses's prices.
-     */
-    public function prices(): MorphMany
-    {
-        return $this->morphMany(Price::class, 'priceable');
-    }
-
-    /**
-     * Get the course's link.
-     */
-    public function payment_link(): MorphOne
-    {
-        return $this->morphOne(PaymentLink::class, 'linkeable');
-    }
-
-     /**
-     * Get all of the courses's carts.
-     */
-    public function carts(): MorphMany
-    {
-        return $this->morphMany(Cart::class, 'cartable');
     }
 }

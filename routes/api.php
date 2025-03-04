@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\CourseController;
-
-
+use App\Http\Controllers\API\NewsController;
+use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
+use App\Http\Controllers\API\QuestionAndAnswerController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -20,6 +21,10 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::resource('courses', CourseController::class);
+Route::resource('news', NewsController::class);
+Route::resource('question-and-answers', QuestionAndAnswerController::class);
+Route::resource('question-and-answer-categories', QuestionAndAnswerCategoryController::class);
+
 Route::prefix('courses')->name('courses.')->group(function () {
     Route::prefix('{course}')->group(function () {
         Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
@@ -40,6 +45,16 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
             Route::get('/comments', [CourseController::class, 'comments']);
             Route::post('/reviews', [CourseController::class, 'storeReview']);
             Route::post('/comments', [CourseController::class, 'storeComment']);
+        });
+    });
+
+    Route::resource('news', NewsController::class);
+    Route::prefix('news')->group(function () {
+        Route::prefix('{news}')->group(function () {
+            Route::get('/likes', [NewsController::class, 'likes']);
+            Route::get('/comments', [NewsController::class, 'comments']);
+            Route::post('/likes', [NewsController::class, 'storeLike']);
+            Route::post('/comments', [NewsController::class, 'storeComment']);
         });
     });
 
