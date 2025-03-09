@@ -63,6 +63,20 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
         });
     });
 
+    Route::resource('categories', CategoryController::class);
+    Route::prefix('categories')->name('categories.')->group(function () {
+        Route::prefix('{category}')->group(function () {
+            Route::get('/courses', [CategoryController::class, 'courses'])->name('courses');
+        });
+    });
+
+    Route::resource('tags', TagController::class);
+    Route::prefix('tags')->name('tags.')->group(function () {
+        Route::prefix('{tag}')->group(function () {
+            Route::get('/courses', [TagController::class, 'courses'])->name('courses');
+        });
+    });
+
     Route::resource('news', NewsController::class);
     Route::prefix('news')->group(function () {
         Route::prefix('{news}')->group(function () {
