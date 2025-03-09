@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('status')->default(false);
 
+            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
