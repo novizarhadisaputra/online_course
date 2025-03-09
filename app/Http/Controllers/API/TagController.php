@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
+use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CourseResource;
 use Illuminate\Validation\ValidationException;
 
-class CategoryController extends Controller
+class TagController extends Controller
 {
     use ResponseTrait;
 
@@ -20,8 +20,8 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $categories = Category::active()->paginate($request->input('limit', 10));
-            return $this->success(data: CategoryResource::collection($categories), paginate: $categories);
+            $tags = Tag::active()->paginate($request->input('limit', 10));
+            return $this->success(data: TagResource::collection($tags), paginate: $tags);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -33,11 +33,11 @@ class CategoryController extends Controller
     public function courses(Request $request, string $id)
     {
         try {
-            $category = Category::find($id);
-            if (!$category) {
-                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'category id'])]);
+            $tag = Tag::find($id);
+            if (!$tag) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'tag id'])]);
             }
-            $courses = $category->courses()->paginate($request->input('limit', 10));
+            $courses = $tag->courses()->paginate($request->input('limit', 10));
             return $this->success(data: CourseResource::collection($courses), paginate: $courses);
         } catch (\Throwable $th) {
             throw $th;
@@ -66,11 +66,11 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $category = Category::find($id);
-            if (!$category) {
-                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'category id'])]);
+            $tag = Tag::find($id);
+            if (!$tag) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'tag id'])]);
             }
-            return $this->success(data: new CategoryResource($category));
+            return $this->success(data: new TagResource($tag));
         } catch (\Throwable $th) {
             throw $th;
         }

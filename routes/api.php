@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
+use App\Http\Controllers\API\TagController;
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -29,6 +30,20 @@ Route::prefix('courses')->name('courses.')->group(function () {
     Route::prefix('{course}')->group(function () {
         Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
         Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
+    });
+});
+
+Route::resource('categories', CategoryController::class);
+Route::prefix('categories')->name('categories.')->group(function () {
+    Route::prefix('{category}')->group(function () {
+        Route::get('/courses', [CategoryController::class, 'courses'])->name('courses');
+    });
+});
+
+Route::resource('tags', TagController::class);
+Route::prefix('tags')->name('tags.')->group(function () {
+    Route::prefix('{tag}')->group(function () {
+        Route::get('/courses', [TagController::class, 'courses'])->name('courses');
     });
 });
 
