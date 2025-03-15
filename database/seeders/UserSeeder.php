@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
             'password' => 'Developer123!!',
         ]);
         $dev->markEmailAsVerified();
-        // $dev->assignRole('Developer');
+        $dev->assignRole('super_admin');
 
         $admin = User::create([
             'name' => 'Admin Online Course',

@@ -16,22 +16,12 @@ class PaymentMethod extends Model implements HasMedia
     protected $guarded = [];
 
     /**
-     * Get the payment_gateway that owns the PaymentMethod
+     * Get the channel that owns the PaymentMethod
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function payment_gateway(): BelongsTo
+    public function channel(): BelongsTo
     {
-        return $this->belongsTo(PaymentGateway::class);
-    }
-
-    /**
-     * Get all of the payment_channels for the PaymentMethod
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function payment_channels(): HasMany
-    {
-        return $this->hasMany(PaymentChannel::class);
+        return $this->belongsTo(PaymentChannel::class);
     }
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('status')->default(false);
 
-            $table->foreignUuid('payment_gateway_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('payment_channel_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });

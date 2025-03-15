@@ -1,24 +1,27 @@
 <?php
 
-namespace App\Filament\Resources\PaymentGatewayResource\RelationManagers;
+namespace App\Filament\Resources\PaymentChannelResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Resources\RelationManagers\RelationManager;
+use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
-class PaymentMethodsRelationManager extends RelationManager
+class MethodsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'payment_methods';
+    use NestedRelationManager;
+
+    protected static string $relationship = 'methods';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -29,7 +32,7 @@ class PaymentMethodsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                TextColumn::make('name'),
             ])
             ->filters([
                 //

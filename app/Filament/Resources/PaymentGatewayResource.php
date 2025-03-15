@@ -13,13 +13,14 @@ use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\PaymentGatewayResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\PaymentGatewayResource\RelationManagers\PaymentMethodsRelationManager;
+use App\Filament\Resources\PaymentGatewayResource\RelationManagers\ChannelsRelationManager;
 
 class PaymentGatewayResource extends Resource
 {
@@ -30,6 +31,11 @@ class PaymentGatewayResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static ?string $navigationGroup = 'Master Data';
+
+    public static function getBreadcrumbRecordLabel(Model $record)
+    {
+        return $record->name;
+    }
 
     public static function form(Form $form): Form
     {
@@ -96,7 +102,7 @@ class PaymentGatewayResource extends Resource
     public static function getRelations(): array
     {
         return [
-            PaymentMethodsRelationManager::class,
+            ChannelsRelationManager::class,
         ];
     }
 
@@ -107,6 +113,8 @@ class PaymentGatewayResource extends Resource
             'create' => Pages\CreatePaymentGateway::route('/create'),
             'view' => Pages\ViewPaymentGateway::route('/{record}'),
             'edit' => Pages\EditPaymentGateway::route('/{record}/edit'),
+            'channels' => Pages\ManageGatewayChannels::route('/{record}/channels'),
+            'channels.create' => Pages\CreateGatewayChannel::route('/{record}/channels/create'),
         ];
     }
 

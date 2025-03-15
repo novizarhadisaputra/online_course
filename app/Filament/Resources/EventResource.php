@@ -56,8 +56,7 @@ class EventResource extends Resource
                         ->seconds(false),
                     DateTimePicker::make('end_time')
                         ->seconds(false),
-                    Toggle::make('status')
-                        ->required(),
+                    Toggle::make('status'),
                 ]),
             ]);
     }

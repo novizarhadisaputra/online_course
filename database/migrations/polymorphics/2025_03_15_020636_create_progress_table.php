@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_channels', function (Blueprint $table) {
+        Schema::create('progress', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->string('name');
-            $table->string('short_description')->nullable();
-            $table->text('description')->nullable();
+            $table->uuidMorphs('model');
+            $table->json('data');
             $table->boolean('status')->default(false);
-
-            $table->foreignUuid('payment_method_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment_channels');
+        Schema::dropIfExists('progress');
     }
 };

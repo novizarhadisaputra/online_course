@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\CourseResource\Pages;
 
 use App\Filament\Resources\CourseResource;
-use App\Filament\Resources\SectionResource;
 use Guava\FilamentNestedResources\Pages\CreateRelatedRecord;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 

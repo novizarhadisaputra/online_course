@@ -8,6 +8,7 @@ use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\ReviewResource;
+use App\Http\Resources\SectionResource;
 use App\Models\Course;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
@@ -42,6 +43,23 @@ class CourseController extends Controller
             }
             $reviews = $course->reviews()->paginate($request->input('limit', 10));
             return $this->success(data: ReviewResource::collection($reviews), paginate: $reviews);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function sections(Request $request, string $id)
+    {
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $sections = $course->sections()->paginate($request->input('limit', 10));
+            return $this->success(data: SectionResource::collection($sections), paginate: $sections);
         } catch (\Throwable $th) {
             throw $th;
         }
