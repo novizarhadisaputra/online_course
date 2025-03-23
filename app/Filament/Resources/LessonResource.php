@@ -91,8 +91,8 @@ class LessonResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLessons::route('/'),
-            'create' => Pages\CreateLesson::route('/create'),
+            // 'index' => Pages\ListLessons::route('/'),
+            // 'create' => Pages\CreateLesson::route('/create'),
             'view' => Pages\ViewLesson::route('/{record}'),
             'edit' => Pages\EditLesson::route('/{record}/edit'),
         ];

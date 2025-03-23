@@ -14,8 +14,4 @@ class CreateChannelMethod extends CreateRelatedRecord
     protected static string $resource = PaymentChannelResource::class;
 
     protected static string $relationship = 'methods';
-
-    // We can usually guess the nested resource, but if your app has multiple resources for this
-    // model, you will need to explicitly define it
-    public static string $nestedResource = PaymentMethodResource::class;
 }

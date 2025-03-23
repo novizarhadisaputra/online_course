@@ -23,6 +23,8 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
+    protected static ?string $navigationParentItem = 'Courses';
+
     public static function form(Form $form): Form
     {
         return $form

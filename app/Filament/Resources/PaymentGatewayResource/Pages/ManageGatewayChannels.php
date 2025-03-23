@@ -23,5 +23,5 @@ class ManageGatewayChannels extends ManageRelatedRecords
 
     protected static string $resource = PaymentGatewayResource::class;
 
-    protected static string $relationship = 'channels';
+    protected static string $relationship = 'payment_channels';
 }

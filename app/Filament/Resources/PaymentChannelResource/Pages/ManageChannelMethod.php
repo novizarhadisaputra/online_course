@@ -20,6 +20,4 @@ class ManageChannelMethod extends ManageRelatedRecords
     use NestedRelationManager;
 
     protected static string $resource = PaymentChannelResource::class;
-
-    protected static string $relationship = 'methods';
 }

@@ -18,9 +18,9 @@ use Filament\Forms\Components\TextInput;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\PaymentGatewayResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\PaymentGatewayResource\RelationManagers\ChannelsRelationManager;
+use App\Filament\Resources\PaymentGatewayResource\RelationManagers\PaymentChannelsRelationManager;
+use Guava\FilamentNestedResources\Concerns\NestedResource;
 
 class PaymentGatewayResource extends Resource
 {
@@ -102,7 +102,7 @@ class PaymentGatewayResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ChannelsRelationManager::class,
+            PaymentChannelsRelationManager::class,
         ];
     }
 
@@ -113,8 +113,8 @@ class PaymentGatewayResource extends Resource
             'create' => Pages\CreatePaymentGateway::route('/create'),
             'view' => Pages\ViewPaymentGateway::route('/{record}'),
             'edit' => Pages\EditPaymentGateway::route('/{record}/edit'),
-            'channels' => Pages\ManageGatewayChannels::route('/{record}/channels'),
-            'channels.create' => Pages\CreateGatewayChannel::route('/{record}/channels/create'),
+            'payment_channels' => Pages\ManageGatewayChannels::route('/{record}/payment-channels'),
+            'payment_channels.create' => Pages\CreateGatewayChannel::route('/{record}/payment-channels/create'),
         ];
     }
 

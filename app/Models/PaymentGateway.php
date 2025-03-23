@@ -22,11 +22,11 @@ class PaymentGateway extends Model implements HasMedia
     ];
 
     /**
-     * Get all of the channels for the PaymentGateway
+     * Get all of the payment-channels for the PaymentGateway
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function channels(): HasMany
+    public function payment_channels(): HasMany
     {
         return $this->hasMany(PaymentChannel::class);
     }
@@ -36,7 +36,7 @@ class PaymentGateway extends Model implements HasMedia
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function methods(): HasManyThrough
+    public function payment_methods(): HasManyThrough
     {
         return $this->hasManyThrough(PaymentMethod::class, PaymentChannel::class);
     }

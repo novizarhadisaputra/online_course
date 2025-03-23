@@ -2,38 +2,30 @@
 
 namespace App\Filament\Resources\PaymentGatewayResource\RelationManagers;
 
+use App\Filament\Resources\PaymentChannelResource;
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
-class ChannelsRelationManager extends RelationManager
+class PaymentChannelsRelationManager extends RelationManager
 {
     use NestedRelationManager;
 
-    protected static string $relationship = 'channels';
+    protected static string $relationship = 'payment_channels';
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
-    }
+    // We can usually guess the nested resource, but if your app has multiple resources for this
+    // model, you will need to explicitly define the it
+    public static string $nestedResource = PaymentChannelResource::class;
 
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name'),
             ])
             ->filters([
                 //

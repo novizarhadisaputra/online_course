@@ -18,48 +18,53 @@ use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\CouponResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CouponResource\RelationManagers;
+use Filament\Forms\Components\Section;
 
 class CouponResource extends Resource
 {
     protected static ?string $model = Coupon::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+
+    protected static ?string $navigationGroup = 'Master Data';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('short_description')
-                    ->maxLength(255)
-                    ->default(null),
-                Textarea::make('description')
-                    ->columnSpanFull(),
-                TextInput::make('type')
-                    ->required(),
-                TextInput::make('discount_type')
-                    ->required(),
-                TextInput::make('discount_value')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('code')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('max_amount')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('minimum_order')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('max_usable_times')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                Toggle::make('status')
-                    ->required(),
-                DateTimePicker::make('expired_at'),
+                Section::make()->schema([
+                    TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    TextInput::make('short_description')
+                        ->maxLength(255)
+                        ->default(null),
+                    Textarea::make('description')
+                        ->columnSpanFull(),
+                    TextInput::make('type')
+                        ->required(),
+                    TextInput::make('discount_type')
+                        ->required(),
+                    TextInput::make('discount_value')
+                        ->required()
+                        ->numeric(),
+                    TextInput::make('code')
+                        ->required()
+                        ->maxLength(255),
+                    TextInput::make('max_amount')
+                        ->numeric()
+                        ->default(null),
+                    TextInput::make('minimum_order')
+                        ->numeric()
+                        ->default(null),
+                    TextInput::make('max_usable_times')
+                        ->required()
+                        ->numeric()
+                        ->default(1),
+                    Toggle::make('status')
+                        ->required(),
+                    DateTimePicker::make('expired_at'),
+                ])
             ]);
     }
 

@@ -15,12 +15,9 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Guava\FilamentNestedResources\Ancestor;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PaymentChannelResource\Pages;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
-use App\Filament\Resources\PaymentChannelResource\RelationManagers;
 use App\Filament\Resources\PaymentChannelResource\RelationManagers\MethodsRelationManager;
 
 class PaymentChannelResource extends Resource
@@ -36,13 +33,13 @@ class PaymentChannelResource extends Resource
         return $record->name;
     }
 
-    // public static function getBreadcrumbs(Model $record, string $operation): array
-    // {
+    public static function getBreadcrumbs(Model $record, string $operation): array
+    {
 
-    //     return [
-    //         "" => $record->name,
-    //     ];
-    // }
+        return [
+            "" => $record->name,
+        ];
+    }
 
     public static function form(Form $form): Form
     {
@@ -76,7 +73,7 @@ class PaymentChannelResource extends Resource
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
-                TextColumn::make('payment_gateway_id')
+                TextColumn::make('gateway.name')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -124,7 +121,7 @@ class PaymentChannelResource extends Resource
     {
         // Configure the ancestor (parent) relationship here
         return Ancestor::make(
-            'channels', // Relationship name
+            'payment_channels', // Relationship name
             'gateway', // Inverse relationship name
         );
     }
