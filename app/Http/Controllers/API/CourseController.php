@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Course;
+use Illuminate\Http\Request;
+use App\Traits\ResponseTrait;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Course\StoreCommentRequest;
-use App\Http\Requests\Course\StoreReviewRequest;
-use App\Http\Resources\CommentResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\ReviewResource;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\SectionResource;
-use App\Models\Course;
-use App\Traits\ResponseTrait;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Course\StoreReviewRequest;
+use App\Http\Requests\Course\StoreCommentRequest;
+use App\Http\Requests\Course\StoreLikeRequest;
+use App\Http\Resources\UserResource;
 
 class CourseController extends Controller
 {
@@ -83,6 +86,23 @@ class CourseController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function likes(Request $request, string $id)
+    {
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $users = $course->likes()->paginate($request->input('limit', 10));
+            return $this->success(data: UserResource::collection($users), paginate: $users);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -95,25 +115,31 @@ class CourseController extends Controller
      */
     public function storeReview(StoreReviewRequest $request, string $id)
     {
-        $course = Course::find($id);
-        if (!$course) {
-            throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+        try {
+            DB::beginTransaction();
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+
+            $transaction = $course->transactions()->where('user_id', $request->user()->id)->first();
+
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+
+            $review = $course->reviews()->create([
+                'rating' => $request->rating,
+                'description' => $request->description,
+                'transaction_detail_id' => $transaction->pivot->id,
+                'user_id' => $request->user()->id,
+            ]);
+            DB::commit();
+            return $this->success(data: new ReviewResource($review), status: 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-
-        $transaction = $course->transactions()->where('user_id', $request->user()->id)->first();
-
-        if (!$transaction) {
-            throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
-        }
-
-        $review = $course->reviews()->create([
-            'rating' => $request->rating,
-            'description' => $request->description,
-            'transaction_detail_id' => $transaction->pivot->id,
-            'user_id' => $request->user()->id,
-        ]);
-
-        return $this->success(data: new ReviewResource($review), status: 201);
     }
 
     /**
@@ -121,22 +147,51 @@ class CourseController extends Controller
      */
     public function storeComment(StoreCommentRequest $request, string $id)
     {
-        $course = Course::find($id);
-        if (!$course) {
-            throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+        try {
+            DB::beginTransaction();
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $transaction = $course->transactions()->where('user_id', $request->user_id)->first();
+
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+            }
+
+            $comment = $course->comments()->create([
+                'description' => $request->description,
+                'user_id' => $request->user()->id,
+            ]);
+            DB::commit();
+            return $this->success(data: new CommentResource($comment), status: 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-        $transaction = $course->transactions()->where('user_id', $request->user_id)->first();
+    }
 
-        if (!$transaction) {
-            throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeLike(Request $request, string $id)
+    {
+        try {
+            DB::beginTransaction();
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+
+            $request->user()->likeCourses()->toggle($course->id);
+
+            DB::commit();
+            $course = Course::find($id);
+            return $this->success(data: new CourseResource($course), status: 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-
-        $comment = $course->comments()->create([
-            'description' => $request->description,
-            'user_id' => $request->user()->id,
-        ]);
-
-        return $this->success(data: new CommentResource($comment), status: 201);
     }
 
     /**

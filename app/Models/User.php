@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Panel;
+use App\Models\Like;
+use App\Models\Course;
 use App\Models\Review;
 use App\Models\Address;
 use App\Models\Transaction;
@@ -12,15 +14,17 @@ use App\Models\TransactionDetail;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasAvatar;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Spatie\MediaLibrary\Conversions\ImageGenerators\Video;
 
 class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
 {
@@ -98,5 +102,23 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');
+    }
+
+    /**
+     * Get all of the like course that are assigned this user.
+     */
+
+    public function likeCourses(): MorphToMany
+    {
+        return $this->morphedByMany(Course::class, 'likeable', Like::class);
+    }
+
+    /**
+     * Get all of the like news that are assigned this user.
+     */
+
+    public function likeNews(): MorphToMany
+    {
+        return $this->morphedByMany(News::class, 'likeable', Like::class);
     }
 }

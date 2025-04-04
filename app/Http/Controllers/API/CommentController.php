@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
+use App\Http\Requests\Comment\StoreRequest;
 use Illuminate\Validation\ValidationException;
 
 class CommentController extends Controller
@@ -51,9 +53,22 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $comment = Comment::find($request->id);
+            $comment = $comment->comments()->create([
+                'description' => $request->description,
+                'user_id' => $request->user()->id,
+            ]);
+            DB::commit();
+            return $this->success(data: new CommentResource($comment), status: 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\CourseController;
+use App\Http\Controllers\API\GetInTouchController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
@@ -21,6 +22,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
+Route::resource('get-in-touches', GetInTouchController::class);
 Route::resource('courses', CourseController::class);
 Route::resource('news', NewsController::class);
 Route::resource('question-and-answers', QuestionAndAnswerController::class);
@@ -48,6 +50,14 @@ Route::prefix('tags')->name('tags.')->group(function () {
     });
 });
 
+Route::prefix('comments')->group(function () {
+    Route::get('/', [CommentController::class, 'index']);
+    Route::prefix('{comment}')->group(function () {
+        Route::get('/', [CommentController::class, 'show']);
+        Route::get('/comments', [CommentController::class, 'comments']);
+    });
+});
+
 Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
     Route::prefix('auth')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile']);
@@ -57,10 +67,12 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('courses', CourseController::class);
     Route::prefix('courses')->group(function () {
         Route::prefix('{course}')->group(function () {
+            Route::get('/likes', [CourseController::class, 'likes']);
             Route::get('/reviews', [CourseController::class, 'reviews']);
             Route::get('/comments', [CourseController::class, 'comments']);
             Route::post('/reviews', [CourseController::class, 'storeReview']);
             Route::post('/comments', [CourseController::class, 'storeComment']);
+            Route::post('/likes', [CourseController::class, 'storeLike']);
         });
     });
 
@@ -91,15 +103,8 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
     Route::prefix('comments')->group(function () {
         Route::post('/store', [CommentController::class, 'store']);
         Route::prefix('{comment}')->group(function () {
+            Route::get('/', [CommentController::class, 'show']);
             Route::put('/', [CommentController::class, 'update']);
         });
-    });
-});
-
-Route::prefix('comments')->group(function () {
-    Route::get('/', [CommentController::class, 'index']);
-    Route::prefix('{comment}')->group(function () {
-        Route::get('/', [CommentController::class, 'show']);
-        Route::get('/comments', [CommentController::class, 'comments']);
     });
 });

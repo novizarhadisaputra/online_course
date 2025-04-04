@@ -129,7 +129,15 @@ class Course extends Model implements HasMedia
     }
 
     /**
-     * Get all of the tags for the post.
+     * Get all of the likes for the course.
+     */
+    public function likes(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'likeable', Like::class);
+    }
+
+    /**
+     * Get all of the transactions for the course.
      */
     public function transactions(): MorphToMany
     {

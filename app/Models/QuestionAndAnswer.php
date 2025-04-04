@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\QuestionAndAnswerCategory;
+use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class QuestionAndAnswer extends Model
 {
-    use HasUuids;
+    use HasUuids, ModelTrait;
 
     protected $guarded = [];
 

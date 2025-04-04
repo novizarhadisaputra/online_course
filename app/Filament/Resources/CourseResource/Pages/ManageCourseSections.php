@@ -4,13 +4,10 @@ namespace App\Filament\Resources\CourseResource\Pages;
 
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Actions;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CourseResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 

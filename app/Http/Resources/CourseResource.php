@@ -15,6 +15,8 @@ class CourseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $is_like = !$request->user() ? false : $this->likes()->where('user_id', $request->user()->id)->exists();
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,7 +31,7 @@ class CourseResource extends JsonResource
             'status' => $this->status,
             'is_get_certificate' => $this->is_get_certificate,
             'author' => new InstructorResource($this->user),
-            'is_like' => false,
+            'is_like' => $is_like,
             'category' => new CategoryResource($this->category),
             'tags' => TagResource::collection($this->tags),
             'lessons' => $this->lessons->count(),

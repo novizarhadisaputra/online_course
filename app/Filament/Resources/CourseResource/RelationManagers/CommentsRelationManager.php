@@ -26,9 +26,11 @@ class CommentsRelationManager extends RelationManager
                 TextInput::make('description')
                     ->required()
                     ->maxLength(255),
-                Select::make('user_id')
-                    ->options(User::select(['name', 'id'])->get()->pluck('name', 'id'))
-                    ->default(auth()->user()->id)
+                TextInput::make('user_id')
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder(auth()->user()->name)
+                    ->default(auth()->user()->id),
             ]);
     }
 
@@ -44,15 +46,15 @@ class CommentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->visible(auth()->user()->hasRole(['Developer'])),
+                Tables\Actions\CreateAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->visible(auth()->user()->hasRole(['Developer'])),
-                Tables\Actions\DeleteAction::make()->visible(auth()->user()->hasRole(['Developer'])),
+                Tables\Actions\EditAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
+                Tables\Actions\DeleteAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->visible(auth()->user()->hasRole(['Developer'])),
+                    Tables\Actions\DeleteBulkAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
                 ]),
             ]);
     }
