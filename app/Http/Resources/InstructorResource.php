@@ -17,6 +17,7 @@ class InstructorResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'image' => $this->hasMedia('avatars') ? $this->getMedia('avatars')->first()->getFullUrl() : null,
         ];
     }
 }
