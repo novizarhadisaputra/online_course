@@ -8,11 +8,10 @@ use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NewsResource;
-use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CommentResource;
 use Illuminate\Validation\ValidationException;
-use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
+use App\Http\Resources\UserResource;
 
 class NewsController extends Controller
 {
@@ -57,7 +56,7 @@ class NewsController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
             $likes = $news->likes()->paginate($request->input('limit', 10));
-            return $this->success(data: CommentResource::collection($likes), paginate: $likes);
+            return $this->success(data: UserResource::collection($likes), paginate: $likes);
         } catch (\Throwable $th) {
             throw $th;
         }

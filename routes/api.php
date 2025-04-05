@@ -6,6 +6,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\GetInTouchController;
+use App\Http\Controllers\API\InstructorController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
@@ -24,6 +25,7 @@ Route::prefix('auth')->group(function () {
 
 Route::resource('get-in-touches', GetInTouchController::class);
 Route::resource('courses', CourseController::class);
+Route::resource('instructors', InstructorController::class);
 Route::resource('news', NewsController::class);
 Route::resource('question-and-answers', QuestionAndAnswerController::class);
 Route::resource('question-and-answer-categories', QuestionAndAnswerCategoryController::class);
@@ -75,6 +77,15 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
             Route::post('/likes', [CourseController::class, 'storeLike']);
         });
     });
+
+    Route::resource('instructors', InstructorController::class);
+    Route::prefix('instructors')->group(function () {
+        Route::prefix('{instructor}')->group(function () {
+            Route::get('/followers', [InstructorController::class, 'followers']);
+            Route::post('/followers', [InstructorController::class, 'storeFollower']);
+        });
+    });
+
 
     Route::resource('categories', CategoryController::class);
     Route::prefix('categories')->name('categories.')->group(function () {

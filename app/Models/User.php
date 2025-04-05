@@ -121,4 +121,21 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
     {
         return $this->morphedByMany(News::class, 'likeable', Like::class);
     }
+
+    /**
+     * Get all of the followers that are assigned this user.
+     */
+
+    public function followers(): MorphToMany
+    {
+        return $this->morphedByMany(self::class, 'followable', Follow::class);
+    }
+
+    /**
+     * Get all of the following for the instructor.
+     */
+    public function following(): MorphToMany
+    {
+        return $this->morphToMany(self::class, 'followable', Follow::class);
+    }
 }
