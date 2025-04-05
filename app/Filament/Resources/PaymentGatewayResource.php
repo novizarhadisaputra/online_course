@@ -21,6 +21,7 @@ use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\PaymentGatewayResource\RelationManagers\PaymentChannelsRelationManager;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
+use Illuminate\Database\Eloquent\Builder;
 
 class PaymentGatewayResource extends Resource
 {
@@ -43,7 +44,6 @@ class PaymentGatewayResource extends Resource
             ->schema([
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
-                        ->multiple()
                         ->collection('images')
                         ->required(),
                     TextInput::make('name')
@@ -76,6 +76,12 @@ class PaymentGatewayResource extends Resource
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
+                TextColumn::make('payment_channels_count')->counts([
+                    'payment_channels' => fn(Builder $query) => $query->where('payment_channels.status', true),
+                ])->formatStateUsing(fn(string $state): string => "$state channels"),
+                TextColumn::make('payment_methods_count')->counts([
+                    'payment_methods' => fn(Builder $query) => $query->where('payment_methods.status', true),
+                ])->formatStateUsing(fn(string $state): string => "$state methods"),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

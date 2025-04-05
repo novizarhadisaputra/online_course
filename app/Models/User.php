@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Spatie\MediaLibrary\Conversions\ImageGenerators\Video;
 
 class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
 {

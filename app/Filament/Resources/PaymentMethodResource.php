@@ -16,7 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\PaymentMethodResource\Pages;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class PaymentMethodResource extends Resource
 {
@@ -36,6 +38,9 @@ class PaymentMethodResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->collection('images')
+                        ->required(),
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),
@@ -54,6 +59,7 @@ class PaymentMethodResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('image')->collection('images'),
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable(),

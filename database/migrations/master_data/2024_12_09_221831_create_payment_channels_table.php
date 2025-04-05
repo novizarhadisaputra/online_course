@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_payment-channels', function (Blueprint $table) {
+        Schema::create('payment_channels', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->string('short_description')->nullable();
