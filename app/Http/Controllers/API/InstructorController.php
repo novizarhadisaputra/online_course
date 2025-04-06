@@ -22,7 +22,7 @@ class InstructorController extends Controller
     public function index(Request $request)
     {
         try {
-            $instructor = User::hasRoles(['instructor'])->paginate($request->input('limit', 10));
+            $instructor = User::role('instructor')->paginate($request->input('limit', 10));
             return $this->success(data: InstructorResource::collection($instructor), paginate: $instructor);
         } catch (\Throwable $th) {
             throw $th;

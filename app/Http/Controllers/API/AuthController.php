@@ -7,16 +7,18 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use App\Mail\Auth\VerifyEmail;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendVerificationEmailJob;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
-use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -25,23 +27,31 @@ class AuthController extends Controller
     // Register
     public function register(RegisterRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        try {
+            DB::beginTransaction();
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Send verification email
-        Mail::to($user->email)->send(new VerifyEmail($user));
+            // Send verification email
+            SendVerificationEmailJob::dispatch($user);
 
-        $response = (object) [
-            'token' => $token,
-            'user' => $user,
-        ];
+            $response = (object) [
+                'token' => $token,
+                'user' => $user,
+            ];
 
-        return $this->success(data: $response, status: 201);
+            DB::commit();
+
+            return $this->success(data: $response, status: 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     // Login
@@ -82,32 +92,46 @@ class AuthController extends Controller
     // Verify Email
     public function verifyEmail($id)
     {
-        $user = User::findOrFail($id);
-        if ($user->email_verified_at) {
-            return $this->success(message: 'Email already verified');
+        try {
+            DB::beginTransaction();
+
+            $user = User::findOrFail($id);
+            if ($user->email_verified_at) {
+                return $this->error(message: 'Email already verified');
+            }
+
+            $user->email_verified_at = now();
+            $user->save();
+
+            DB::commit();
+
+            return redirect()->away(env('APP_URL_WEBSITE', 'localhost:3000'));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-
-        $user->email_verified_at = now();
-        $user->save();
-
-        return $this->success(message: 'Email verified successfully');
     }
 
     // Resend Verification Email
     public function resendVerifyEmail(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return $this->error(message: 'User not found', status: 404);
+        try {
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return $this->error(message: 'User not found', status: 404);
+            }
+
+            if ($user->email_verified_at) {
+                return $this->success(message: 'Email already verified', status: 200);
+            }
+
+            // Send verification email
+            SendVerificationEmailJob::dispatch($user);
+
+            return $this->success(message: 'Verification email resent', status: 200);
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        if ($user->email_verified_at) {
-            return $this->success(message: 'Email already verified', status: 200);
-        }
-
-        Mail::to($user->email)->send(new VerifyEmail($user));
-
-        return $this->success(message: 'Verification email resent', status: 200);
     }
 
     // Forgot Password

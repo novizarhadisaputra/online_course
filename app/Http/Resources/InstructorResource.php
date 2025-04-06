@@ -14,12 +14,13 @@ class InstructorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $is_following = !$request->user() ? false : $this->following()->where('user_id', $request->user()->id)->exists();
+        $is_following = !$request->user() ? false : $this->followers()->where('user_id', $request->user()->id)->exists();
 
         return [
             'id' => $this->id,
             'name' => $this->name,
             'image' => $this->hasMedia('avatars') ? $this->getMedia('avatars')->first()->getFullUrl() : null,
+            'followers_count' => $this->followers()->count(),
             'is_following' => $is_following,
         ];
     }

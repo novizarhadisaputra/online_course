@@ -31,6 +31,26 @@ class UserSeeder extends Seeder
             'password' => 'Admin123!!',
         ]);
         $admin->markEmailAsVerified();
-        // $admin->assignRole('Admin');
+        $admin->assignRole('admin');
+
+        $instructor = User::create([
+            'name' => 'Instructor Online Course',
+            'first_name' => 'Instructor',
+            'last_name' => 'Online Course',
+            'email' => 'instructor@onlinecourse.com',
+            'password' => 'Instructor123!!',
+        ]);
+        $instructor->markEmailAsVerified();
+        $instructor->assignRole('instructor');
+
+        $customer = User::create([
+            'name' => 'Customer Online Course',
+            'first_name' => 'Customer',
+            'last_name' => 'Online Course',
+            'email' => 'customer@onlinecourse.com',
+            'password' => 'Customer123!!',
+        ]);
+        $customer->markEmailAsVerified();
+        $customer->assignRole('customer');
     }
 }
