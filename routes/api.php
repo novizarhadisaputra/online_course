@@ -11,6 +11,7 @@ use App\Http\Controllers\API\InstructorController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
+use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\UserController;
@@ -26,12 +27,12 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
 });
 
-Route::apiResource('get-in-touches', GetInTouchController::class);
-Route::apiResource('courses', CourseController::class);
-Route::apiResource('instructors', InstructorController::class);
-Route::apiResource('news', NewsController::class);
-Route::apiResource('question-and-answers', QuestionAndAnswerController::class);
-Route::apiResource('question-and-answer-categories', QuestionAndAnswerCategoryController::class);
+Route::apiResource('get-in-touches', GetInTouchController::class)->only(['index', 'show']);
+Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
+Route::apiResource('instructors', InstructorController::class)->only(['index', 'show']);
+Route::apiResource('news', NewsController::class)->only(['index', 'show']);
+Route::apiResource('question-and-answers', QuestionAndAnswerController::class)->only(['index', 'show']);
+Route::apiResource('question-and-answer-categories', QuestionAndAnswerCategoryController::class)->only(['index', 'show']);
 
 Route::prefix('courses')->name('courses.')->group(function () {
     Route::prefix('{course}')->group(function () {
@@ -41,24 +42,21 @@ Route::prefix('courses')->name('courses.')->group(function () {
     });
 });
 
-Route::apiResource('categories', CategoryController::class);
+Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 Route::prefix('categories')->name('categories.')->group(function () {
     Route::prefix('{category}')->group(function () {
         Route::get('/courses', [CategoryController::class, 'courses'])->name('courses');
     });
 });
 
-Route::apiResource('tags', TagController::class);
+Route::apiResource('tags', TagController::class)->only(['index', 'show']);
 Route::prefix('tags')->name('tags.')->group(function () {
     Route::prefix('{tag}')->group(function () {
         Route::get('/courses', [TagController::class, 'courses'])->name('courses');
     });
 });
 
-Route::apiResource('comments', CommentController::class)->only([
-    'index',
-    'show'
-]);
+Route::apiResource('comments', CommentController::class)->only(['index', 'show']);
 Route::prefix('comments')->group(function () {
     Route::prefix('{comment}')->group(function () {
         Route::get('/comments', [CommentController::class, 'comments']);
@@ -80,7 +78,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
         });
     });
 
-    Route::apiResource('courses', CourseController::class);
+    Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
     Route::prefix('courses')->name('courses.')->group(function () {
         Route::prefix('{course}')->group(function () {
             Route::get('/likes', [CourseController::class, 'likes'])->name('likes');
@@ -92,7 +90,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
         });
     });
 
-    Route::apiResource('instructors', InstructorController::class);
+    Route::apiResource('instructors', InstructorController::class)->only(['index', 'show']);
     Route::prefix('instructors')->name('instructors.')->group(function () {
         Route::prefix('{instructor}')->group(function () {
             Route::get('/followers', [InstructorController::class, 'followers'])->name('followers');
@@ -100,21 +98,21 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
         });
     });
 
-    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
     Route::prefix('categories')->name('categories.')->group(function () {
         Route::prefix('{category}')->group(function () {
             Route::get('/courses', [CategoryController::class, 'courses'])->name('courses');
         });
     });
 
-    Route::apiResource('tags', TagController::class);
+    Route::apiResource('tags', TagController::class)->only(['index', 'show']);
     Route::prefix('tags')->name('tags.')->group(function () {
         Route::prefix('{tag}')->group(function () {
             Route::get('/courses', [TagController::class, 'courses'])->name('courses');
         });
     });
 
-    Route::apiResource('news', NewsController::class);
+    Route::apiResource('news', NewsController::class)->only(['index', 'show']);
     Route::prefix('news')->name('news.')->group(function () {
         Route::prefix('{news}')->group(function () {
             Route::get('/likes', [NewsController::class, 'likes'])->name('likes');
@@ -124,7 +122,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
         });
     });
 
-    Route::apiResource('comments', CommentController::class);
+    Route::apiResource('comments', CommentController::class)->only(['index', 'show']);
     Route::prefix('comments')->name('comments.')->group(function () {
         Route::prefix('{comment}')->group(function () {
             Route::get('/comments', [CommentController::class, 'comments'])->name('comments');
@@ -133,11 +131,13 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('carts', CartController::class);
 
-    Route::apiResource('transactions', TransactionController::class);
+    Route::apiResource('transactions', TransactionController::class)->only(['index', 'show']);
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::prefix('{transaction}')->group(function () {
             Route::post('/payment', [TransactionController::class, 'payment'])->name('payment');
             Route::get('/payment-channels', [TransactionController::class, 'paymentChannels'])->name('payment-channels');
         });
     });
+
+    Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
 });

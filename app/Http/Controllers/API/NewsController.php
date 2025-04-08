@@ -16,6 +16,7 @@ use App\Http\Resources\UserResource;
 class NewsController extends Controller
 {
     use ResponseTrait;
+
     /**
      * Display a listing of the resource.
      */
