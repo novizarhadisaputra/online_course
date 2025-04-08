@@ -15,7 +15,6 @@ return new class extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('cartable');
             $table->integer('qty')->default(1);
-            $table->bigInteger('service_fee')->default(0);
             $table->bigInteger('tax_fee')->default(0);
 
             $table->foreignUuid('user_id')->nullable()->constrained()->cascadeOnDelete();

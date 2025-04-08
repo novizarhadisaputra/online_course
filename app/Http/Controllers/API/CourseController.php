@@ -16,6 +16,7 @@ use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
 use App\Http\Requests\Course\StoreLikeRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseController extends Controller
 {
@@ -27,7 +28,9 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         try {
-            $courses = Course::active()->paginate($request->input('limit', 10));
+            $courses = Course::active()->whereHas('lessons', function (Builder $q) {
+                $q->where('lessons.status', true);
+            })->paginate($request->input('limit', 10));
             return $this->success(data: CourseResource::collection($courses), paginate: $courses);
         } catch (\Throwable $th) {
             throw $th;

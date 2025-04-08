@@ -35,14 +35,6 @@ class SectionResource extends Resource
         return $record->name;
     }
 
-    public static function getBreadcrumbs(Model $record, string $operation): array
-    {
-
-        return [
-            "" => $record->name,
-        ];
-    }
-
     public static function form(Form $form): Form
     {
         return $form

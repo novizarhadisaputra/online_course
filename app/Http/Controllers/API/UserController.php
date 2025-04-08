@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UpdateAvatarRequest;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\InstructorResource;
-use App\Models\User;
-use App\Traits\ResponseTrait;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\User\UpdateAvatarRequest;
 
 class UserController extends Controller
 {
@@ -100,17 +102,19 @@ class UserController extends Controller
                 $user->clearMediaCollection('avatars');
                 $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
             }
-            $user->name = $request->name;
-            $user->description = $request->description;
-            $user->email = $request->email;
-            $user->phone = $request->phone;
-            $user->password = $request->password;
-            $user->gender = $request->gender;
 
+            $user->name = '';
+            $user->first_name = $request->first_name ?? $user->first_name;
+            $user->last_name = $request->last_name ?? $user->last_name;
+            $user->description = $request->description ?? $user->description;
+            $user->email = $request->email ?? $user->email;
+            $user->phone = $request->phone ?? $user->phone;
+            $user->password = $request->password ? Hash::make($request->password) : $user->password;
+            $user->gender = $request->gender ?? $user->gender;
             $user->save();
 
             DB::commit();
-            return $this->success(data: $user);
+            return $this->success(data: new UserResource($user));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -137,7 +141,7 @@ class UserController extends Controller
             $user->save();
 
             DB::commit();
-            return $this->success(data: $user);
+            return $this->success(data: new UserResource($user));
         } catch (\Throwable $th) {
             throw $th;
         }

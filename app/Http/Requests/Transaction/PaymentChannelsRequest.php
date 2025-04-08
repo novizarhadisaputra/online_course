@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Transaction;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAvatarRequest extends FormRequest
+class PaymentChannelsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class UpdateAvatarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'exists:users,id'],
-            'avatar' => ['required', 'file', 'mimes:png,jpg']
+            //
         ];
     }
 }

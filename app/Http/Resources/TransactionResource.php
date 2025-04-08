@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Resources;
+
+use App\Enums\TransactionStatus;
+use App\Models\Review;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class TransactionResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'code' => $this->code,
+            'payment_method' => $this->payment_method,
+            'payment_channel' => $this->payment_channel,
+            'payment_link' => $this->payment_link,
+            'service_fee' => $this->service_fee,
+            'tax_fee' => $this->tax_fee,
+            'tax_percentage' => $this->tax_percentage,
+            'total_qty' => $this->details()->sum('qty'),
+            'total_price' => $this->details()->sum('price'),
+            'total_paid' => $this->total_price,
+            'status' => $this->status,
+            'category' => $this->category,
+            'created_at' => $this->created_at,
+        ];
+    }
+}

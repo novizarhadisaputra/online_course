@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Cart;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAvatarRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,10 @@ class UpdateAvatarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'exists:users,id'],
-            'avatar' => ['required', 'file', 'mimes:png,jpg']
+            'id' => ['required', 'uuid'],
+            'category' => ['required', 'in:events,news,courses'],
+            'qty' => ['required', 'numeric', 'min:1'],
+            'price_id' => ['required', 'exists:prices,id']
         ];
     }
 }

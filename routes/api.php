@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\CourseController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
 use App\Http\Controllers\API\TagController;
+use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\UserController;
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -126,6 +128,16 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
     Route::prefix('comments')->name('comments.')->group(function () {
         Route::prefix('{comment}')->group(function () {
             Route::get('/comments', [CommentController::class, 'comments'])->name('comments');
+        });
+    });
+
+    Route::apiResource('carts', CartController::class);
+
+    Route::apiResource('transactions', TransactionController::class);
+    Route::prefix('transactions')->name('transactions.')->group(function () {
+        Route::prefix('{transaction}')->group(function () {
+            Route::post('/payment', [TransactionController::class, 'payment'])->name('payment');
+            Route::get('/payment-channels', [TransactionController::class, 'paymentChannels'])->name('payment-channels');
         });
     });
 });

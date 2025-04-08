@@ -19,11 +19,12 @@ return new class extends Migration
             $table->bigInteger('total_price')->default(0);
             $table->bigInteger('service_fee')->default(0);
             $table->bigInteger('tax_fee')->default(0);
+            $table->integer('tax_percentage')->default(11);
             $table->enum('status', ['waiting payment', 'refund', 'success', 'cancel'])->default('waiting payment');
             $table->enum('category', ['debit', 'credit'])->default('debit');
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('payment_channel_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('payment_channel_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });
