@@ -1,20 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\CourseResource\RelationManagers;
+namespace App\Filament\Resources\CouponResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
-class TagsRelationManager extends RelationManager
+class UsersRelationManager extends RelationManager
 {
-    protected static string $relationship = 'tags';
+    protected static string $relationship = 'users';
 
     public function form(Form $form): Form
     {
@@ -38,16 +35,13 @@ class TagsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

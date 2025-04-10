@@ -43,11 +43,19 @@ class Course extends Model implements HasMedia
     }
 
     /**
-     * Get all of the tags for the post.
+     * Get all of the tags for the courses.
      */
     public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable', Taggable::class);
+    }
+
+    /**
+     * Get all of the coupons for the courses.
+     */
+    public function coupons(): MorphToMany
+    {
+        return $this->morphToMany(Coupon::class, 'model', Couponable::class);
     }
 
     /**

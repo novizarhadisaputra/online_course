@@ -14,6 +14,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\TagResource\Pages;
+use App\Filament\Resources\TagResource\RelationManagers\CoursesRelationManager;
+use App\Filament\Resources\TagResource\RelationManagers\NewsRelationManager;
 use Filament\Forms\Components\Section;
 
 class TagResource extends Resource
@@ -80,7 +82,8 @@ class TagResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            NewsRelationManager::make(),
+            CoursesRelationManager::make(),
         ];
     }
 

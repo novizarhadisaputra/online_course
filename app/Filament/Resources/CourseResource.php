@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\CourseLevel;
 use Filament\Tables;
 use App\Models\Course;
 use Filament\Forms\Form;
+use App\Enums\CourseLevel;
 use Filament\Tables\Table;
+use App\Enums\TransactionStatus;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -17,6 +18,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\CourseResource\Pages;
@@ -31,6 +33,7 @@ use App\Filament\Resources\CourseResource\RelationManagers\PricesRelationManager
 use App\Filament\Resources\CourseResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\SectionsRelationManager;
+use App\Filament\Resources\CourseResource\RelationManagers\TransactionsRelationManager;
 
 class CourseResource extends Resource
 {
@@ -73,8 +76,10 @@ class CourseResource extends Resource
                     TextInput::make('duration')
                         ->numeric()
                         ->minValue(1),
-                    Select::make('category_id')
-                        ->relationship(name: 'category', titleAttribute: 'name'),
+                    Select::make('tags')
+                        ->multiple()
+                        ->searchable()
+                        ->relationship(titleAttribute: 'name'),
                     TextInput::make('language')
                         ->required()
                         ->maxLength(255),
@@ -86,10 +91,20 @@ class CourseResource extends Resource
 
     public static function table(Table $table): Table
     {
+
+        $query = Course::select('*');
+        if (!auth()->user()->hasRole('super_admin')) {
+            $query->where('user_id', auth()->id());
+        };
+
         return $table
+            ->query($query)
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')->collection('images'),
                 TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('user.name')
+                    ->label('Instructor')
                     ->searchable(),
                 TextColumn::make('sections_count')->counts([
                     'sections' => fn(Builder $query) => $query->where('sections.status', true),
@@ -128,9 +143,9 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
+            TransactionsRelationManager::make(['status' => TransactionStatus::SUCCESS]),
             SectionsRelationManager::make(),
             PricesRelationManager::make(),
-            TagsRelationManager::make(),
             ReviewsRelationManager::make(),
             CommentsRelationManager::make(),
         ];

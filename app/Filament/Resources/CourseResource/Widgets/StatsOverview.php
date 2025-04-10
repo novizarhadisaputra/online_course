@@ -10,14 +10,18 @@ class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        $courses = Course::select(['id'])->count();
-        $courseActive = Course::select(['id'])->where(['status' => 1])->count();
-        $courseNonActive = Course::select(['id'])->where(['status' => 0])->count();
+        $courses = Course::select(['id']);
+        if (!auth()->user()->hasRole(['super_admin'])) {
+            $courses->where('user_id', auth()->id());
+        }
+        $courses_count = $courses->count();
+        $course_active_count = $courses->where(['status' => 1])->count();
+        $course_non_active_count = $courses->where(['status' => 0])->count();
 
         return [
-            Stat::make('Total Courses', $courses),
-            Stat::make('Total Course Active', $courseActive),
-            Stat::make('Total Course Non Active', $courseNonActive),
+            Stat::make('Total Courses', $courses_count),
+            Stat::make('Total Course Active', $course_active_count),
+            Stat::make('Total Course Non Active', $course_non_active_count),
         ];
     }
 }

@@ -19,4 +19,12 @@ class Tag extends Model
     {
         return $this->morphedByMany(Course::class, 'taggable', Taggable::class);
     }
+
+    /**
+     * Get all of the news that are assigned this tag.
+     */
+    public function news(): MorphToMany
+    {
+        return $this->morphedByMany(News::class, 'taggable', Taggable::class);
+    }
 }

@@ -11,6 +11,11 @@ class Dashboard extends Page
 
     protected static string $view = 'filament.pages.dashboard';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can(['page_Dashboard']);
+    }
+
     protected function getHeaderWidgets(): array
     {
         return [

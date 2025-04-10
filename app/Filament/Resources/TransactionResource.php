@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\TransactionResource\Pages;
+use Filament\Forms\Components\Section;
 
 class TransactionResource extends Resource
 {
@@ -24,28 +25,30 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('code')
-                    ->maxLength(255)
-                    ->default(null),
-                TextInput::make('payment_method')
-                    ->maxLength(255)
-                    ->default(null),
-                TextInput::make('payment_channel')
-                    ->maxLength(255)
-                    ->default(null),
-                TextInput::make('total_qty')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                TextInput::make('total_price')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
-                TextInput::make('status')
-                    ->required(),
+                Section::make()->schema([
+                    TextInput::make('code')
+                        ->maxLength(255)
+                        ->default(null),
+                    TextInput::make('payment_method')
+                        ->maxLength(255)
+                        ->default(null),
+                    TextInput::make('payment_channel')
+                        ->maxLength(255)
+                        ->default(null),
+                    TextInput::make('total_qty')
+                        ->required()
+                        ->numeric()
+                        ->default(1),
+                    TextInput::make('total_price')
+                        ->required()
+                        ->numeric()
+                        ->default(0),
+                    Select::make('user_id')
+                        ->relationship('user', 'name')
+                        ->required(),
+                    TextInput::make('status')
+                        ->required(),
+                ])->columns(2)
             ]);
     }
 
@@ -85,7 +88,7 @@ class TransactionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->visible(auth()->user()->can('update_transaction')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

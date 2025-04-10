@@ -2,23 +2,29 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\Coupon;
+use App\Models\Course;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
+use App\Enums\CouponType;
 use Filament\Tables\Table;
+use App\Enums\DiscountType;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\CouponResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\CouponResource\RelationManagers;
-use Filament\Forms\Components\Section;
+use App\Filament\Resources\CouponResource\RelationManagers\UsersRelationManager;
+use App\Filament\Resources\CouponResource\RelationManagers\CoursesRelationManager;
+use App\Filament\Resources\CouponResource\RelationManagers\CategoriesRelationManager;
 
 class CouponResource extends Resource
 {
@@ -41,16 +47,39 @@ class CouponResource extends Resource
                         ->default(null),
                     Textarea::make('description')
                         ->columnSpanFull(),
-                    TextInput::make('type')
-                        ->required(),
-                    TextInput::make('discount_type')
-                        ->required(),
-                    TextInput::make('discount_value')
-                        ->required()
-                        ->numeric(),
                     TextInput::make('code')
+                        ->maxLength(255)
+                        ->visibleOn('edit')
+                        ->default(null),
+                    Select::make('type')
+                        ->options(CouponType::class)
+                        ->live()
+                        ->required(),
+                    Select::make('discount_type')
+                        ->options(DiscountType::class)
                         ->required()
-                        ->maxLength(255),
+                        ->live(debounce: 500)
+                        ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                            if ($state == DiscountType::PERCENT->value) {
+                                $set('max_amount', 0);
+                                if ($get('discount_value') > 100) {
+                                    $set('discount_value', 100);
+                                }
+                            } else {
+                                $set('max_amount', $get('discount_value'));
+                            }
+                        }),
+                    TextInput::make('discount_value')
+                        ->prefixIcon(fn(Get $get): string => $get('discount_type') == DiscountType::FIXED->value ? 'heroicon-o-currency-dollar' : 'heroicon-o-percent-badge')
+                        ->required()
+                        ->live(debounce: 500)
+                        ->numeric()
+                        ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                            $get('discount_type') === DiscountType::FIXED->value && $set('max_amount', $state);
+                            if ($get('discount_type') === DiscountType::PERCENT->value && $state > 100) {
+                                $set('discount_value', 100);
+                            }
+                        }),
                     TextInput::make('max_amount')
                         ->numeric()
                         ->default(null),
@@ -61,10 +90,10 @@ class CouponResource extends Resource
                         ->required()
                         ->numeric()
                         ->default(1),
+                    DateTimePicker::make('expired_at')->default(now()->addDay()),
                     Toggle::make('status')
                         ->required(),
-                    DateTimePicker::make('expired_at'),
-                ])
+                ])->columns(2)
             ]);
     }
 
@@ -126,7 +155,9 @@ class CouponResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CoursesRelationManager::make(),
+            CategoriesRelationManager::make(),
+            UsersRelationManager::make(),
         ];
     }
 
