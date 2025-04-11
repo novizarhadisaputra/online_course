@@ -14,7 +14,6 @@ use App\Http\Resources\SectionResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
-use App\Http\Requests\Course\StoreLikeRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -49,6 +48,23 @@ class CourseController extends Controller
             }
             $reviews = $course->reviews()->paginate($request->input('limit', 10));
             return $this->success(data: ReviewResource::collection($reviews), paginate: $reviews);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function coupons(Request $request, string $id)
+    {
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $coupons = $course->coupons()->paginate($request->input('limit', 10));
+            return $this->success(data: ReviewResource::collection($coupons), paginate: $coupons);
         } catch (\Throwable $th) {
             throw $th;
         }

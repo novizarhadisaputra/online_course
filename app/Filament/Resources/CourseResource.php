@@ -50,6 +50,16 @@ class CourseResource extends Resource
         return $record->name;
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $query = static::getModel()::select('*');
+        if (!auth()->user()->hasRole('super_admin')) {
+            $query->where('user_id', auth()->id());
+        };
+
+        return $query->count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

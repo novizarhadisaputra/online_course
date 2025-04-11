@@ -78,7 +78,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url;
+        return $this->hasMedia('avatars') ? $this->getMedia('avatars')->first()->getFullUrl() : null;
     }
 
     /**
@@ -139,5 +139,13 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
     public function followers(): MorphToMany
     {
         return $this->morphToMany(self::class, 'followable', Follow::class);
+    }
+
+    /**
+     * Get all of the coupons for the users.
+     */
+    public function coupons(): MorphToMany
+    {
+        return $this->morphToMany(Coupon::class, 'model', Couponable::class);
     }
 }

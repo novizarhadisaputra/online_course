@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Couponable extends Model
+class CouponUsage extends Model
 {
-    protected $table = 'coupon_ables';
+    //
 }

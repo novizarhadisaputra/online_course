@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\CouponController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\GetInTouchController;
 use App\Http\Controllers\API\InstructorController;
@@ -83,6 +84,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
         Route::prefix('{course}')->group(function () {
             Route::get('/likes', [CourseController::class, 'likes'])->name('likes');
             Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
+            Route::get('/coupons', [CourseController::class, 'coupons'])->name('coupons');
             Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
             Route::post('/reviews', [CourseController::class, 'storeReview'])->name('store.reviews');
             Route::post('/comments', [CourseController::class, 'storeComment'])->name('store.comments');
@@ -140,4 +142,5 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
+    Route::apiResource('coupons', CouponController::class)->only(['index', 'show']);
 });

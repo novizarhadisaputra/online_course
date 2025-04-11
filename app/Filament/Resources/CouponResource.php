@@ -2,10 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\User;
 use Filament\Tables;
 use App\Models\Coupon;
-use App\Models\Course;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;

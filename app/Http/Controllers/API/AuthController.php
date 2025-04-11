@@ -45,7 +45,7 @@ class AuthController extends Controller
 
             $response = (object) [
                 'token' => $token,
-                'user' => $user,
+                'user' => new UserResource($user),
             ];
 
             DB::commit();
@@ -72,7 +72,7 @@ class AuthController extends Controller
 
         $data = (object) [
             'token' => $user->createToken('auth_token')->plainTextToken,
-            'user' => $user,
+            'user' => new UserResource($user),
         ];
 
         return $this->success(message: 'Ok', status: 200, data: $data);

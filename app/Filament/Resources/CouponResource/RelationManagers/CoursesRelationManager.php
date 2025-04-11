@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CouponResource\RelationManagers;
 
+use App\Enums\CouponType;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -15,7 +16,7 @@ class CoursesRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $ownerRecord ? false : true;
+        return $ownerRecord->type === CouponType::SPECIFIC_COURSE->value ? true : false;
     }
 
     public function form(Form $form): Form
@@ -39,15 +40,17 @@ class CoursesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                // ...
+                Tables\Actions\AttachAction::make()->multiple(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // ...
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // ...
+                    Tables\Actions\DetachBulkAction::make(),
                 ]),
             ]);
     }

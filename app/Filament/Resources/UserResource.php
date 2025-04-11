@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\UserResource\RelationManagers\ActivitiesRelationManager;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class UserResource extends Resource
 {
@@ -65,10 +66,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->formatStateUsing(fn(string $state): string => Str::upper($state))
-                    ->searchable(),
+                SpatieMediaLibraryImageColumn::make('avatar')
+                    ->collection('avatars')
+                    ->circular(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('first_name')
@@ -114,8 +114,7 @@ class UserResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

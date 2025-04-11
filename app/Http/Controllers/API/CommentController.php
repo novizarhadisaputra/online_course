@@ -19,7 +19,7 @@ class CommentController extends Controller
     {
         try {
             $comments = Comment::active()->paginate($request->input('limit', 10));
-            return $this->success(data: Comment::collection($comments), paginate: $comments);
+            return $this->success(data: CommentResource::collection($comments), paginate: $comments);
         } catch (\Throwable $th) {
             throw $th;
         }
