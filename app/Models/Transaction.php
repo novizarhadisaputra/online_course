@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\Review;
 use App\Models\Course;
+use App\Models\Review;
+use App\Models\PaymentMethod;
 use App\Models\TransactionLog;
 use App\Models\TransactionDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
@@ -20,6 +20,10 @@ class Transaction extends Model
     use HasUuids;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'data' => 'array',
+    ];
 
     /**
      * Get the user that owns the Transaction
@@ -75,8 +79,8 @@ class Transaction extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function payment_channel(): BelongsTo
+    public function payment_method(): BelongsTo
     {
-        return $this->belongsTo(PaymentChannel::class);
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

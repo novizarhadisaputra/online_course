@@ -18,6 +18,7 @@ class PaymentChannelResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getFullUrl() : null,
+            'methods' => PaymentMethodResource::collection($this->payment_methods)
         ];
     }
 }

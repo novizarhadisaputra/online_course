@@ -18,7 +18,7 @@ use Filament\Forms\Components\TextInput;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\PaymentChannelResource\Pages;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
-use App\Filament\Resources\PaymentChannelResource\RelationManagers\MethodsRelationManager;
+use App\Filament\Resources\PaymentChannelResource\RelationManagers\PaymentMethodsRelationManager;
 
 class PaymentChannelResource extends Resource
 {
@@ -101,7 +101,7 @@ class PaymentChannelResource extends Resource
     public static function getRelations(): array
     {
         return [
-            MethodsRelationManager::class,
+            PaymentMethodsRelationManager::class
         ];
     }
 
@@ -112,8 +112,8 @@ class PaymentChannelResource extends Resource
             'create' => Pages\CreatePaymentChannel::route('/create'),
             'view' => Pages\ViewPaymentChannel::route('/{record}'),
             'edit' => Pages\EditPaymentChannel::route('/{record}/edit'),
-            'methods' => Pages\ManageChannelMethod::route('/{record}/methods'),
-            'methods.create' => Pages\CreateChannelMethod::route('/{record}/methods/create'),
+            'payment_methods' => Pages\ManageChannelMethod::route('/{record}/payment-methods'),
+            'payment_methods.create' => Pages\CreateChannelMethod::route('/{record}/payment-methods/create'),
         ];
     }
 
@@ -122,7 +122,7 @@ class PaymentChannelResource extends Resource
         // Configure the ancestor (parent) relationship here
         return Ancestor::make(
             'payment_channels', // Relationship name
-            'gateway', // Inverse relationship name
+            'payment_gateway', // Inverse relationship name
         );
     }
 }

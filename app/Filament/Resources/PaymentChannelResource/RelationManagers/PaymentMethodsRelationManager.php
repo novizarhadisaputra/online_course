@@ -10,7 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
-class MethodsRelationManager extends RelationManager
+class PaymentMethodsRelationManager extends RelationManager
 {
     use NestedRelationManager;
 

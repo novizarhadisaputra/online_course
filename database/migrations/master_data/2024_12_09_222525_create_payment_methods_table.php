@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(false);
+            $table->text('configs')->nullable();
 
             $table->foreignUuid('payment_channel_id')->constrained()->cascadeOnDelete();
 

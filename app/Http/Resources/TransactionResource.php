@@ -30,6 +30,7 @@ class TransactionResource extends JsonResource
             'total_paid' => $this->total_price,
             'status' => $this->status,
             'category' => $this->category,
+            'data' => $this->data,
             'created_at' => $this->created_at,
         ];
     }

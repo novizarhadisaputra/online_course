@@ -22,9 +22,10 @@ return new class extends Migration
             $table->integer('tax_percentage')->default(11);
             $table->enum('status', ['waiting payment', 'refund', 'success', 'cancel'])->default('waiting payment');
             $table->enum('category', ['debit', 'credit'])->default('debit');
+            $table->text('data')->nullable();
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('payment_channel_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignUuid('payment_method_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });

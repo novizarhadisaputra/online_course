@@ -133,7 +133,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('carts', CartController::class);
 
-    Route::apiResource('transactions', TransactionController::class)->only(['index', 'show']);
+    Route::apiResource('transactions', TransactionController::class)->except(['destroy']);
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::prefix('{transaction}')->group(function () {
             Route::post('/payment', [TransactionController::class, 'payment'])->name('payment');

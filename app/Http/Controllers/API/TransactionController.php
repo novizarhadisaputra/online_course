@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Cart;
-use App\Models\News;
-use App\Models\Event;
 use App\Models\Price;
-use App\Models\Course;
 use App\Models\ConfigApp;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
@@ -22,6 +19,7 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Resources\PaymentChannelResource;
 use App\Models\PaymentChannel;
+use App\Services\XenditService;
 
 class TransactionController extends Controller
 {
@@ -126,10 +124,23 @@ class TransactionController extends Controller
         try {
             DB::beginTransaction();
 
+            $transaction = Transaction::find($id);
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+            }
+            $transaction->payment_method_id = $request->payment_method_id;
+            $transaction->save();
 
+            if ($transaction->payment_method->payment_channel && $transaction->payment_method->payment_channel->payment_gateway) {
+                $name = Str::lower($transaction->payment_method->payment_channel->payment_gateway->name);
+                if ($name === 'xendit') {
+                    $xendit = new XenditService($transaction);
+                    $xendit->createTransaction();
+                }
+            }
 
             DB::commit();
-            // $this->success(data: new TransactionResource($transaction));
+            return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -154,6 +165,10 @@ class TransactionController extends Controller
     public function paymentChannels(Request $request, string $id)
     {
         try {
+            $transaction = Transaction::find($id);
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+            }
             $paymentChannels = PaymentChannel::active()->paginate($request->input('limit', 10));
             return $this->success(data: PaymentChannelResource::collection($paymentChannels), paginate: $paymentChannels);
         } catch (\Throwable $th) {

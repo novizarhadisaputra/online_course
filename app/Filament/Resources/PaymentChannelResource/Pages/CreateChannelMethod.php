@@ -13,5 +13,5 @@ class CreateChannelMethod extends CreateRelatedRecord
 
     protected static string $resource = PaymentChannelResource::class;
 
-    protected static string $relationship = 'methods';
+    protected static string $relationship = 'payment_methods';
 }

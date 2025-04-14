@@ -9,6 +9,7 @@ use App\Models\PaymentMethod;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -48,6 +49,8 @@ class PaymentMethodResource extends Resource
                         ->maxLength(255)
                         ->default(null),
                     Textarea::make('description')
+                        ->columnSpanFull(),
+                    KeyValue::make('configs')
                         ->columnSpanFull(),
                     Toggle::make('status')
                         ->required(),
@@ -115,8 +118,8 @@ class PaymentMethodResource extends Resource
     {
         // Configure the ancestor (parent) relationship here
         return Ancestor::make(
-            'methods', // Relationship name
-            'channel', // Inverse relationship name
+            'payment_methods', // Relationship name
+            'payment_channel', // Inverse relationship name
         );
     }
 }

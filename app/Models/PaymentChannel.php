@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\PaymentMethod;
 use App\Traits\ModelTrait;
+use App\Models\PaymentMethod;
+use App\Models\PaymentGateway;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -18,21 +19,21 @@ class PaymentChannel extends Model implements HasMedia
     protected $guarded = [];
 
     /**
-     * Get the gateway that owns the PaymentChannel
+     * Get the payment_gateway that owns the PaymentChannel
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function gateway(): BelongsTo
+    public function payment_gateway(): BelongsTo
     {
-        return $this->belongsTo(PaymentMethod::class);
+        return $this->belongsTo(PaymentGateway::class);
     }
 
     /**
-     * Get all of the methods for the PaymentChannel
+     * Get all of the payment_methods for the PaymentChannel
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function methods(): HasMany
+    public function payment_methods(): HasMany
     {
         return $this->hasMany(PaymentMethod::class);
     }
