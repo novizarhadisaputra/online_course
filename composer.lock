@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68dbe448efb8145ca31e1d3c52e167c9",
+    "content-hash": "80fb9cb0896c2d7a17f37903fbd00701",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2822,16 +2822,16 @@
         },
         {
             "name": "laravel/octane",
-            "version": "v2.8.1",
+            "version": "v2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/octane.git",
-                "reference": "951023e3c0ee8934d9f8338fd6495a0a969eefc4"
+                "reference": "8288269fab27a6163a2f2bd4f3115bd057432bcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/octane/zipball/951023e3c0ee8934d9f8338fd6495a0a969eefc4",
-                "reference": "951023e3c0ee8934d9f8338fd6495a0a969eefc4",
+                "url": "https://api.github.com/repos/laravel/octane/zipball/8288269fab27a6163a2f2bd4f3115bd057432bcd",
+                "reference": "8288269fab27a6163a2f2bd4f3115bd057432bcd",
                 "shasum": ""
             },
             "require": {
@@ -2858,7 +2858,7 @@
                 "mockery/mockery": "^1.5.1",
                 "nunomaduro/collision": "^6.4.0|^7.5.2|^8.0",
                 "orchestra/testbench": "^8.21|^9.0|^10.0",
-                "phpstan/phpstan": "^1.10.15",
+                "phpstan/phpstan": "^2.1.7",
                 "phpunit/phpunit": "^10.4|^11.5",
                 "spiral/roadrunner-cli": "^2.6.0",
                 "spiral/roadrunner-http": "^3.3.0"
@@ -2908,7 +2908,7 @@
                 "issues": "https://github.com/laravel/octane/issues",
                 "source": "https://github.com/laravel/octane"
             },
-            "time": "2025-02-19T20:28:29+00:00"
+            "time": "2025-04-04T02:30:58+00:00"
         },
         {
             "name": "laravel/prompts",
