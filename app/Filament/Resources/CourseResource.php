@@ -90,12 +90,14 @@ class CourseResource extends Resource
                         ->multiple()
                         ->searchable()
                         ->relationship(titleAttribute: 'name'),
-                    TextInput::make('language')
-                        ->required()
-                        ->maxLength(255),
+                    Select::make('language')
+                        ->options([
+                            'bahasa indonesia' => 'Bahasa Indonesia',
+                            'english' => 'English',
+                        ]),
                     Toggle::make('status')
                         ->required(),
-                ]),
+                ])->columns(2),
             ]);
     }
 
