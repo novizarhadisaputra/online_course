@@ -27,10 +27,10 @@ class XenditService
         if ($transaction->payment_method->payment_channel && $transaction->payment_method->payment_channel->payment_gateway) {
             if ($transaction->payment_method->payment_channel->payment_gateway->configs) {
                 $configs = $transaction->payment_method->payment_channel->payment_gateway->configs;
-                if (!$configs['XENDIT_API_KEY']) {
+                if (!$configs['xendit_api_key']) {
                     throw ValidationException::withMessages(['config' => trans('validation.exists', ['attribute' => 'Config API Key'])]);
                 }
-                $this->config = Configuration::setXenditKey($configs['XENDIT_API_KEY']);
+                $this->config = Configuration::setXenditKey($configs['xendit_api_key']);
             }
         }
         $this->apiInstance = new PaymentRequestApi();
@@ -42,12 +42,10 @@ class XenditService
             if (!$this->transaction) {
                 throw ValidationException::withMessages(['transaction_id' => trans('validation.exists', ['attribute' => 'payment method'])]);
             }
-            $config_app = ConfigApp::first();
-            if (!$config_app) {
-                throw ValidationException::withMessages(['id' => 'please contact admin']);
-            }
 
             $total_price = $this->transaction->total_price;
+            $tax_fee = 0;
+            $service_fee = 0;
             $items = [];
             foreach ($this->transaction->details as $i => $item) {
                 $items[$i] = [
@@ -60,10 +58,13 @@ class XenditService
                     'price' => $item->price,
                 ];
             }
-            if ($config_app->service_fee) {
-                $service_fee = $config_app->service_fee;
+            if ($this->transaction->payment_method->configs && $this->transaction->payment_method->configs['service_fee']) {
+                $service_fee = $this->transaction->payment_method->configs['service_fee'];
+                if ($this->transaction->payment_method->configs['service_fee_type'] === 'percent') {
+                    $service_fee = ($this->transaction->payment_method->configs['service_fee'] * $total_price) / 100;
+                }
                 array_push($items, [
-                    'reference_id' => $config_app->id,
+                    'reference_id' => $this->transaction->payment_method->id,
                     'name' => 'Service Fee',
                     'type' => 'Fee',
                     'category' => 'Fee',
@@ -72,10 +73,13 @@ class XenditService
                     'price' => $service_fee,
                 ]);
             }
-            if ($config_app->tax_fee) {
-                $tax_fee = ($total_price * $config_app->tax_fee) / 100;
+            if ($this->transaction->payment_method->configs && $this->transaction->payment_method->configs['tax_fee']) {
+                $tax_fee = $this->transaction->payment_method->configs['tax_fee'];
+                if ($this->transaction->payment_method->configs['tax_fee_type'] === 'percent') {
+                    $tax_fee = ($this->transaction->payment_method->configs['tax_fee'] * $total_price) / 100;
+                }
                 array_push($items, [
-                    'reference_id' => $config_app->id,
+                    'reference_id' => $this->transaction->payment_method->id,
                     'name' => 'Tax Fee',
                     'type' => 'Fee',
                     'category' => 'Fee',
@@ -86,45 +90,73 @@ class XenditService
             }
 
             $payment_method = $this->transaction->payment_method;
+            $payment_channel = $payment_method->payment_channel;
             $params = [
                 'reference_id' => $this->transaction->code,
                 'currency' => 'IDR',
-                'amount' => $this->transaction->total_price,
                 'country' => 'IDR',
                 'metadata' => [
                     'sku' => "transaction-sku-" . $this->transaction->id,
                 ],
-            ];
-            $payment_channel = $payment_method->payment_channel;
-            if ($payment_channel && Str::lower($payment_channel->name) === 'virtual account') {
-                $params['payment_method'] = [
-                    'type' => 'VIRTUAL_ACCOUNT',
+                'payment_method' => [
                     'reusability' => 'ONE_TIME_USE',
                     'reference_id' => $this->transaction->id,
-                    'virtual_account' => [
-                        'channel_code' => $payment_method->configs['code'],
+                ]
+            ];
+            if ($payment_channel && Str::slug(Str::lower($payment_channel->name), '_') === 'virtual_account') {
+                $params['payment_method']['type'] = 'VIRTUAL_ACCOUNT';
+                $params['payment_method']['virtual_account'] = [
+                    'channel_code' => $payment_method->configs['code'],
+                    'channel_properties' => [
+                        'customer_name' => $this->transaction->user->name,
+                        'expires_at' => now()->addDay()
+                    ]
+                ];
+            } else if ($payment_channel && Str::slug(Str::lower($payment_channel->name), '_') === 'ewallet') {
+                $params['payment_method']['type'] = 'EWALLET';
+                $params['payment_method']['ewallet'] = [
+                    'channel_code' => $payment_method->configs['code'],
+                    'channel_properties' => [
+                        'customer_name' => $this->transaction->user->name,
+                        'expires_at' => now()->addDay(),
                         'channel_properties' => [
-                            'customer_name' => $this->transaction->user->name,
-                            'expires_at' => now()->addDay()
+                            'success_return_url' => $this->transaction->payment_method->configs['success_return_url']
                         ]
+                    ]
+                ];
+            } else if ($payment_channel && Str::slug(Str::lower($payment_channel->name), '_') === 'qr_code') {
+                $params['payment_method']['type'] = 'QR_CODE';
+                $params['payment_method']['qr_code'] = [
+                    'channel_code' => $payment_method->configs['code'],
+                    'channel_properties' => [
+                        'customer_name' => $this->transaction->user->name,
                     ]
                 ];
             }
             $params['items'] = $items;
+            $params['amount'] = $total_price + $service_fee + $tax_fee;
 
             $payment_request_parameters = new PaymentRequestParameters($params);
             $response_payment_request = $this->apiInstance->createPaymentRequest(null, null, null, $payment_request_parameters);
+
             Log::info(json_encode($response_payment_request));
-            dd($response_payment_request);
+
             $result = json_decode(json_encode($response_payment_request));
             if ($result->payment_method && $result->payment_method->virtual_account && $result->payment_method->virtual_account->channel_properties) {
                 $data = [
+                    'id' => $result->id,
                     'customer_name' => $result->payment_method->virtual_account->channel_properties->customer_name,
                     'virtual_account_number' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
+                    'expires_at' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
                 ];
                 $this->transaction->data = $data;
             }
+
+            $this->transaction->tax_fee = $tax_fee;
+            $this->transaction->service_fee = $service_fee;
+            $this->transaction->total_price = $total_price;
             $this->transaction->save();
+
             return $this->transaction;
         } catch (\Throwable $th) {
             throw $th;

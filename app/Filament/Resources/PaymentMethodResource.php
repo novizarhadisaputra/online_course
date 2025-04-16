@@ -63,17 +63,12 @@ class PaymentMethodResource extends Resource
         return $table
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')->collection('images'),
-                TextColumn::make('id')
-                    ->label('ID')
+                TextColumn::make('payment_channel.name')
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('short_description')
-                    ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
-                TextColumn::make('payment_channel_id')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -97,7 +97,7 @@ class CourseResource extends Resource
                         ]),
                     Toggle::make('status')
                         ->required(),
-                ])->columns(2),
+                ]),
             ]);
     }
 

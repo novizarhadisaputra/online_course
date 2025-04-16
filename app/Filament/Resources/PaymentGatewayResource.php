@@ -67,12 +67,7 @@ class PaymentGatewayResource extends Resource
         return $table
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')->collection('images'),
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('short_description')
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),

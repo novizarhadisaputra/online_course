@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Cart;
 use App\Models\Price;
-use App\Models\ConfigApp;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -54,11 +53,6 @@ class TransactionController extends Controller
         try {
             DB::beginTransaction();
 
-            $config_app = ConfigApp::first();
-            if (!$config_app) {
-                throw ValidationException::withMessages(['id' => 'please contact admin']);
-            }
-
             $transaction_code = Str::upper(Str::random(10));
             $existCode = Transaction::where('code', $transaction_code)->exists();
             while ($existCode) {
@@ -66,11 +60,10 @@ class TransactionController extends Controller
                 $existCode = Transaction::where('code', $transaction_code)->exists();
             }
 
-            $service_fee = $config_app->service_fee;
             $transaction = Transaction::create([
                 'code' => $transaction_code,
-                'service_fee' => $config_app->service_fee,
-                'tax_percentage' => $config_app->tax_fee,
+                'service_fee' => 0,
+                'tax_percentage' => 0,
                 'status' => TransactionStatus::WAITING_PAYMENT,
                 'category' => TransactionCategory::DEBIT,
                 'user_id' => $request->user()->id,
@@ -78,7 +71,10 @@ class TransactionController extends Controller
 
             $total_qty = 0;
             $total_price = 0;
-            $carts = Cart::whereIn('id', $request->cart_ids)->get();
+            $carts = Cart::whereIn('id', $request->cart_ids)->where('user_id', $request->user()->id)->get();
+            if (!count($carts)) {
+                throw ValidationException::withMessages(['cart_ids' => trans('validation.exists', ['attribute' => 'cart id'])]);
+            }
             foreach ($carts as $cart) {
                 $price = Price::find($cart->price_id);
                 if ($price) {
@@ -102,11 +98,11 @@ class TransactionController extends Controller
                     ]);
                 }
             }
-            $tax_fee = ($total_price * $config_app->tax_fee) / 100;
+
             $transaction->total_qty = $total_qty;
-            $transaction->tax_fee = $tax_fee;
-            $transaction->service_fee = $service_fee;
-            $transaction->total_price = $total_price + $tax_fee + $service_fee;
+            $transaction->tax_fee = 0;
+            $transaction->service_fee = 0;
+            $transaction->total_price = $total_price;
             $transaction->save();
 
             DB::commit();
