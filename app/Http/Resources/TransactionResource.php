@@ -20,7 +20,6 @@ class TransactionResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'payment_method' => $this->payment_method,
-            'payment_channel' => $this->payment_channel,
             'payment_link' => $this->payment_link,
             'service_fee' => $this->service_fee,
             'tax_fee' => $this->tax_fee,

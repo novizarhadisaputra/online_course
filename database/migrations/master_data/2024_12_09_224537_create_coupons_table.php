@@ -23,6 +23,7 @@ return new class extends Migration
             $table->bigInteger('max_amount')->nullable();
             $table->bigInteger('minimum_order')->nullable();
             $table->bigInteger('max_usable_times')->default(1);
+            $table->bigInteger('user_limit_usage')->default(1);
             $table->boolean('status')->default(false);
             $table->dateTime('expired_at')->nullable();
 

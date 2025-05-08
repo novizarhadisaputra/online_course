@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('transaction_logs', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->string('payment_method')->nullable();
-            $table->string('payment_channel')->nullable();
             $table->integer('total_qty')->default(1);
             $table->bigInteger('total_price')->default(0);
+            $table->enum('status', ['waiting payment', 'refund', 'success', 'cancel', 'expire', 'pending', 'fail'])->default('waiting payment');
 
             $table->foreignUuid('transaction_id')->constrained()->cascadeOnDelete();
-            $table->enum('status', ['waiting payment', 'refund', 'success', 'cancel']);
+            $table->foreignUuid('payment_method_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignUuid('coupon_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });

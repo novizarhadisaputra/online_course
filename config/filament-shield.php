@@ -13,7 +13,7 @@ return [
         'cluster' => null,
     ],
 
-    'tenant_model' => null,
+    'tenant_model' => 'App\Models\Team',
 
     'auth_provider_model' => [
         'fqcn' => 'App\\Models\\User',
@@ -68,7 +68,7 @@ return [
         'enabled' => true,
 
         'pages' => [
-            // 'Dashboard',
+            'Dashboard',
         ],
 
         'widgets' => [

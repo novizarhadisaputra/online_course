@@ -6,19 +6,27 @@ namespace App\Models;
 
 use Filament\Panel;
 use App\Models\Like;
+use App\Models\News;
+use App\Models\Team;
+use App\Models\Coupon;
 use App\Models\Course;
+use App\Models\Follow;
 use App\Models\Review;
 use App\Models\Address;
+use App\Models\Couponable;
 use App\Models\Transaction;
+use App\Models\TeamRelation;
 use App\Models\TransactionDetail;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Models\Contracts\FilamentUser;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,9 +34,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-use function PHPUnit\Framework\isEmpty;
-
-class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar, HasTenants
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasUuids, HasApiTokens, HasRoles;
@@ -74,6 +80,21 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasVerifiedEmail();
+    }
+
+    public function teams(): MorphToMany
+    {
+        return $this->morphToMany(Team::class, 'model', TeamRelation::class);
+    }
+
+    public function getTenants(Panel $panel): Collection
+    {
+        return $this->teams;
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->teams()->whereKey($tenant)->exists();
     }
 
     public function getFilamentAvatarUrl(): ?string

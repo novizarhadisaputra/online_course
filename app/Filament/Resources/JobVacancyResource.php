@@ -2,42 +2,57 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
 use Filament\Tables;
-use App\Models\Category;
 use Filament\Forms\Form;
+use App\Models\JobVacancy;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use App\Filament\Resources\CategoryResource\Pages;
-use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\JobVacancyResource\Pages;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Resources\JobVacancyResource\RelationManagers;
 
-class CategoryResource extends Resource
+class JobVacancyResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = JobVacancy::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'gmdi-work-outline-o';
 
     protected static ?string $navigationGroup = 'Master Data';
 
     protected static ?string $tenantOwnershipRelationshipName = 'teams';
-
-    protected static ?string $navigationParentItem = 'Courses';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make()->schema([
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->collection('images')
+                        ->required(),
                     TextInput::make('name')
                         ->required()
-                        ->unique(ignoreRecord: true)
                         ->maxLength(255),
+                    TextInput::make('short_description')
+                        ->maxLength(255)
+                        ->default(null),
                     Textarea::make('description')
                         ->columnSpanFull(),
+
+                    Select::make('category_id')
+                        ->relationship('category', 'name')
+                        ->searchable()
+                        ->required(),
                     Toggle::make('status')
                         ->required(),
                 ])
@@ -48,13 +63,15 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
+                SpatieMediaLibraryImageColumn::make('image')->collection('images'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
+                TextColumn::make('category.name')
+                    ->searchable(),
+                TextColumn::make('user.name')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -88,10 +105,10 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'view' => Pages\ViewCategory::route('/{record}'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListJobVacancies::route('/'),
+            'create' => Pages\CreateJobVacancy::route('/create'),
+            'view' => Pages\ViewJobVacancy::route('/{record}'),
+            'edit' => Pages\EditJobVacancy::route('/{record}/edit'),
         ];
     }
 }

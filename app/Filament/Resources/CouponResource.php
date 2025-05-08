@@ -88,6 +88,10 @@ class CouponResource extends Resource
                         ->required()
                         ->numeric()
                         ->default(1),
+                    TextInput::make('user_limit_usage')
+                        ->required()
+                        ->numeric()
+                        ->default(1),
                     DateTimePicker::make('expired_at')->default(now()->addDay()),
                     Toggle::make('status')
                         ->required(),
@@ -112,6 +116,7 @@ class CouponResource extends Resource
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('code')
+                    ->copyable()
                     ->searchable(),
                 TextColumn::make('max_amount')
                     ->numeric()

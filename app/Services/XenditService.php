@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\ConfigApp;
+use App\Models\ThirdPartyLog;
 use Xendit\Configuration;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Xendit\PaymentRequest\PaymentRequestApi;
 use Illuminate\Validation\ValidationException;
@@ -15,7 +18,6 @@ class XenditService
 {
     protected $transaction;
     protected $config;
-    protected PaymentRequestApi $apiInstance;
     protected PaymentMethodParameters $paymentMethodParams;
 
     /**
@@ -24,21 +26,23 @@ class XenditService
     public function __construct($transaction)
     {
         $this->transaction = $transaction;
-        if ($transaction->payment_method->payment_channel && $transaction->payment_method->payment_channel->payment_gateway) {
-            if ($transaction->payment_method->payment_channel->payment_gateway->configs) {
-                $configs = $transaction->payment_method->payment_channel->payment_gateway->configs;
-                if (!$configs['xendit_api_key']) {
-                    throw ValidationException::withMessages(['config' => trans('validation.exists', ['attribute' => 'Config API Key'])]);
-                }
-                $this->config = Configuration::setXenditKey($configs['xendit_api_key']);
-            }
-        }
-        $this->apiInstance = new PaymentRequestApi();
     }
 
-    public function createTransaction()
+    public function createTransaction(Request $request)
     {
         try {
+            DB::beginTransaction();
+            if ($this->transaction->payment_method->payment_channel && $this->transaction->payment_method->payment_channel->payment_gateway) {
+                if ($this->transaction->payment_method->payment_channel->payment_gateway->configs) {
+                    $configs = $this->transaction->payment_method->payment_channel->payment_gateway->configs;
+                    if (!$configs['xendit_api_key']) {
+                        throw ValidationException::withMessages(['config' => trans('validation.exists', ['attribute' => 'Config API Key'])]);
+                    }
+                    $this->config = Configuration::setXenditKey($configs['xendit_api_key']);
+                }
+            }
+
+            $apiInstance = new PaymentRequestApi();
             if (!$this->transaction) {
                 throw ValidationException::withMessages(['transaction_id' => trans('validation.exists', ['attribute' => 'payment method'])]);
             }
@@ -136,8 +140,22 @@ class XenditService
             $params['items'] = $items;
             $params['amount'] = $total_price + $service_fee + $tax_fee;
 
+            ThirdPartyLog::create([
+                'name' => 'xendit',
+                'event_name' => 'create payment request',
+                'ip_address' => $request->ip(),
+                'data' => $params,
+            ]);
+
             $payment_request_parameters = new PaymentRequestParameters($params);
-            $response_payment_request = $this->apiInstance->createPaymentRequest(null, null, null, $payment_request_parameters);
+            $response_payment_request = $apiInstance->createPaymentRequest(null, null, null, $payment_request_parameters);
+
+            ThirdPartyLog::create([
+                'name' => 'xendit',
+                'event_name' => 'response create payment request',
+                'ip_address' => null,
+                'data' => $response_payment_request,
+            ]);
 
             Log::info(json_encode($response_payment_request));
 
@@ -150,6 +168,13 @@ class XenditService
                     'expires_at' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
                 ];
                 $this->transaction->data = $data;
+            } else if ($result->payment_method && $result->payment_method->qr_code && $result->payment_method->qr_code->channel_properties) {
+                $data = [
+                    'id' => $result->id,
+                    'qr_string' => $result->payment_method->qr_code->channel_properties->qr_string,
+                ];
+                $this->transaction->payment_link = $data['qr_string'];
+                $this->transaction->data = $data;
             }
 
             $this->transaction->tax_fee = $tax_fee;
@@ -157,7 +182,51 @@ class XenditService
             $this->transaction->total_price = $total_price;
             $this->transaction->save();
 
+            DB::commit();
+
             return $this->transaction;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function receiveFromHook(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $receive_data = json_decode(json_encode($request->input()));
+
+            ThirdPartyLog::create([
+                'name' => 'xendit',
+                'event_name' => 'webhook receive data',
+                'ip_address' => $request->ip(),
+                'data' => $request->input(),
+            ]);
+
+            if ($receive_data->data && $receive_data->data->status) {
+                if ($receive_data->data->status === 'SUCCEEDED') {
+                    $this->transaction->status = 'success';
+                } else if ($receive_data->data->status === 'EXPIRED') {
+                    $this->transaction->status = 'expire';
+                } else if ($receive_data->data->status === 'CANCELLED') {
+                    $this->transaction->status = 'cancel';
+                } else if ($receive_data->data->status === 'PENDING') {
+                    $this->transaction->status = 'pending';
+                } else if ($receive_data->data->status === 'FAILED') {
+                    $this->transaction->status = 'fail';
+                }
+
+                $this->transaction->logs()->create([
+                    'payment_method_id' => $this->transaction->payment_method_id,
+                    'total_qty' => $this->transaction->total_qty,
+                    'total_price' => $this->transaction->total_price,
+                    'status' => $this->transaction->status,
+                ]);
+
+                $this->transaction->save();
+            }
+            DB::commit();
         } catch (\Throwable $th) {
             throw $th;
         }

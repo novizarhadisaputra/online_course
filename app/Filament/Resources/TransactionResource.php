@@ -61,9 +61,7 @@ class TransactionResource extends Resource
                     ->searchable(),
                 TextColumn::make('code')
                     ->searchable(),
-                TextColumn::make('payment_method')
-                    ->searchable(),
-                TextColumn::make('payment_channel')
+                TextColumn::make('payment_method.name')
                     ->searchable(),
                 TextColumn::make('total_qty')
                     ->numeric()

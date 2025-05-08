@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use App\Models\Couponable;
-use App\Models\CouponUsage;
 use App\Traits\ModelTrait;
+use App\Models\CouponUsage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Coupon extends Model
+class Coupon extends Model implements HasMedia
 {
-    use HasUuids, ModelTrait;
+    use HasUuids, ModelTrait, InteractsWithMedia;
 
     protected $guarded = [];
 
@@ -48,29 +50,5 @@ class Coupon extends Model
     public function usages(): HasMany
     {
         return $this->hasMany(CouponUsage::class, 'coupon_id', 'id');
-    }
-
-    /**
-     * Get all of the usage courses that are assigned this coupon.
-     */
-    public function usage_courses(): MorphToMany
-    {
-        return $this->morphedByMany(Course::class, 'model', CouponUsage::class);
-    }
-
-    /**
-     * Get all of the usage categories that are assigned this coupon.
-     */
-    public function usage_categories(): MorphToMany
-    {
-        return $this->morphedByMany(Category::class, 'model', CouponUsage::class);
-    }
-
-    /**
-     * Get all of the usage users that are assigned this coupon.
-     */
-    public function usage_users(): MorphToMany
-    {
-        return $this->morphedByMany(User::class, 'model', CouponUsage::class);
     }
 }

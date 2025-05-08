@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('coupon_usages', function (Blueprint $table) {
+        Schema::create('questions', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('model_id')->nullable();
-            $table->string('model_type')->nullable();
-            $table->boolean('status')->default(false);
-
-            $table->foreignUuid('coupon_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuidMorphs('model');
+            $table->text('text');
+            $table->boolean('status')->default(true);
 
             $table->timestamps();
         });
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('coupon_usages');
+        Schema::dropIfExists('questions');
     }
 };

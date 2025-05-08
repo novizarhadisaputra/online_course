@@ -3,22 +3,28 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Cart;
+use App\Models\User;
 use App\Models\Price;
+use App\Models\Coupon;
+use App\Models\Course;
+use App\Models\Couponable;
+use App\Models\CouponUsage;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
+use App\Models\PaymentChannel;
+use App\Services\XenditService;
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionCategory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Transaction\CheckoutRequest;
 use App\Http\Resources\TransactionResource;
+use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
-use App\Http\Resources\PaymentChannelResource;
-use App\Models\PaymentChannel;
-use App\Services\XenditService;
+use App\Http\Requests\Transaction\CheckoutRequest;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TransactionController extends Controller
 {
@@ -124,14 +130,48 @@ class TransactionController extends Controller
             if (!$transaction) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
             }
+
+            $log_data = [
+                'payment_method_id' => $request->payment_method_id,
+                'total_qty' => $transaction->total_qty,
+                'total_price' => $transaction->total_price,
+                'status' => $transaction->status,
+            ];
+
+            if ($request->coupon_code) {
+                $model_ids = $transaction->details()->pluck('model_id')->all();
+                array_push($model_ids, $request->user()->id);
+                $coupon = Coupon::where('code', $request->coupon_code)->first();
+                $couponable = Couponable::where('coupon_id', $coupon->id)->whereHasMorph('model', [Course::class, User::class], function (Builder $query) use ($model_ids) {
+                    $query->whereIn('id', $model_ids);
+                })->exists();
+                if (!$couponable) {
+                    throw ValidationException::withMessages(['coupon_code' => trans('validation.exists', ['attribute' => 'coupon code'])]);
+                }
+
+                $transaction->coupon_id = $coupon->id;
+                $log_data['coupon_id'] = $coupon->id;
+                $coupon_usages = CouponUsage::where('coupon_id', $coupon->id)->where('user_id', $request->user()->id)->count();
+                if ($coupon_usages >= $coupon->max_usable_times) {
+                    throw ValidationException::withMessages(['coupon_code' => trans('validation.exists', ['attribute' => 'coupon code'])]);
+                }
+                $coupon->usages()->create([
+                    'user_id' => $request->user()->id,
+                    'status' => true
+                ]);
+            }
+
             $transaction->payment_method_id = $request->payment_method_id;
             $transaction->save();
+
+
+            $transaction->logs()->create($log_data);
 
             if ($transaction->payment_method->payment_channel && $transaction->payment_method->payment_channel->payment_gateway) {
                 $name = Str::lower($transaction->payment_method->payment_channel->payment_gateway->name);
                 if ($name === 'xendit') {
                     $xendit = new XenditService($transaction);
-                    $xendit->createTransaction();
+                    $xendit->createTransaction($request);
                 }
             }
 

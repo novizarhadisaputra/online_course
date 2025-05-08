@@ -16,6 +16,7 @@ use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\WebhookController;
 
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -26,6 +27,13 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
+});
+
+Route::prefix('webhooks')->name('webhooks.')->group(function () {
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::get('{gateway}', [WebhookController::class, 'receiveFromPayment'])->name('receiveFromPayment');
+        Route::post('{gateway}', [WebhookController::class, 'receiveFromPayment'])->name('receiveFromPayment');
+    });
 });
 
 Route::apiResource('get-in-touches', GetInTouchController::class)->only(['index', 'show']);

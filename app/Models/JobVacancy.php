@@ -8,10 +8,16 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class JobVacancy extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia;
+
+    public function teams(): MorphToMany
+    {
+        return $this->morphToMany(Team::class, 'model', TeamRelation::class);
+    }
 
     /**
      * Get all of the news's comments.

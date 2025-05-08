@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Couponable extends Model
+class Question extends Model
 {
-    protected $table = 'coupon_ables';
+    use HasUuids;
 
     /**
      * Get the parent model (anything).
