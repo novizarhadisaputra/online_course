@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_vacancies', function (Blueprint $table) {
+        Schema::create('bundles', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(false);
-
-            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_vacancies');
+        Schema::dropIfExists('bundles');
     }
 };

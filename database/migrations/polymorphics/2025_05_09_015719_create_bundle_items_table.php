@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
-            $table->uuid('id')->primary()->unique();
-            $table->string('name')->unique();
-            $table->string('slug')->unique();
-            $table->longText('description')->nullable();
-            $table->boolean('status')->default(true);
+        Schema::create('bundle_items', function (Blueprint $table) {
+            $table->uuidMorphs('model');
+            $table->foreignUuid('bundle_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('bundle_items');
     }
 };

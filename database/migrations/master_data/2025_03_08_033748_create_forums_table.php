@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('forums', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(false);
