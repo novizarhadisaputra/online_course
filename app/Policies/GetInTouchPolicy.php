@@ -13,7 +13,7 @@ class GetInTouchPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_get::in::touch');
+        return $user->can('view_any_get::in::touch');
     }
 
     /**

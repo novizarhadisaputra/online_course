@@ -14,6 +14,9 @@ use App\Http\Resources\SectionResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
+use App\Http\Resources\LessonResource;
+use App\Http\Resources\OptionResource;
+use App\Http\Resources\QuizResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -82,6 +85,81 @@ class CourseController extends Controller
             }
             $sections = $course->sections()->paginate($request->input('limit', 10));
             return $this->success(data: SectionResource::collection($sections), paginate: $sections);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function lessons(Request $request, string $id, string $section_id)
+    {
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lessons = $section->lessons()->paginate($request->input('limit', 10));
+            return $this->success(data: LessonResource::collection($lessons), paginate: $lessons);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function quizzes(Request $request, string $id, string $section_id, string $lesson_id)
+    {
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $quizzes = $lesson->quizzes()->paginate($request->input('limit', 10));
+            return $this->success(data: QuizResource::collection($quizzes), paginate: $quizzes);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function options(Request $request, string $id, string $section_id, string $lesson_id, string $quiz_id)
+    {
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $quiz = $lesson->quizzes()->where('id', $quiz_id)->first();
+            if (!$quiz) {
+                throw ValidationException::withMessages(['quiz_id' => trans('validation.exists', ['attribute' => 'quiz id'])]);
+            }
+            $options = $quiz->options()->paginate($request->input('limit', 10));
+            return $this->success(data: OptionResource::collection($options), paginate: $options);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -216,7 +294,7 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         try {
             $course = Course::find($id);
@@ -230,26 +308,74 @@ class CourseController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the specified resource.
      */
-    public function edit(string $id)
+    public function showSection(Request $request, string $id, string $section_id)
     {
-        //
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            return $this->success(data: new SectionResource($section));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Display the specified resource.
      */
-    public function update(Request $request, string $id)
+    public function showLesson(Request $request, string $id, string $section_id, string $lesson_id)
     {
-        //
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            return $this->success(data: new LessonResource($lesson));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Display the specified resource.
      */
-    public function destroy(string $id)
+    public function showQuiz(Request $request, string $id, string $section_id, string $lesson_id, string $quiz_id)
     {
-        //
+        try {
+            $course = Course::find($id);
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $quiz = $lesson->quizzes()->where('id', $quiz_id)->first();
+            if (!$quiz) {
+                throw ValidationException::withMessages(['quiz_id' => trans('validation.exists', ['attribute' => 'quiz id'])]);
+            }
+            return $this->success(data: new QuizResource($quiz));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

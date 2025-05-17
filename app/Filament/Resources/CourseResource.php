@@ -86,6 +86,9 @@ class CourseResource extends Resource
                     TextInput::make('duration')
                         ->numeric()
                         ->minValue(1),
+                    Select::make('category_id')
+                        ->searchable()
+                        ->relationship(titleAttribute: 'name', name: 'category'),
                     Select::make('tags')
                         ->multiple()
                         ->searchable()
@@ -141,9 +144,6 @@ class CourseResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Action::make('sections')
-                    ->icon('heroicon-o-rectangle-stack')
-                    ->url(fn(Course $record): string => route('filament.admin.resources.courses.sections', ['record' => $record->id])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

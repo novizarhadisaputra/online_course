@@ -2,35 +2,42 @@
 
 namespace App\Filament\Resources\LessonResource\RelationManagers;
 
+use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
+use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
-class CommentsRelationManager extends RelationManager
+class QuizzesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'comments';
+    use NestedRelationManager;
+
+    protected static string $relationship = 'quizzes';
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return $ownerRecord->is_quiz;
+    }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('description')
-                    ->required()
-                    ->maxLength(255),
+                Section::make()->schema([])
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('description')
+            ->recordTitleAttribute('text')
             ->columns([
-                TextColumn::make('user.name'),
-                TextColumn::make('description'),
-
+                Tables\Columns\TextColumn::make('text'),
             ])
             ->filters([
                 //

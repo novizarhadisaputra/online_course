@@ -2,24 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Answer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Progress extends Model
+class Quiz extends Model
 {
     use HasUuids;
 
+    protected $guarded = [];
+
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Get all of the quiz's options.
      */
-    protected function casts(): array
+    public function options(): MorphMany
     {
-        return [
-            'data' => 'array',
-        ];
+        return $this->morphMany(Option::class, 'model');
     }
 
     /**

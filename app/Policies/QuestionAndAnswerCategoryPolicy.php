@@ -13,7 +13,7 @@ class QuestionAndAnswerCategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_question::and::answer::category');
+        return $user->can('view_any_question::and::answer::category');
     }
 
     /**

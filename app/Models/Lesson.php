@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Quiz;
 use App\Models\Section;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -31,6 +32,14 @@ class Lesson extends Model implements HasMedia
      */
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'model');
+    }
+
+    /**
+     * Get all of the lesson's quizzes.
+     */
+    public function quizzes(): MorphMany
+    {
+        return $this->morphMany(Quiz::class, 'model');
     }
 }

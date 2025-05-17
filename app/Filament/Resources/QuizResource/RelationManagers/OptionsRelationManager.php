@@ -1,23 +1,27 @@
 <?php
 
-namespace App\Filament\Resources\LessonResource\RelationManagers;
+namespace App\Filament\Resources\QuizResource\RelationManagers;
 
-use Filament\Tables;
+use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CommentsRelationManager extends RelationManager
+class OptionsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'comments';
+    use NestedRelationManager;
+
+    protected static string $relationship = 'options';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('description')
+                Forms\Components\TextInput::make('option')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -26,11 +30,9 @@ class CommentsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('description')
+            ->recordTitleAttribute('option')
             ->columns([
-                TextColumn::make('user.name'),
-                TextColumn::make('description'),
-
+                Tables\Columns\TextColumn::make('option'),
             ])
             ->filters([
                 //

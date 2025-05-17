@@ -3,15 +3,12 @@
 namespace App\Models;
 
 use App\Models\Tag;
-use App\Models\Cart;
 use App\Models\Comment;
-use App\Models\PaymentLink;
 use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -65,6 +62,6 @@ class News extends Model implements HasMedia
      */
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'model');
     }
 }

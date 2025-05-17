@@ -2,26 +2,26 @@
 
 namespace App\Policies;
 
-use App\Models\QuestionAndAnswer;
+use App\Models\JobVacancy;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class QuestionAndAnswerPolicy
+class JobVacancyPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_question::and::answer');
+        return $user->can('view_any_job::vacancy');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function view(User $user, JobVacancy $jobVacancy): bool
     {
-        return $user->can('view_question::and::answer');
+        return $user->can('view_job::vacancy');
     }
 
     /**
@@ -29,23 +29,23 @@ class QuestionAndAnswerPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_question::and::answer');
+        return $user->can('create_job::vacancy');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function update(User $user, JobVacancy $jobVacancy): bool
     {
-        return $user->can('update_question::and::answer');
+        return $user->can('update_job::vacancy');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function delete(User $user, JobVacancy $jobVacancy): bool
     {
-        return $user->can('delete_question::and::answer');
+        return $user->can('delete_job::vacancy');
     }
 
     /**
@@ -53,13 +53,13 @@ class QuestionAndAnswerPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_question::and::answer');
+        return $user->can('delete_any_job::vacancy');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function forceDelete(User $user, JobVacancy $jobVacancy): bool
     {
         return $user->can('{{ ForceDelete }}');
     }
@@ -75,7 +75,7 @@ class QuestionAndAnswerPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function restore(User $user, JobVacancy $jobVacancy): bool
     {
         return $user->can('{{ Restore }}');
     }
@@ -91,7 +91,7 @@ class QuestionAndAnswerPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function replicate(User $user, JobVacancy $jobVacancy): bool
     {
         return $user->can('{{ Replicate }}');
     }

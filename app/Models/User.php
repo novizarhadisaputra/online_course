@@ -151,7 +151,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
 
     public function following(): MorphToMany
     {
-        return $this->morphedByMany(self::class, 'followable', Follow::class);
+        return $this->morphedByMany(self::class, 'model', Follow::class);
     }
 
     /**
@@ -159,7 +159,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
      */
     public function followers(): MorphToMany
     {
-        return $this->morphToMany(self::class, 'followable', Follow::class);
+        return $this->morphToMany(self::class, 'model', Follow::class);
     }
 
     /**

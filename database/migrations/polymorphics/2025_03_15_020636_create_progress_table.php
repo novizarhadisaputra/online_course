@@ -17,6 +17,8 @@ return new class extends Migration
             $table->json('data');
             $table->boolean('status')->default(false);
 
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+
             $table->timestamps();
         });
     }

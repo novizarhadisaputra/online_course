@@ -64,7 +64,7 @@ class Event extends Model implements HasMedia
      */
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'model');
     }
 
     /**

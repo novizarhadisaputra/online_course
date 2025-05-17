@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('follows', function (Blueprint $table) {
-            $table->uuidMorphs('followable');
+            $table->uuidMorphs('model');
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();

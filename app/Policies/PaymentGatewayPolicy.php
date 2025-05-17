@@ -13,7 +13,7 @@ class PaymentGatewayPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_payment::gateway');
+        return $user->can('view_any_payment::gateway');
     }
 
     /**

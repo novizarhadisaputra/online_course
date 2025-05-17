@@ -16,9 +16,9 @@ class Comment extends Model
     protected $guarded = [];
 
     /**
-     * Get the parent commentable model (anything).
+     * Get the parent model (anything).
      */
-    public function commentable(): MorphTo
+    public function model(): MorphTo
     {
         return $this->morphTo();
     }
@@ -38,6 +38,6 @@ class Comment extends Model
      */
     public function comments(): MorphMany
     {
-        return $this->morphMany(self::class, 'commentable');
+        return $this->morphMany(self::class, 'model');
     }
 }

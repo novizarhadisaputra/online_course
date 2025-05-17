@@ -97,6 +97,32 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::post('/reviews', [CourseController::class, 'storeReview'])->name('store.reviews');
             Route::post('/comments', [CourseController::class, 'storeComment'])->name('store.comments');
             Route::post('/likes', [CourseController::class, 'storeLike'])->name('store.likes');
+
+            Route::prefix('sections')->name('sections.')->group(function () {
+                Route::get('/', [CourseController::class, 'sections'])->name('index');
+                Route::prefix('{section}')->group(function () {
+                    Route::get('/', [CourseController::class, 'showSection'])->name('show');
+                    Route::prefix('lessons')->name('lessons.')->group(function () {
+                        Route::get('/', [CourseController::class, 'lessons'])->name('index');
+                        Route::prefix('{lesson}')->group(function () {
+                            Route::get('/', [CourseController::class, 'showLesson'])->name('show');
+                            Route::prefix('quizzes')->name('quizzes.')->group(function () {
+                                Route::get('/', [CourseController::class, 'quizzes'])->name('index');
+                                Route::prefix('{quiz}')->group(function () {
+                                    Route::get('/', [CourseController::class, 'showQuiz'])->name('show');
+                                    Route::prefix('options')->name('options.')->group(function () {
+                                        Route::get('/', [CourseController::class, 'options'])->name('index');
+                                        Route::prefix('{option}')->group(function () {
+                                            Route::get('/', [CourseController::class, 'showOption'])->name('show');
+                                        });
+                                    });
+                                });
+                            });
+                            Route::post('progress', [CourseController::class, 'storeLessonProgress']);
+                        });
+                    });
+                });
+            });
         });
     });
 

@@ -13,14 +13,15 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\LessonResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\LessonResource\Pages\CreateLessonQuiz;
+use App\Filament\Resources\LessonResource\Pages\ManageLessonQuiz;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
-use App\Filament\Resources\LessonResource\RelationManagers;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\LessonResource\RelationManagers\CommentsRelationManager;
+use App\Filament\Resources\LessonResource\RelationManagers\QuizzesRelationManager;
+use Filament\Forms\Components\Grid;
 
 class LessonResource extends Resource
 {
@@ -53,10 +54,14 @@ class LessonResource extends Resource
                     Textarea::make('description')
                         ->columnSpanFull()
                         ->required(),
-                    Toggle::make('is_paid')
-                        ->default(true),
-                    Toggle::make('status')
-                        ->required(),
+                    Grid::make()->schema([
+                        Toggle::make('is_paid')
+                            ->default(true),
+                        Toggle::make('is_quiz')
+                            ->default(false),
+                        Toggle::make('status')
+                            ->required(),
+                    ])->columns(3)
                 ]),
             ]);
     }
@@ -84,6 +89,7 @@ class LessonResource extends Resource
     public static function getRelations(): array
     {
         return [
+            QuizzesRelationManager::make(),
             CommentsRelationManager::make(),
         ];
     }
@@ -91,10 +97,13 @@ class LessonResource extends Resource
     public static function getPages(): array
     {
         return [
-            // 'index' => Pages\ListLessons::route('/'),
+            'index' => Pages\ListLessons::route('/'),
             // 'create' => Pages\CreateLesson::route('/create'),
             'view' => Pages\ViewLesson::route('/{record}'),
             'edit' => Pages\EditLesson::route('/{record}/edit'),
+
+            'quizzes' => ManageLessonQuiz::route('/{record}/quizzes'),
+            'quizzes.create' => CreateLessonQuiz::route('/{record}/quizzes/create'),
         ];
     }
 
