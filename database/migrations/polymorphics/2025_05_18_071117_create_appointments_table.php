@@ -8,19 +8,16 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('user_has_notifications', function (Blueprint $table) {
+        Schema::create('appointments', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-
-            //If Selected Record On the model
             $table->uuidMorphs('model');
+            $table->text('notes')->nullable();
 
-            $table->string('provider')->default('pusher')->nullable();
-            $table->string('provider_token')->nullable();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+
 
             $table->timestamps();
         });
@@ -28,11 +25,9 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('user_has_notifications');
+        Schema::dropIfExists('appointments');
     }
 };

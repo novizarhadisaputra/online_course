@@ -42,6 +42,14 @@ class News extends Model implements HasMedia
     }
 
     /**
+     * Get all of the events's prices.
+     */
+    public function prices(): MorphMany
+    {
+        return $this->morphMany(Price::class, 'priceable');
+    }
+
+    /**
      * Get all of the viewers for the news.
      */
     public function viewers(): MorphToMany

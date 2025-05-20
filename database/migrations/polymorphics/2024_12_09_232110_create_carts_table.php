@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuidMorphs('cartable');
+            $table->uuidMorphs('model');
             $table->integer('qty')->default(1);
             $table->bigInteger('tax_fee')->default(0);
 

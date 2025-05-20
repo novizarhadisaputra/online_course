@@ -38,10 +38,14 @@ Route::prefix('webhooks')->name('webhooks.')->group(function () {
 
 Route::apiResource('get-in-touches', GetInTouchController::class)->only(['index', 'show']);
 Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
+
 Route::apiResource('instructors', InstructorController::class)->only(['index', 'show']);
-Route::prefix('{instructor}')->group(function () {
-    Route::get('/followers', [InstructorController::class, 'followers'])->name('followers');
+Route::prefix('instructors')->name('instructors.')->group(function () {
+    Route::prefix('{instructor}')->group(function () {
+        Route::get('/followers', [InstructorController::class, 'followers'])->name('followers');
+    });
 });
+
 Route::apiResource('news', NewsController::class)->only(['index', 'show']);
 Route::apiResource('question-and-answers', QuestionAndAnswerController::class)->only(['index', 'show']);
 Route::apiResource('question-and-answer-categories', QuestionAndAnswerCategoryController::class)->only(['index', 'show']);

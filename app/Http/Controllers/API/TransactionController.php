@@ -88,7 +88,7 @@ class TransactionController extends Controller
                 }
                 $total_qty += $cart->qty;
                 $detail = $transaction->details()
-                    ->where(['model_id' => $cart->cartable_id, 'model_type' =>  $cart->cartable_type])->first();
+                    ->where(['model_id' => $cart->model_id, 'model_type' =>  $cart->model_type])->first();
                 if ($detail) {
                     $detail->qty = $cart->qty;
                     $detail->units = $price ? $price->units : 'courses';
@@ -96,8 +96,8 @@ class TransactionController extends Controller
                     $detail->save();
                 } else {
                     $transaction->details()->create([
-                        'model_id' => $cart->cartable_id,
-                        'model_type' =>  $cart->cartable_type,
+                        'model_id' => $cart->model_id,
+                        'model_type' =>  $cart->model_type,
                         'qty' => $cart->qty,
                         'units' => $price ? $price->units : 'courses',
                         'price' => $price ? $price->value : 0,

@@ -5,20 +5,20 @@ namespace App\Filament\Resources;
 use Filament\Tables;
 use App\Models\Course;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use App\Enums\CourseLevel;
 use Filament\Tables\Table;
 use App\Enums\TransactionStatus;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\CourseResource\Pages;
@@ -28,7 +28,6 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\CourseResource\Widgets\StatsOverview;
 use App\Filament\Resources\CourseResource\Pages\CreateCourseSection;
 use App\Filament\Resources\CourseResource\Pages\ManageCourseSections;
-use App\Filament\Resources\CourseResource\RelationManagers\TagsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\PricesRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\CommentsRelationManager;
@@ -98,6 +97,11 @@ class CourseResource extends Resource
                             'bahasa indonesia' => 'Bahasa Indonesia',
                             'english' => 'English',
                         ]),
+                    KeyValue::make('meta')
+                        ->default([
+                            'title' => '',
+                            'description' => ''
+                        ]),
                     Toggle::make('status')
                         ->required(),
                 ]),
@@ -156,7 +160,6 @@ class CourseResource extends Resource
     {
         return [
             TransactionsRelationManager::make(['status' => TransactionStatus::SUCCESS]),
-            SectionsRelationManager::make(),
             PricesRelationManager::make(),
             ReviewsRelationManager::make(),
             CommentsRelationManager::make(),
@@ -174,6 +177,15 @@ class CourseResource extends Resource
             'sections' => ManageCourseSections::route('/{record}/sections'),
             'sections.create' => CreateCourseSection::route('/{record}/sections/create'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewCourse::class,
+            Pages\EditCourse::class,
+            Pages\ManageCourseSections::class,
+        ]);
     }
 
     public static function getWidgets(): array

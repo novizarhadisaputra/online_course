@@ -23,9 +23,9 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
-    protected static ?string $tenantOwnershipRelationshipName = 'teams';
+    // protected static ?string $tenantOwnershipRelationshipName = 'teams';
 
-    protected static ?string $navigationParentItem = 'Courses';
+    // protected static ?string $navigationParentItem = 'Courses';
 
     public static function form(Form $form): Form
     {

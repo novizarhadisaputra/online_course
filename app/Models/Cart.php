@@ -16,9 +16,9 @@ class Cart extends Model
     protected $guarded = [];
 
     /**
-     * Get the parent cartable model (course or etc).
+     * Get the parent model (course or etc).
      */
-    public function cartable(): MorphTo
+    public function model(): MorphTo
     {
         return $this->morphTo();
     }

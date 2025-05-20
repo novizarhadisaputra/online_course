@@ -48,15 +48,15 @@ class CartController extends Controller
         try {
             DB::beginTransaction();
 
-            $cartable_type = Course::class;
+            $model_type = Course::class;
             if ($request->category == 'events') {
-                $cartable_type = Event::class;
+                $model_type = Event::class;
                 $events = Event::find($request->id);
                 if (!$events) {
                     throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
                 }
-            } else if ($cartable_type == 'news') {
-                $cartable_type = News::class;
+            } else if ($model_type == 'news') {
+                $model_type = News::class;
                 $news = News::find($request->id);
                 if (!$news) {
                     throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
@@ -74,8 +74,8 @@ class CartController extends Controller
             }
 
             $cart = Cart::where([
-                'cartable_id' => $request->id,
-                'cartable_type' => $cartable_type,
+                'model_id' => $request->id,
+                'model_type' => $model_type,
                 'user_id' => $request->user()->id
             ])->first();
 
@@ -85,8 +85,8 @@ class CartController extends Controller
                 $cart->save();
             } else {
                 $cart = Cart::create([
-                    'cartable_id' => $request->id,
-                    'cartable_type' => $cartable_type,
+                    'model_id' => $request->id,
+                    'model_type' => $model_type,
                     'qty' => $request->qty,
                     'tax_fee' => $config_app->tax_fee,
                     'price_id' => $request->price_id,

@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use App\Models\Section as SectionModel;
@@ -20,7 +22,6 @@ use Guava\FilamentNestedResources\Concerns\NestedResource;
 use App\Filament\Resources\SectionResource\Pages\CreateSectionLesson;
 use App\Filament\Resources\SectionResource\Pages\ManageSectionLessons;
 use App\Filament\Resources\SectionResource\RelationManagers\LessonsRelationManager;
-use Filament\Tables\Actions\Action;
 
 class SectionResource extends Resource
 {
@@ -83,9 +84,7 @@ class SectionResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            LessonsRelationManager::make(),
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -99,6 +98,15 @@ class SectionResource extends Resource
             'lessons' => ManageSectionLessons::route('/{record}/lessons'),
             'lessons.create' => CreateSectionLesson::route('/{record}/lessons/create'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewSection::class,
+            Pages\EditSection::class,
+            Pages\ManageSectionLessons::class,
+        ]);
     }
 
     public static function getAncestor(): ?Ancestor

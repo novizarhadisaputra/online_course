@@ -20,10 +20,10 @@ return new class extends Migration
             $table->text('requirement')->nullable();
             $table->bigInteger('duration')->nullable();
             $table->enum('level', ['beginner', 'middle', 'advance']);
-            $table->string('meta')->nullable();
             $table->string('language')->default('Bahasa Indonesia');
             $table->boolean('status')->default(false);
             $table->boolean('is_get_certificate')->default(false);
+            $table->string('meta')->nullable();
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();

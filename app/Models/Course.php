@@ -8,12 +8,14 @@ use App\Models\User;
 use App\Models\View;
 use App\Models\Comment;
 use App\Models\Category;
+use App\Models\Progress;
 use App\Models\Taggable;
-use App\Models\PaymentLink;
 use App\Traits\ModelTrait;
+use App\Models\PaymentLink;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -39,7 +41,7 @@ class Course extends Model implements HasMedia
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'category_id', 'id');
+        return $this->belongsTo(Category::class);
     }
 
     /**
@@ -103,7 +105,15 @@ class Course extends Model implements HasMedia
      */
     public function carts(): MorphMany
     {
-        return $this->morphMany(Cart::class, 'cartable');
+        return $this->morphMany(Cart::class, 'model');
+    }
+
+    /**
+     * Get all of the courses's progresses.
+     */
+    public function progresses(): MorphMany
+    {
+        return $this->morphMany(Progress::class, 'model');
     }
 
     /**

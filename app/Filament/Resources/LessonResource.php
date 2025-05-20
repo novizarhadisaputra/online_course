@@ -6,8 +6,10 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Lesson;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
@@ -15,13 +17,12 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\LessonResource\Pages;
-use App\Filament\Resources\LessonResource\Pages\CreateLessonQuiz;
-use App\Filament\Resources\LessonResource\Pages\ManageLessonQuiz;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\LessonResource\RelationManagers\CommentsRelationManager;
+use App\Filament\Resources\LessonResource\Pages\CreateLessonQuiz;
+use App\Filament\Resources\LessonResource\Pages\ManageLessonQuiz;
 use App\Filament\Resources\LessonResource\RelationManagers\QuizzesRelationManager;
-use Filament\Forms\Components\Grid;
+use App\Filament\Resources\LessonResource\RelationManagers\CommentsRelationManager;
 
 class LessonResource extends Resource
 {
@@ -89,7 +90,6 @@ class LessonResource extends Resource
     public static function getRelations(): array
     {
         return [
-            QuizzesRelationManager::make(),
             CommentsRelationManager::make(),
         ];
     }
@@ -105,6 +105,15 @@ class LessonResource extends Resource
             'quizzes' => ManageLessonQuiz::route('/{record}/quizzes'),
             'quizzes.create' => CreateLessonQuiz::route('/{record}/quizzes/create'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewLesson::class,
+            Pages\EditLesson::class,
+            Pages\ManageLessonQuiz::class,
+        ]);
     }
 
     public static function getAncestor(): ?Ancestor

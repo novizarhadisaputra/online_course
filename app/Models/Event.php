@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Models\Tag;
 use App\Models\Cart;
 use App\Models\Comment;
+use App\Models\Category;
 use App\Models\PaymentLink;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,7 +34,7 @@ class Event extends Model implements HasMedia
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'category_id', 'id');
+        return $this->belongsTo(Category::class);
     }
 
     /**
@@ -68,7 +70,7 @@ class Event extends Model implements HasMedia
     }
 
     /**
-     * Get all of the courses's prices.
+     * Get all of the events's prices.
      */
     public function prices(): MorphMany
     {
@@ -83,11 +85,28 @@ class Event extends Model implements HasMedia
         return $this->morphOne(PaymentLink::class, 'linkeable');
     }
 
-     /**
-     * Get all of the courses's carts.
+    /**
+     * Get all of the events's carts.
      */
     public function carts(): MorphMany
     {
-        return $this->morphMany(Cart::class, 'cartable');
+        return $this->morphMany(Cart::class, 'model');
+    }
+
+    /**
+     * Get all of the transactions for the event.
+     */
+    public function transactions(): MorphToMany
+    {
+        return $this->morphToMany(Transaction::class, 'model', TransactionDetail::class)
+            ->withPivot(['id', 'qty', 'units', 'price']);
+    }
+
+    /**
+     * Get all of the events's appointments.
+     */
+    public function appointments(): MorphMany
+    {
+        return $this->morphMany(Appointment::class, 'model');
     }
 }

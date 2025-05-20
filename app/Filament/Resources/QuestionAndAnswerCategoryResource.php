@@ -23,6 +23,8 @@ class QuestionAndAnswerCategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
+    protected static ?string $label = 'Categories';
+
     protected static ?string $navigationParentItem = 'Question And Answers';
 
     public static function form(Form $form): Form

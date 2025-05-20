@@ -16,4 +16,8 @@ class CreateCourseSection extends CreateRelatedRecord
     // We can usually guess the nested resource, but if your app has multiple resources for this
     // model, you will need to explicitly define it
     public static string $resource = CourseResource::class;
+
+    protected static ?string $navigationLabel = 'Create Section';
+
+    protected static ?string $navigationIcon = '';
 }

@@ -14,6 +14,7 @@ use App\Http\Resources\SectionResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
+use App\Http\Resources\CouponResource;
 use App\Http\Resources\LessonResource;
 use App\Http\Resources\OptionResource;
 use App\Http\Resources\QuizResource;
@@ -67,7 +68,7 @@ class CourseController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
             $coupons = $course->coupons()->paginate($request->input('limit', 10));
-            return $this->success(data: ReviewResource::collection($coupons), paginate: $coupons);
+            return $this->success(data: CouponResource::collection($coupons), paginate: $coupons);
         } catch (\Throwable $th) {
             throw $th;
         }

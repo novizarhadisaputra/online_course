@@ -26,6 +26,8 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->spa()
+            ->databaseTransactions()
             ->id('admin')
             ->path('admin')
             ->profile(EditProfile::class)
@@ -33,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->emailVerification()
             ->colors([])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -43,6 +46,7 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
+            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

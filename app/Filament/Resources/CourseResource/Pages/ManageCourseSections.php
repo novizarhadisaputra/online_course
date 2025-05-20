@@ -24,7 +24,7 @@ class ManageCourseSections extends ManageRelatedRecords
 
     public static function getNavigationLabel(): string
     {
-        return 'Sections';
+        return 'List Section';
     }
 
     public function form(Form $form): Form

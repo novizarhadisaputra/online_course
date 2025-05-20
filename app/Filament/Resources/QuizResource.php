@@ -18,6 +18,7 @@ use App\Filament\Resources\QuizResource\Pages;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use App\Filament\Resources\QuizResource\Pages\CreateQuizOption;
 use App\Filament\Resources\QuizResource\Pages\ManageQuizOption;
+use Filament\Forms\Components\Toggle;
 
 class QuizResource extends Resource
 {
@@ -49,6 +50,7 @@ class QuizResource extends Resource
                             TextInput::make('text')
                                 ->required()
                                 ->maxLength(255),
+                            Toggle::make('is_correct')->default(false),
                         ])->grid(columns: 2)
                 ])
             ]);

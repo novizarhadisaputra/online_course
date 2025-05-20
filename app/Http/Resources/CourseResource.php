@@ -21,6 +21,7 @@ class CourseResource extends JsonResource
             ->where('user_id', $request->user()->id)
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
+        $progress = !$request->user() ? null : $this->progresses()->where('user_id', $request->user()->id)->first();
 
         return [
             'id' => $this->id,
@@ -44,6 +45,7 @@ class CourseResource extends JsonResource
             'lessons' => $this->lessons->count(),
             'transactions' => $this->transactions->count(),
             'prices' => PriceResource::collection($this->prices),
+            'progress' => $progress,
         ];
     }
 }

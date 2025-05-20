@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuidMorphs('model');
             $table->string('option');
             $table->text('text');
+            $table->boolean('is_correct')->default(false);
 
             $table->timestamps();
         });

@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Tables;
 use App\Models\News;
+use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -19,9 +19,8 @@ use App\Filament\Resources\NewsResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\NewsResource\Widgets\StatsOverview;
 use App\Filament\Resources\NewsResource\RelationManagers\TagsRelationManager;
-use App\Filament\Resources\NewsResource\RelationManagers\ReviewsRelationManager;
-use App\Filament\Resources\NewsResource\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\NewsResource\RelationManagers\PricesRelationManager;
+use App\Filament\Resources\NewsResource\RelationManagers\CommentsRelationManager;
 
 class NewsResource extends Resource
 {
@@ -49,9 +48,6 @@ class NewsResource extends Resource
                         ->default(null),
                     Textarea::make('description')
                         ->columnSpanFull(),
-                    TextInput::make('order_number')
-                        ->numeric()
-                        ->default(null),
                     Toggle::make('status')
                         ->required(),
                     KeyValue::make('meta'),
@@ -63,10 +59,6 @@ class NewsResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->formatStateUsing(fn(string $state): string => Str::upper($state))
-                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('short_description')
@@ -101,7 +93,6 @@ class NewsResource extends Resource
         return [
             PricesRelationManager::class,
             TagsRelationManager::class,
-            ReviewsRelationManager::class,
             CommentsRelationManager::class,
         ];
     }
@@ -114,6 +105,14 @@ class NewsResource extends Resource
             'view' => Pages\ViewNews::route('/{record}'),
             'edit' => Pages\EditNews::route('/{record}/edit'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewNews::class,
+            Pages\EditNews::class,
+        ]);
     }
 
     public static function getWidgets(): array

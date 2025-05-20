@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
+            $table->enum('meeting_type', ['online', 'offline']);
             $table->boolean('status')->default(false);
             $table->string('url')->nullable();
             $table->string('meta')->nullable();
