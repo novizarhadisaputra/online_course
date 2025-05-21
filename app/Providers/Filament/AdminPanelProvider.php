@@ -35,7 +35,6 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->emailVerification()
             ->colors([])
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -84,6 +83,7 @@ class AdminPanelProvider extends PanelProvider
             )
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
-            ->sidebarCollapsibleOnDesktop();
+            ->sidebarCollapsibleOnDesktop()
+            ->theme(asset('css/filament/admin/theme.css'));
     }
 }
