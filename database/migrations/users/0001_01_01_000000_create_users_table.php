@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->nullable()->unique();
             $table->string('password')->nullable();
-            $table->enum('gender', ['male', 'female']);
+            $table->enum('gender', ['male', 'female'])->nullable();
             $table->char('otp')->nullable();
             $table->rememberToken();
 
