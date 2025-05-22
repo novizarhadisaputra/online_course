@@ -95,7 +95,7 @@ class UserController extends Controller
             if ($request->user()->id !== $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
-            $user = AuthService::findUserByEmail($id);
+            $user = AuthService::findUserById($id);
             if ($request->hasFile('avatar')) {
                 $user->clearMediaCollection('avatars');
                 $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
