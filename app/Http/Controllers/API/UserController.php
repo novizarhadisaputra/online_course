@@ -13,6 +13,7 @@ use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\InstructorResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\User\UpdateAvatarRequest;
+use App\Services\AuthService;
 
 class UserController extends Controller
 {
@@ -91,13 +92,10 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
-            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+            if ($request->user()->id !== $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
-            $user = User::find($id);
-            if (!$user) {
-                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
-            }
+            $user = AuthService::findUserByEmail($id);
             if ($request->hasFile('avatar')) {
                 $user->clearMediaCollection('avatars');
                 $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');

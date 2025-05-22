@@ -1,5 +1,7 @@
+@vite('resources/css/app.css')
+
 <div>
-    <button class="rounded border border-blue-500 text-center px-4 py-2">
-        Add to cart
-    </button>
+    {{ ($this->delete)(['product' => $product->id]) }}
+
+    <x-filament-actions::modals />
 </div>

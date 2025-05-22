@@ -1,11 +1,11 @@
 <x-filament-panels::page>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-3 gap-4">
         @livewire('point-of-sales.list-products')
 
-        <div class=" bg-white shadow-xl rounded-2xl p-6 col-auto">
+        <div class="bg-white border border-gray-200 rounded-2xl px-6">
             <!-- Header -->
-            <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-bold text-gray-800">
+            <div class="flex items-center justify-between py-3">
+                <h2 class="text-3xl font-bold text-gray-800">
                     Your Cart
                 </h2>
                 <span class="text-sm text-gray-500">{{ count($this->carts) }} items</span>

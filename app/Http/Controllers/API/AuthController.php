@@ -6,12 +6,10 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
-use App\Mail\Auth\VerifyEmail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use App\Jobs\SendVerificationEmailJob;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Password;
@@ -19,12 +17,16 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Services\AuthService;
+use Exception;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     use ResponseTrait;
 
-    // Register
+    public function __construct(protected AuthService $auth) {}
+
     public function register(RegisterRequest $request)
     {
         try {
@@ -57,25 +59,20 @@ class AuthController extends Controller
         }
     }
 
-    // Login
     public function login(LoginRequest $request)
     {
-        if (!auth()->attempt($request->only('email', 'password'))) {
-            return $this->error(status: 401);
+        try {
+            $user = AuthService::check($request);
+            AuthService::checkEmailVerified($user);
+
+            $data = (object) [
+                'token' => $user->createToken('auth_token')->plainTextToken,
+                'user' => new UserResource($user),
+            ];
+            return $this->success(message: 'Ok', status: 200, data: $data);
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        $user = auth()->user();
-
-        if (!$user->email_verified_at) {
-            return $this->error(message: 'Please verify your email first', status: 403);
-        }
-
-        $data = (object) [
-            'token' => $user->createToken('auth_token')->plainTextToken,
-            'user' => new UserResource($user),
-        ];
-
-        return $this->success(message: 'Ok', status: 200, data: $data);
     }
 
     // Profile
@@ -98,9 +95,11 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
 
-            $user = User::findOrFail($id);
-            if ($user->email_verified_at) {
-                return $this->error(message: 'Email already verified');
+            $user = AuthService::findById($id);
+            if (AuthService::isEmailVerified($user)) {
+                throw  ValidationException::withMessages([
+                    'email' => trans('validation.has_verify', ['attribute' => 'email']),
+                ]);
             }
 
             $user->email_verified_at = now();
@@ -119,12 +118,8 @@ class AuthController extends Controller
     public function resendVerifyEmail(Request $request)
     {
         try {
-            $user = User::where('email', $request->email)->first();
-            if (!$user) {
-                return $this->error(message: 'User not found', status: 404);
-            }
-
-            if ($user->email_verified_at) {
+            $user = AuthService::check($request);
+            if (AuthService::isEmailVerified($user)) {
                 return $this->success(message: 'Email already verified', status: 200);
             }
 

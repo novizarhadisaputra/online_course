@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
@@ -16,6 +17,13 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__ . '/../routes/api.php',
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
+        using: function () {
+            Route::middleware('api')
+                ->prefix('api/pos')
+                ->group(base_path('routes/point_of_sales.php'));
+            Route::prefix('api')
+                ->group(base_path('routes/api.php'));
+        }
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [

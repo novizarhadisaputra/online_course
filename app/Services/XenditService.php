@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\ConfigApp;
 use App\Models\ThirdPartyLog;
 use Xendit\Configuration;
 use Illuminate\Support\Str;

@@ -163,6 +163,9 @@ return [
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
 
+    'verify' => 'The :attribute field must be verify.',
+    'has_verify' => 'The :attribute field has verify.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
