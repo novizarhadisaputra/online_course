@@ -49,6 +49,7 @@ Route::prefix('instructors')->name('instructors.')->group(function () {
 Route::apiResource('news', NewsController::class)->only(['index', 'show']);
 Route::apiResource('question-and-answers', QuestionAndAnswerController::class)->only(['index', 'show']);
 Route::apiResource('question-and-answer-categories', QuestionAndAnswerCategoryController::class)->only(['index', 'show']);
+Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
 
 Route::prefix('courses')->name('courses.')->group(function () {
     Route::prefix('{course}')->group(function () {

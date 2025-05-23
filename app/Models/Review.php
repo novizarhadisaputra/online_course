@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\Transaction;
+use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Review extends Model
 {
-    use HasUuids;
+    use HasUuids, ModelTrait;
 
     protected $guarded = [];
 

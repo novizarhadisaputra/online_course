@@ -25,6 +25,7 @@ return new class extends Migration
             $table->enum('category', ['debit', 'credit'])->default('debit');
             $table->text('data')->nullable();
 
+            $table->foreignUuid('cashier_id')->nullable()->references('id')->on('users');
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('payment_method_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuid('coupon_id')->nullable()->constrained()->cascadeOnDelete();

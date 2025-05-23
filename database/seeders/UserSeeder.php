@@ -51,5 +51,15 @@ class UserSeeder extends Seeder
         ]);
         $customer->markEmailAsVerified();
         $customer->assignRole('customer');
+
+        $cashier = User::create([
+            'name' => 'Cashier Online Course',
+            'first_name' => 'Cashier',
+            'last_name' => 'Online Course',
+            'email' => 'cashier@onlinecourse.com',
+            'password' => 'Cashier123!!',
+        ]);
+        $cashier->markEmailAsVerified();
+        $cashier->assignRole('cashier');
     }
 }

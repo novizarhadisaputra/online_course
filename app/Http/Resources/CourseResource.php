@@ -43,7 +43,7 @@ class CourseResource extends JsonResource
             'category' => new CategoryResource($this->category),
             'tags' => TagResource::collection($this->tags),
             'lessons' => $this->lessons->count(),
-            'transactions' => $this->transactions->count(),
+            'students' => $this->transactions->count(),
             'prices' => PriceResource::collection($this->prices),
             'progress' => $progress,
         ];

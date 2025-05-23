@@ -38,6 +38,11 @@ class ShieldSeeder extends Seeder
             "name": "customer",
             "guard_name": "web",
             "permissions": []
+        },
+        {
+            "name": "cashier",
+            "guard_name": "web",
+            "permissions": []
         }]';
         $directPermissions = '[]';
 
