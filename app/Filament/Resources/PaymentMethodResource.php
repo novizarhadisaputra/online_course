@@ -41,6 +41,7 @@ class PaymentMethodResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
+                        ->visibility('private')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -62,7 +63,9 @@ class PaymentMethodResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('image')->collection('images'),
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private'),
                 TextColumn::make('payment_channel.name')
                     ->searchable(),
                 TextColumn::make('name')

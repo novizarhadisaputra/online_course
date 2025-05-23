@@ -56,9 +56,6 @@ class TransactionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
                 TextColumn::make('code')
                     ->searchable(),
                 TextColumn::make('payment_method.name')

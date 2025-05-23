@@ -66,6 +66,7 @@ class CourseResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
+                        ->visibility('private')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -119,7 +120,9 @@ class CourseResource extends Resource
         return $table
             ->query($query)
             ->columns([
-                SpatieMediaLibraryImageColumn::make('image')->collection('images'),
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('user.name')

@@ -21,7 +21,6 @@ use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\LessonResource\Pages\CreateLessonQuiz;
 use App\Filament\Resources\LessonResource\Pages\ManageLessonQuiz;
-use App\Filament\Resources\LessonResource\RelationManagers\QuizzesRelationManager;
 use App\Filament\Resources\LessonResource\RelationManagers\CommentsRelationManager;
 
 class LessonResource extends Resource
@@ -45,6 +44,7 @@ class LessonResource extends Resource
                     SpatieMediaLibraryFileUpload::make('attachment')
                         ->collection('attachments')
                         ->helperText('PDF, Image or Video')
+                        ->visibility('private')
                         ->required(),
                     TextInput::make('name')
                         ->required()

@@ -8,12 +8,14 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\CategoryResource\Pages;
-use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class CategoryResource extends Resource
 {
@@ -23,15 +25,14 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
-    // protected static ?string $tenantOwnershipRelationshipName = 'teams';
-
-    // protected static ?string $navigationParentItem = 'Courses';
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make()->schema([
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->collection('images')
+                        ->visibility('private'),
                     TextInput::make('name')
                         ->required()
                         ->unique(ignoreRecord: true)
@@ -48,9 +49,9 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')

@@ -26,6 +26,7 @@ use App\Filament\Resources\EventResource\RelationManagers\TagsRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\PricesRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\CommentsRelationManager;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class EventResource extends Resource
 {
@@ -42,6 +43,7 @@ class EventResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->multiple()
+                        ->visibility('private')
                         ->collection('images')
                         ->required(),
                     TextInput::make('name')
@@ -80,6 +82,9 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('short_description')

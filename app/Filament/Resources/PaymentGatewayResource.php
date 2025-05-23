@@ -45,6 +45,7 @@ class PaymentGatewayResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
+                        ->visibility('private')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -66,7 +67,9 @@ class PaymentGatewayResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('image')->collection('images'),
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')

@@ -31,9 +31,13 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         try {
-            $courses = Course::active()->whereHas('lessons', function (Builder $q) {
-                $q->where('lessons.status', true);
-            })->paginate($request->input('limit', 10));
+            $courses = Course::active();
+            if ($request->user() && $request->input('mine')) {
+                $courses = $courses->whereHas('transactions', fn(Builder $q) => $q->where('user_id', $request->user()->id));
+            }
+            $courses = $courses
+                ->whereHas('lessons', fn(Builder $q) => $q->where('lessons.status', true))
+                ->paginate($request->input('limit', 10));
             return $this->success(data: CourseResource::collection($courses), paginate: $courses);
         } catch (\Throwable $th) {
             throw $th;
