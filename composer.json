@@ -24,6 +24,7 @@
         "laravel/octane": "^2.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "owenvoke/blade-fontawesome": "^2.8",
         "saade/filament-fullcalendar": "^3.0",
         "tightenco/ziggy": "^2.0",

@@ -10,12 +10,14 @@ use App\Models\ProductCategory;
 use Filament\Resources\Resource;
 use App\Filament\Clusters\Products;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Clusters\Products\Resources\ProductCategoryResource\Pages;
-use Filament\Forms\Components\Section;
 
 class ProductCategoryResource extends Resource
 {
@@ -32,6 +34,10 @@ class ProductCategoryResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->collection('images')
+                        ->visibility('private')
+                        ->required(),
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),
@@ -47,6 +53,9 @@ class ProductCategoryResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')

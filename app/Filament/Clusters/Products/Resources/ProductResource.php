@@ -16,6 +16,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Clusters\Products\Resources\ProductResource\Pages;
 
@@ -34,6 +35,7 @@ class ProductResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
+                        ->visibility('private')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -61,6 +63,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('category.name')
