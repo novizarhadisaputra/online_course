@@ -39,8 +39,8 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
 Route::prefix('webhooks')->name('webhooks.')->group(function () {
     Route::prefix('payments')->name('payments.')->group(function () {
-        Route::get('{gateway}', [WebhookController::class, 'receiveFromPayment'])->name('receiveFromPayment');
-        Route::post('{gateway}', [WebhookController::class, 'receiveFromPayment'])->name('receiveFromPayment');
+        Route::get('{gateway}', [WebhookController::class, 'receiveFromPayment'])->name('get.receive-from-payment');
+        Route::post('{gateway}', [WebhookController::class, 'receiveFromPayment'])->name('post.receive-from-payment');
     });
 });
 
