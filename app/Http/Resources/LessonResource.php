@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class LessonResource extends JsonResource
@@ -17,6 +18,7 @@ class LessonResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
+            'attachment' => $this->hasMedia('attachments') ? $this->getMedia('attachments')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             "short_description" => $this->short_description,
             "description" => $this->description,
             "is_quiz" => $this->is_quiz,

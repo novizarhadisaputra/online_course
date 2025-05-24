@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\TransactionStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Enums\TransactionStatus;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,7 +26,7 @@ class CourseResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getFullUrl() : null,
+            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             'name' => $this->name,
             'slug' => $this->slug,
             'short_description' => $this->short_description,

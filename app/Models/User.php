@@ -16,6 +16,7 @@ use App\Models\Address;
 use App\Models\Couponable;
 use App\Models\Transaction;
 use App\Models\TeamRelation;
+use Illuminate\Support\Carbon;
 use App\Models\TransactionDetail;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
@@ -99,7 +100,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->hasMedia('avatars') ? $this->getMedia('avatars')->first()->getFullUrl() : null;
+        return $this->hasMedia('avatars') ? $this->getMedia('avatars')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null;
     }
 
     /**
