@@ -32,7 +32,7 @@ class CategoryResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->visibility('private'),
+                        ->visibility('private')->disk('s3'),
                     TextInput::make('name')
                         ->required()
                         ->unique(ignoreRecord: true)
@@ -51,7 +51,7 @@ class CategoryResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private'),
+                    ->visibility('private')->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')

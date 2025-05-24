@@ -14,6 +14,7 @@ use App\Http\Resources\InstructorResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\User\UpdateAvatarRequest;
 use App\Services\AuthService;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
@@ -128,13 +129,11 @@ class UserController extends Controller
             if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
-            $user = User::find($id);
-            if (!$user) {
-                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
-            }
+            $user = UserService::findUserById($id);
+
             if ($request->hasFile('avatar')) {
                 $user->clearMediaCollection('avatars');
-                $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+                $user->addMediaFromRequest('avatar')->toMediaCollection('avatars', 's3');
             }
             $user->save();
 

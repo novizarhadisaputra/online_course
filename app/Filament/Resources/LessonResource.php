@@ -44,7 +44,7 @@ class LessonResource extends Resource
                     SpatieMediaLibraryFileUpload::make('attachment')
                         ->collection('attachments')
                         ->helperText('PDF, Image or Video')
-                        ->visibility('private')
+                        ->visibility('private')->disk('s3')
                         ->required(),
                     TextInput::make('name')
                         ->required()

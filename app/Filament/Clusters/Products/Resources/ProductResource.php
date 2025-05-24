@@ -35,7 +35,7 @@ class ProductResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->visibility('private')
+                        ->visibility('private')->disk('s3')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -65,7 +65,7 @@ class ProductResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private'),
+                    ->visibility('private')->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('category.name')
