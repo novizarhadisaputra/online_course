@@ -20,8 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
         using: function () {
             Route::middleware('api')
                 ->prefix('api/pos')
+                ->name('api.pos.')
                 ->group(base_path('routes/point_of_sales.php'));
             Route::prefix('api')
+                ->name('api')
                 ->group(base_path('routes/api.php'));
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));

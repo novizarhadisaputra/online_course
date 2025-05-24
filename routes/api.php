@@ -17,6 +17,14 @@ use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\WebhookController;
+use Illuminate\Support\Facades\Log;
+
+Route::prefix('check')->name('check.')->group(function () {
+    Route::name('env')->get('/', function () {
+        Log::info('env APP_ENV: ' . env('APP_ENV'));
+        Log::info('env FILESYSTEM_DISK: ' . env('FILESYSTEM_DISK'));
+    });
+});
 
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
