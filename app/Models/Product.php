@@ -7,7 +7,6 @@ use App\Models\ProductCategory;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -23,11 +22,11 @@ class Product extends Model implements HasMedia
     ];
 
     /**
-     * Get the category that owns the Product
+     * Get the product_category that owns the Product
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function category(): BelongsTo
+    public function product_category(): BelongsTo
     {
         return $this->belongsTo(ProductCategory::class, 'category_id', 'id');
     }

@@ -48,7 +48,7 @@ class ProductResource extends Resource
                         ->columnSpanFull(),
                     Select::make('category_id')
                         ->searchable()
-                        ->relationship(titleAttribute: 'name', name: 'category'),
+                        ->relationship(titleAttribute: 'name', name: 'product_category'),
                     KeyValue::make('meta')
                         ->default([
                             'title' => '',
