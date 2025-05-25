@@ -70,7 +70,7 @@ class ProductResource extends Resource
                         ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('category.name')
+                TextColumn::make('product_category.name')
                     ->searchable(),
                 TextColumn::make('user.name')
                     ->searchable(),
