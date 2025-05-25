@@ -9,6 +9,8 @@ use Spatie\MediaLibrary\HasMedia;
 
 class ProductCategory extends Model implements HasMedia
 {
+    protected $table = 'product_categories';
+
     use HasUuids, InteractsWithMedia;
 
     protected $guarded = [];

@@ -46,7 +46,7 @@ class ProductResource extends Resource
                         ->default(null),
                     Textarea::make('description')
                         ->columnSpanFull(),
-                    Select::make('product_category_id')
+                    Select::make('category_id')
                         ->searchable()
                         ->relationship(titleAttribute: 'name', name: 'category'),
                     KeyValue::make('meta')
