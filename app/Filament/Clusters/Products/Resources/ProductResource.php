@@ -35,7 +35,8 @@ class ProductResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->visibility('private')->disk('s3')
+                        ->visibility('private')
+                        ->disk('s3')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -45,7 +46,7 @@ class ProductResource extends Resource
                         ->default(null),
                     Textarea::make('description')
                         ->columnSpanFull(),
-                    Select::make('category_id')
+                    Select::make('product_category_id')
                         ->searchable()
                         ->relationship(titleAttribute: 'name', name: 'category'),
                     KeyValue::make('meta')
@@ -65,7 +66,8 @@ class ProductResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private')->disk('s3'),
+                    ->visibility('private')
+                        ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('category.name')

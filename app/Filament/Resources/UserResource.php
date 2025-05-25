@@ -37,7 +37,8 @@ class UserResource extends Resource
                     SpatieMediaLibraryFileUpload::make('avatar')
                         ->collection('avatars')
                         ->avatar()
-                        ->visibility('private')->disk('s3')
+                        ->visibility('private')
+                        ->disk('s3')
                         ->circleCropper()
                         ->required(),
                     TextInput::make('first_name')

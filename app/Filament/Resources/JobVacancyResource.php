@@ -36,7 +36,8 @@ class JobVacancyResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->visibility('private')->disk('s3')
+                        ->visibility('private')
+                        ->disk('s3')
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -63,7 +64,8 @@ class JobVacancyResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private')->disk('s3'),
+                    ->visibility('private')
+                    ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')
