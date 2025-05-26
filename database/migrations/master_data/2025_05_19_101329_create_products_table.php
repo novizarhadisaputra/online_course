@@ -20,7 +20,7 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->string('meta')->nullable();
 
-            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('product_category_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
