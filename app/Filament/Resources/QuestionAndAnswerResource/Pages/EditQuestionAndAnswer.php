@@ -21,7 +21,7 @@ class EditQuestionAndAnswer extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['slug'] = Str::slug($data['name']);
+        $data['slug'] = Str::slug($data['question']);
 
         return $data;
     }
