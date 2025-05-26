@@ -38,6 +38,8 @@ class ProductCategoryResource extends Resource
                         ->collection('images')
                         ->visibility('private')
                         ->disk('s3')
+                        ->image()
+                        ->previewable()
                         ->required(),
                     TextInput::make('name')
                         ->required()

@@ -15,10 +15,9 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // dd($this->getFirstMedia('avatars')->getTemporaryUrl(now()->addHour()));
         return [
             "id" => $this->id,
-            'image' => $this->hasMedia('avatars') ? $this->getMedia('avatars')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+            'image' => $this->hasMedia('avatars') ? $this->getMedia('avatars')->getFirstMedia()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             "name" => $this->name,
             "first_name" => $this->first_name,
             "last_name" => $this->last_name,

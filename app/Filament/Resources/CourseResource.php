@@ -19,12 +19,14 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\CourseResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
 use App\Filament\Resources\CourseResource\Widgets\StatsOverview;
 use App\Filament\Resources\CourseResource\Pages\CreateCourseSection;
 use App\Filament\Resources\CourseResource\Pages\ManageCourseSections;
@@ -68,6 +70,14 @@ class CourseResource extends Resource
                         ->collection('images')
                         ->visibility('private')
                         ->disk('s3')
+                        ->image()
+                        ->previewable()
+                        ->required(),
+                    SpatieMediaLibraryFileUpload::make('preview')
+                        ->collection('previews')
+                        ->visibility('private')
+                        ->disk('s3')
+                        ->image()
                         ->required(),
                     TextInput::make('name')
                         ->required()
@@ -76,9 +86,10 @@ class CourseResource extends Resource
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),
-                    Textarea::make('description')
-                        ->columnSpanFull()
-                        ->required(),
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private'),
                     Textarea::make('requirement')
                         ->columnSpanFull()
                         ->required(),
@@ -125,7 +136,10 @@ class CourseResource extends Resource
                     ->collection('images')
                     ->visibility('private')
                     ->disk('s3'),
+                MediaAction::make('preview')
+                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getFirstMediaUrl() : null),
                 TextColumn::make('name')
+                    ->description(fn(Course $record): string => $record->short_description)
                     ->searchable(),
                 TextColumn::make('user.name')
                     ->label('Instructor')

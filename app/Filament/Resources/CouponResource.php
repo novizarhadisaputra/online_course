@@ -20,6 +20,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\CouponResource\Pages;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\CouponResource\RelationManagers\UsersRelationManager;
 use App\Filament\Resources\CouponResource\RelationManagers\CoursesRelationManager;
 use App\Filament\Resources\CouponResource\RelationManagers\CategoriesRelationManager;
@@ -37,6 +39,13 @@ class CouponResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->collection('images')
+                        ->visibility('private')
+                        ->disk('s3')
+                        ->image()
+                        ->previewable()
+                        ->required(),
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),
@@ -103,9 +112,10 @@ class CouponResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private')
+                    ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('short_description')
