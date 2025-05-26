@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('question_and_answer_categories', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->string('name')->unique();
+            $table->string('slug')->unique();
             $table->longText('description')->nullable();
             $table->boolean('status')->default(true);
 
