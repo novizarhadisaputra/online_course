@@ -33,7 +33,6 @@ use App\Filament\Resources\CourseResource\Pages\ManageCourseSections;
 use App\Filament\Resources\CourseResource\RelationManagers\PricesRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\CommentsRelationManager;
-use App\Filament\Resources\CourseResource\RelationManagers\SectionsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\TransactionsRelationManager;
 
 class CourseResource extends Resource
