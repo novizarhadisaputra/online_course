@@ -23,10 +23,11 @@ class NewsController extends Controller
     public function index(Request $request)
     {
         try {
-            $news = News::active()->paginate($request->input('limit', 10));
+            $news = News::active();
             if ($request->input('search')) {
                 $news = $news->where('name', 'like', '%' . $request->input('search') . '%');
             }
+            $news = $news->paginate($request->input('limit', 10));
             return $this->success(data: NewsResource::collection($news), paginate: $news);
         } catch (\Throwable $th) {
             throw $th;
