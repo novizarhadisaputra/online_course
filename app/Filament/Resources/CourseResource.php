@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Pages\Page;
 use App\Enums\CourseLevel;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
@@ -164,7 +165,7 @@ class CourseResource extends Resource
             ->actions([
                 MediaAction::make('preview')
                     ->icon(icon: 'heroicon-s-video-camera')
-                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getFirstMediaUrl() : null)
+                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getMedia('previews')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null)
                     ->visible(fn($record) => $record->hasMedia('previews')),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
