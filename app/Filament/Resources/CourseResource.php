@@ -163,7 +163,9 @@ class CourseResource extends Resource
             ])
             ->actions([
                 MediaAction::make('preview')
-                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getFirstMediaUrl() : null),
+                    ->icon(icon: 'heroicon-s-video-camera')
+                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getFirstMediaUrl() : null)
+                    ->visible(fn($record) => $record->hasMedia('previews')),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
