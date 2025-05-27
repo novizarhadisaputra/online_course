@@ -76,7 +76,7 @@ class CourseResource extends Resource
                         ->collection('previews')
                         ->visibility('private')
                         ->disk('s3')
-                        ->image()
+                        ->acceptedFileTypes(['video/*'])
                         ->required(),
                     TextInput::make('name')
                         ->required()
