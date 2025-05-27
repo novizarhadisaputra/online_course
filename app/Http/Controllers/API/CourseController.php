@@ -35,8 +35,8 @@ class CourseController extends Controller
             if ($request->user() && $request->input('mine')) {
                 $courses = $courses->whereHas('transactions', fn(Builder $q) => $q->where('user_id', $request->user()->id));
             }
-            if ($request->input('search')) {
-                $courses = $courses->where('name', 'like', '%' . $request->input('search') . '%');
+            if ($request->search) {
+                $courses = $courses->where('name', 'ilike', "%$request->search%");
             }
             $courses = $courses
                 ->whereHas('lessons', fn(Builder $q) => $q->where('lessons.status', true))

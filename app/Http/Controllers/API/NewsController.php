@@ -24,8 +24,8 @@ class NewsController extends Controller
     {
         try {
             $news = News::active();
-            if ($request->input('search')) {
-                $news = $news->where('name', 'like', '%' . $request->input('search') . '%');
+            if ($request->search) {
+                $news = $news->where('name', 'ilike', "%$request->search%");
             }
             $news = $news->paginate($request->input('limit', 10));
             return $this->success(data: NewsResource::collection($news), paginate: $news);
