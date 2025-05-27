@@ -16,6 +16,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\NewsResource\Pages;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\NewsResource\Widgets\StatsOverview;
 use App\Filament\Resources\NewsResource\RelationManagers\TagsRelationManager;
@@ -36,8 +37,11 @@ class NewsResource extends Resource
             ->schema([
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
-                        ->multiple()
                         ->collection('images')
+                        ->visibility('private')
+                        ->disk('s3')
+                        ->image()
+                        ->previewable()
                         ->required(),
                     TextInput::make('name')
                         ->unique(ignoreRecord: true)
@@ -59,6 +63,10 @@ class NewsResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private')
+                    ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('short_description')
