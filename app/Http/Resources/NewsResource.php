@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class NewsResource extends JsonResource
@@ -16,6 +17,7 @@ class NewsResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             'name' => $this->name,
             'slug' => $this->slug,
             'short_description' => $this->short_description,

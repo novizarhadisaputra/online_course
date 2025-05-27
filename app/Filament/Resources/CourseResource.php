@@ -135,8 +135,6 @@ class CourseResource extends Resource
                     ->collection('images')
                     ->visibility('private')
                     ->disk('s3'),
-                MediaAction::make('preview')
-                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getFirstMediaUrl() : null),
                 TextColumn::make('name')
                     ->description(fn(Course $record): string => $record->short_description)
                     ->searchable(),
@@ -164,6 +162,8 @@ class CourseResource extends Resource
                 //
             ])
             ->actions([
+                MediaAction::make('preview')
+                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getFirstMediaUrl() : null),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
