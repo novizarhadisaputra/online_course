@@ -67,6 +67,7 @@ Route::prefix('courses')->name('courses.')->group(function () {
         Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
     });
 });
+
 Route::apiResource('bundles', BundleController::class)->only(['index', 'show']);
 
 Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
@@ -104,6 +105,8 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::get('/followers', [UserController::class, 'followers'])->name('followers');
         });
     });
+
+    Route::apiResource('bundles', BundleController::class)->only(['index', 'show']);
 
     Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
     Route::prefix('courses')->name('courses.')->group(function () {

@@ -22,7 +22,7 @@ class CourseResource extends JsonResource
             ->where('user_id', $request->user()->id)
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
-        $progress = !$request->user() ? null : $request->progressCourses()->where('id', $this->id)->first();
+        $progress = !$request->user() ? null : $request->user()->progressCourses()->where('id', $this->id)->first();
 
         return [
             'id' => $this->id,
