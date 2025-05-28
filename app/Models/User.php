@@ -170,4 +170,14 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
     {
         return $this->morphToMany(Coupon::class, 'model', Couponable::class);
     }
+
+    /**
+     * Get all of the progress courses that are assigned this user.
+     */
+
+    public function progressCourses(): MorphToMany
+    {
+        return $this->morphedByMany(Course::class, 'model', Progress::class)
+            ->withPivot(['id', 'data', 'status']);
+    }
 }

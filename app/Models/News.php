@@ -11,6 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class News extends Model implements HasMedia
@@ -42,11 +43,11 @@ class News extends Model implements HasMedia
     }
 
     /**
-     * Get all of the events's prices.
+     * Get all of the news's price.
      */
-    public function prices(): MorphMany
+    public function price(): MorphOne
     {
-        return $this->morphMany(Price::class, 'priceable');
+        return $this->morphOne(Price::class, 'priceable');
     }
 
     /**

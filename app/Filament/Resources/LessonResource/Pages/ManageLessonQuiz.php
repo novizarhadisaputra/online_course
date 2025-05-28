@@ -6,7 +6,6 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\LessonResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
@@ -17,20 +16,22 @@ class ManageLessonQuiz extends ManageRelatedRecords
     use NestedPage; // Since this is a standalone page, we also need this trait
     use NestedRelationManager;
 
+    public bool $is_quiz;
+
     protected static string $resource = LessonResource::class;
 
     protected static string $relationship = 'quizzes';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    public static function canAccess(array $parameters = []): bool
     {
-        return $ownerRecord->is_quiz;
+        return $parameters['record']['is_quiz'];
     }
 
     public static function getNavigationLabel(): string
     {
-        return 'Quizzes';
+        return 'Manage  Quizzes';
     }
 
     public function form(Form $form): Form

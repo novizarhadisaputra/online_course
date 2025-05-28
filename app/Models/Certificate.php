@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class BundleItem extends Model
+class Certificate extends Model implements HasMedia
 {
-    protected $guarded = [];
+    use HasUuids, InteractsWithMedia;
 
     /**
      * Get the parent model (course or etc).

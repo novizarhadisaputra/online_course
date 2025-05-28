@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BundleController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CommentController;
@@ -66,6 +67,8 @@ Route::prefix('courses')->name('courses.')->group(function () {
         Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
     });
 });
+Route::apiResource('bundles', BundleController::class)->only(['index', 'show']);
+
 
 Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 Route::prefix('categories')->name('categories.')->group(function () {

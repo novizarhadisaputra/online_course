@@ -70,11 +70,11 @@ class Event extends Model implements HasMedia
     }
 
     /**
-     * Get all of the events's prices.
+     * Get all of the events's price.
      */
-    public function prices(): MorphMany
+    public function price(): MorphOne
     {
-        return $this->morphMany(Price::class, 'priceable');
+        return $this->morphOne(Price::class, 'priceable');
     }
 
     /**
@@ -83,14 +83,6 @@ class Event extends Model implements HasMedia
     public function payment_link(): MorphOne
     {
         return $this->morphOne(PaymentLink::class, 'linkeable');
-    }
-
-    /**
-     * Get all of the events's carts.
-     */
-    public function carts(): MorphMany
-    {
-        return $this->morphMany(Cart::class, 'model');
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\NewsResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables;
@@ -14,7 +13,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 
 class PricesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'prices';
+    protected static string $relationship = 'price';
 
     public function form(Form $form): Form
     {

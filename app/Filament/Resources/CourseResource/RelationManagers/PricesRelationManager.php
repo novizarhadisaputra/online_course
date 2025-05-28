@@ -16,7 +16,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 
 class PricesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'prices';
+    protected static string $relationship = 'price';
 
     public function form(Form $form): Form
     {

@@ -22,7 +22,7 @@ class CourseResource extends JsonResource
             ->where('user_id', $request->user()->id)
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
-        $progress = !$request->user() ? null : $this->progresses()->where('user_id', $request->user()->id)->first();
+        $progress = !$request->user() ? null : $request->progressCourses()->where('id', $this->id)->first();
 
         return [
             'id' => $this->id,
@@ -46,7 +46,7 @@ class CourseResource extends JsonResource
             'tags' => TagResource::collection($this->tags),
             'lessons' => $this->lessons->count(),
             'students' => $this->transactions->count(),
-            'prices' => PriceResource::collection($this->prices),
+            'price' => new PriceResource($this->price),
             'progress' => $progress,
         ];
     }

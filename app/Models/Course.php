@@ -6,11 +6,14 @@ use App\Models\Tag;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\View;
+use App\Models\Bundle;
 use App\Models\Comment;
 use App\Models\Category;
 use App\Models\Progress;
 use App\Models\Taggable;
+use App\Models\BundleItem;
 use App\Traits\ModelTrait;
+use App\Models\Certificate;
 use App\Models\PaymentLink;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -60,6 +63,14 @@ class Course extends Model implements HasMedia
     }
 
     /**
+     * Get all of the bundles for the courses.
+     */
+    public function bundles(): MorphToMany
+    {
+        return $this->morphToMany(Bundle::class, 'model', BundleItem::class);
+    }
+
+    /**
      * Get all of the viewers for the course.
      */
     public function viewers(): MorphToMany
@@ -84,11 +95,11 @@ class Course extends Model implements HasMedia
     }
 
     /**
-     * Get all of the courses's prices.
+     * Get all of the courses's price.
      */
-    public function prices(): MorphMany
+    public function price(): MorphOne
     {
-        return $this->morphMany(Price::class, 'priceable');
+        return $this->morphOne(Price::class, 'priceable');
     }
 
     /**
@@ -97,22 +108,6 @@ class Course extends Model implements HasMedia
     public function payment_link(): MorphOne
     {
         return $this->morphOne(PaymentLink::class, 'linkeable');
-    }
-
-    /**
-     * Get all of the courses's carts.
-     */
-    public function carts(): MorphMany
-    {
-        return $this->morphMany(Cart::class, 'model');
-    }
-
-    /**
-     * Get all of the courses's progresses.
-     */
-    public function progresses(): MorphMany
-    {
-        return $this->morphMany(Progress::class, 'model');
     }
 
     /**
@@ -160,5 +155,14 @@ class Course extends Model implements HasMedia
     {
         return $this->morphToMany(Transaction::class, 'model', TransactionDetail::class)
             ->withPivot(['id', 'qty', 'units', 'price']);
+    }
+
+    /**
+     * Get all of the certificates for the course.
+     */
+    public function certificates(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'model', Certificate::class)
+            ->withPivot(['certificate_number', 'issue_date', 'expiration_date']);
     }
 }
