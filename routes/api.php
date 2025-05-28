@@ -69,7 +69,6 @@ Route::prefix('courses')->name('courses.')->group(function () {
 });
 Route::apiResource('bundles', BundleController::class)->only(['index', 'show']);
 
-
 Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 Route::prefix('categories')->name('categories.')->group(function () {
     Route::prefix('{category}')->group(function () {
