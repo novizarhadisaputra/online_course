@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\BundleResource\Pages;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\BundleResource\RelationManagers\CoursesRelationManager;
 use App\Filament\Resources\BundleResource\RelationManagers\ProductsRelationManager;
 
@@ -30,6 +31,13 @@ class BundleResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
+                    SpatieMediaLibraryFileUpload::make('image')
+                        ->collection('images')
+                        ->visibility('private')
+                        ->disk('s3')
+                        ->image()
+                        ->previewable()
+                        ->required(),
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),

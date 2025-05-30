@@ -5,6 +5,8 @@ namespace App\Filament\Resources\NewsResource\RelationManagers;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -20,7 +22,8 @@ class TagsRelationManager extends RelationManager
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-            ]);
+                Toggle::make('status'),
+            ])->columns(1);
     }
 
     public function table(Table $table): Table
@@ -34,7 +37,11 @@ class TagsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data): array {
+                    $data['slug'] = Str::slug($data['name']);
+
+                    return $data;
+                }),
                 Tables\Actions\AttachAction::make(),
             ])
             ->actions([
