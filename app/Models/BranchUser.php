@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BranchUser extends Model
 {
+    protected $guarded = [];
     /**
      * Get the user that owns the BranchUser
      *

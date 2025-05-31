@@ -13,6 +13,7 @@
         "afatmustafa/blade-hugeicons": "^1.0",
         "barryvdh/laravel-dompdf": "^3.1",
         "bezhansalleh/filament-shield": "^3.3",
+        "codeat3/blade-carbon-icons": "^2.35",
         "codeat3/blade-google-material-design-icons": "^1.20",
         "filament/actions": "^3.2",
         "filament/filament": "^3.2",

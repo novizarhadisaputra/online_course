@@ -28,16 +28,6 @@ class Branch extends Model
     }
 
     /**
-     * The products that belong to the Branch
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class, Stock::class, 'branch_id', 'product_id');
-    }
-
-    /**
      * Get all of the stocks for the Branch
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -48,11 +38,21 @@ class Branch extends Model
     }
 
     /**
+     * The products that belong to the Branch
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, Stock::class);
+    }
+
+    /**
      * Get all of the movements for the Branch
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function movements(): HasMany
+    public function stock_movements(): HasMany
     {
         return $this->hasMany(StockMovement::class);
     }

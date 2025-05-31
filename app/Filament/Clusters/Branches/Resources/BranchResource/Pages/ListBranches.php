@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Filament\Clusters\Products\Resources\ProductResource\Pages;
+namespace App\Filament\Clusters\Branches\Resources\BranchResource\Pages;
 
-use App\Filament\Clusters\Products\Resources\ProductResource;
+use App\Filament\Clusters\Branches\Resources\BranchResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 
-class ListProducts extends ListRecords
+class ListBranches extends ListRecords
 {
     use NestedPage;
 
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = BranchResource::class;
 
     protected function getHeaderActions(): array
     {

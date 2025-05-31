@@ -37,11 +37,12 @@ class TagsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->mutateFormDataUsing(function (array $data): array {
-                    $data['slug'] = Str::slug($data['name']);
+                Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['slug'] = Str::slug($data['name']);
 
-                    return $data;
-                }),
+                        return $data;
+                    }),
                 Tables\Actions\AttachAction::make(),
             ])
             ->actions([

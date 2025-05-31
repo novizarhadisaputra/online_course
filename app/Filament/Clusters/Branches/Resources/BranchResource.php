@@ -1,49 +1,49 @@
 <?php
 
-namespace App\Filament\Clusters\Products\Resources;
+namespace App\Filament\Clusters\Branches\Resources;
 
 use Filament\Tables;
-use App\Models\Product;
+use App\Models\Branch;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
-use App\Filament\Clusters\Products;
+use App\Filament\Clusters\Branches;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\KeyValue;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Clusters\Products\Resources\ProductResource\Pages;
+use Guava\FilamentNestedResources\Ancestor;
+use Guava\FilamentNestedResources\Concerns\NestedResource;
+use App\Filament\Clusters\Branches\Resources\BranchResource\Pages;
 
-class ProductResource extends Resource
+class BranchResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    use NestedResource;
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $model = Branch::class;
 
-    protected static ?string $cluster = Products::class;
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+
+    protected static ?string $cluster = Branches::class;
+
+    public static function getBreadcrumbRecordLabel(Model $record)
+    {
+        return $record->name;
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make()->schema([
-                    SpatieMediaLibraryFileUpload::make('image')
-                        ->collection('images')
-                        ->visibility('private')
-                        ->disk('s3')
-                        ->image()
-                        ->previewable()
-                        ->required(),
                     Grid::make()->schema([
                         TextInput::make('name')
                             ->required()
@@ -52,6 +52,7 @@ class ProductResource extends Resource
                                 if (($get('slug') ?? '') !== Str::slug($old)) {
                                     return;
                                 }
+
                                 $set('slug', Str::slug($state));
                             })
                             ->unique(ignoreRecord: true)
@@ -60,21 +61,7 @@ class ProductResource extends Resource
                             ->readOnly()
                             ->required(),
                     ]),
-                    TextInput::make('short_description')
-                        ->maxLength(255)
-                        ->required(),
-                    RichEditor::make('description')
-                        ->required(),
-                    Select::make('product_category_id')
-                        ->searchable()
-                        ->relationship(titleAttribute: 'name', name: 'product_category')
-                        ->required(),
-                    KeyValue::make('meta')
-                        ->default([
-                            'title' => '',
-                            'description' => ''
-                        ])
-                        ->required(),
+                    RichEditor::make('description'),
                     Toggle::make('status')
                         ->required(),
                 ])
@@ -85,15 +72,11 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('image')
-                    ->collection('images')
-                    ->visibility('private')
-                    ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('product_category.name')
+                TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('user.name')
+                TextColumn::make('code')
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
@@ -130,10 +113,29 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'view' => Pages\ViewProduct::route('/{record}'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ListBranches::route('/'),
+            'create' => Pages\CreateBranch::route('/create'),
+            'view' => Pages\ViewBranch::route('/{record}'),
+            'edit' => Pages\EditBranch::route('/{record}/edit'),
+            'stocks' => Pages\ManageBranchStocks::route('/{record}/stocks'),
+            'stocks.create' => Pages\CreateBranchStock::route('/{record}/stocks/create'),
+            'stock_movements' => Pages\ManageBranchStockMovements::route('/{record}/stock-movements'),
+            'stock_movements.create' => Pages\CreateBranchMovements::route('/{record}/stock-movements/create'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewBranch::class,
+            Pages\EditBranch::class,
+            Pages\ManageBranchStocks::class,
+            Pages\ManageBranchStockMovements::class,
+        ]);
+    }
+
+    public static function getAncestor(): ?Ancestor
+    {
+        return null;
     }
 }

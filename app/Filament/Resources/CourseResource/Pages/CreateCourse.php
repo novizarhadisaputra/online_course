@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\CourseResource\Pages;
 
-use Filament\Actions;
 use Illuminate\Support\Str;
 use App\Filament\Resources\CourseResource;
 use Filament\Resources\Pages\CreateRecord;
