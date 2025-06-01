@@ -43,7 +43,17 @@ class ManageBranchStocks extends ManageRelatedRecords
         return $table
             ->recordTitleAttribute('product.name')
             ->columns([
-                TextColumn::make('product.name'),
+                TextColumn::make('branch.name'),
+                TextColumn::make('product.name')->searchable(),
+                TextColumn::make('qty'),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

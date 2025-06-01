@@ -11,6 +11,7 @@ use Guava\FilamentNestedResources\Concerns\NestedPage;
 class CreateBranch extends CreateRecord
 {
     use NestedPage;
+
     protected static string $resource = BranchResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array

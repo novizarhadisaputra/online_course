@@ -10,6 +10,7 @@ use Guava\FilamentNestedResources\Concerns\NestedPage;
 class ListStocks extends ListRecords
 {
     use NestedPage;
+
     protected static string $resource = StockResource::class;
 
     protected function getHeaderActions(): array

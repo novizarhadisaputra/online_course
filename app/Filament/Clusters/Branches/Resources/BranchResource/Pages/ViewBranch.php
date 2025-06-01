@@ -10,6 +10,7 @@ use Guava\FilamentNestedResources\Concerns\NestedPage;
 class ViewBranch extends ViewRecord
 {
     use NestedPage;
+
     protected static string $resource = BranchResource::class;
 
     protected function getHeaderActions(): array

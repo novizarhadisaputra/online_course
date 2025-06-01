@@ -6,6 +6,8 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\StockMovement;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -41,8 +43,28 @@ class ManageBranchStockMovements extends ManageRelatedRecords
         return $table
             ->recordTitleAttribute('product.name')
             ->columns([
-                TextColumn::make('product.name'),
                 TextColumn::make('branch.name'),
+                TextColumn::make('product.name')
+                    ->description(fn(StockMovement $record): string => $record->notes)
+                    ->searchable(),
+                IconColumn::make('type')
+                    ->icon(fn(string $state): string => match ($state) {
+                        'in' => 'heroicon-s-chevron-double-up',
+                        'out' => 'heroicon-s-chevron-double-down',
+                    })
+                    ->color(fn(string $state): string => match ($state) {
+                        'in' => 'success',
+                        'out' => 'warning',
+                    }),
+                TextColumn::make('qty'),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

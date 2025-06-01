@@ -10,6 +10,7 @@ use Guava\FilamentNestedResources\Concerns\NestedPage;
 class EditStock extends EditRecord
 {
     use NestedPage;
+
     protected static string $resource = StockResource::class;
 
     protected function getHeaderActions(): array
