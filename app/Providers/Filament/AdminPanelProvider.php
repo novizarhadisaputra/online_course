@@ -15,6 +15,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
+use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 use App\Filament\Resources\UserResource\Pages\EditProfile;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -82,6 +83,9 @@ class AdminPanelProvider extends PanelProvider
                         ]),
                     FilamentFullCalendarPlugin::make(),
                     DashStackThemePlugin::make(),
+                    RenewPasswordPlugin::make()
+                        ->passwordExpiresIn(days: 30)
+                        ->forceRenewPassword()
                 ]
             )
             ->databaseNotifications()

@@ -6,7 +6,6 @@ namespace App\Models;
 use Filament\Panel;
 use App\Models\Like;
 use App\Models\News;
-use App\Models\Team;
 use App\Models\Branch;
 use App\Models\Coupon;
 use App\Models\Course;
@@ -17,7 +16,6 @@ use App\Models\Progress;
 use App\Models\Branchable;
 use App\Models\Couponable;
 use App\Models\Transaction;
-use App\Models\TeamRelation;
 use Illuminate\Support\Carbon;
 use App\Models\TransactionDetail;
 use Laravel\Sanctum\HasApiTokens;
@@ -36,12 +34,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
+use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 
-class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar, HasTenants
+class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar, HasTenants, RenewPasswordContract
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasUuids, HasApiTokens, HasRoles;
-    use InteractsWithMedia;
+    use InteractsWithMedia, RenewPassword;
 
     /**
      * The attributes that are mass assignable.
