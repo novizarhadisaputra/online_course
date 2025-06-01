@@ -32,6 +32,8 @@ class ProductResource extends Resource
 
     protected static ?string $cluster = Products::class;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form

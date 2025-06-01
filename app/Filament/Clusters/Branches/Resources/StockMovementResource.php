@@ -9,6 +9,11 @@ use Filament\Tables\Table;
 use App\Models\StockMovement;
 use Filament\Resources\Resource;
 use App\Filament\Clusters\Branches;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Contracts\Support\Htmlable;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use App\Filament\Clusters\Branches\Resources\StockMovementResource\Pages;
@@ -29,23 +34,23 @@ class StockMovementResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('model_type')
+                TextInput::make('model_type')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('model_id')
+                TextInput::make('model_id')
                     ->required(),
-                Forms\Components\TextInput::make('type')
+                TextInput::make('type')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('qty')
+                TextInput::make('qty')
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\Textarea::make('notes')
+                Textarea::make('notes')
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('branch_id')
+                TextInput::make('branch_id')
                     ->required(),
-                Forms\Components\TextInput::make('product_id')
+                TextInput::make('product_id')
                     ->required(),
             ]);
     }
@@ -54,23 +59,20 @@ class StockMovementResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID'),
-                Tables\Columns\TextColumn::make('model_type')
+                TextColumn::make('model.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('model_id'),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('qty')
+                TextColumn::make('qty')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('branch_id'),
-                Tables\Columns\TextColumn::make('product_id'),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('branch.name'),
+                TextColumn::make('product.name'),
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

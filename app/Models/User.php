@@ -3,16 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Filament\Panel;
 use App\Models\Like;
 use App\Models\News;
 use App\Models\Team;
+use App\Models\Branch;
 use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\Follow;
 use App\Models\Review;
 use App\Models\Address;
+use App\Models\Progress;
+use App\Models\Branchable;
 use App\Models\Couponable;
 use App\Models\Transaction;
 use App\Models\TeamRelation;
@@ -83,9 +85,9 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
         return $this->hasVerifiedEmail();
     }
 
-    public function teams(): MorphToMany
+    public function branches(): MorphToMany
     {
-        return $this->morphToMany(Team::class, 'model', TeamRelation::class);
+        return $this->morphToMany(Branch::class, 'model', Branchable::class);
     }
 
     public function getTenants(Panel $panel): Collection
@@ -179,5 +181,14 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
     {
         return $this->morphedByMany(Course::class, 'model', Progress::class)
             ->withPivot(['id', 'data', 'status']);
+    }
+
+    /**
+     * Get all of the enrollment courses that are assigned this user.
+     */
+
+    public function enrollmentCourses(): MorphToMany
+    {
+        return $this->morphedByMany(Course::class, 'model', Enrollment::class);
     }
 }

@@ -9,6 +9,7 @@ use App\Filament\Pages\Dashboard;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Nuxtifyts\DashStackTheme\DashStackThemePlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
@@ -35,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->emailVerification()
             ->colors([])
-            ->viteTheme('resources/css/filament/admin/theme.css')
+            // ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -80,6 +81,7 @@ class AdminPanelProvider extends PanelProvider
                             'sm' => 2,
                         ]),
                     FilamentFullCalendarPlugin::make(),
+                    DashStackThemePlugin::make(),
                 ]
             )
             ->databaseNotifications()

@@ -36,6 +36,11 @@ class EventResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name'];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

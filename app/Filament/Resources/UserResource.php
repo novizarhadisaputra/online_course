@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\UserResource\RelationManagers\ActivitiesRelationManager;
+use Filament\Forms\Components\Grid;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class UserResource extends Resource
@@ -41,22 +42,26 @@ class UserResource extends Resource
                         ->disk('s3')
                         ->circleCropper()
                         ->required(),
-                    TextInput::make('first_name')
-                        ->maxLength(255)
-                        ->required(),
-                    TextInput::make('last_name')
-                        ->maxLength(255),
+                    Grid::make()->schema([
+                        TextInput::make('first_name')
+                            ->maxLength(255)
+                            ->required(),
+                        TextInput::make('last_name')
+                            ->maxLength(255),
+                    ]),
                     TextInput::make('description')
                         ->maxLength(255)
                         ->default(null),
-                    TextInput::make('email')
-                        ->email()
-                        ->required()
-                        ->maxLength(255),
-                    TextInput::make('phone')
-                        ->tel()
-                        ->maxLength(255)
-                        ->default(null),
+                    Grid::make()->schema([
+                        TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('phone')
+                            ->tel()
+                            ->maxLength(255)
+                            ->default(null),
+                    ]),
                     TextInput::make('password')
                         ->password()
                         ->maxLength(255),

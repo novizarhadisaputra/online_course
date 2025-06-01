@@ -19,9 +19,11 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\KeyValue;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
+use Illuminate\Contracts\Support\Htmlable;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -39,7 +41,7 @@ class StockResource extends Resource
 
     public static function getSelectBranchField(): Select
     {
-        return  Select::make('branch_id')
+        return Select::make('branch_id')
             ->relationship(titleAttribute: 'name', name: 'branch')
             ->createOptionForm([
                 Grid::make()->schema([

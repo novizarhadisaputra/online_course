@@ -14,7 +14,9 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Contracts\Support\Htmlable;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Clusters\Products\Resources\ProductCategoryResource\Pages;
@@ -28,6 +30,8 @@ class ProductCategoryResource extends Resource
     protected static ?string $label = 'Categories';
 
     protected static ?string $cluster = Products::class;
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
@@ -43,6 +47,7 @@ class ProductCategoryResource extends Resource
                         ->required(),
                     TextInput::make('name')
                         ->required()
+                        ->unique(ignoreRecord: true)
                         ->maxLength(255),
                     Textarea::make('description')
                         ->columnSpanFull(),
@@ -59,7 +64,7 @@ class ProductCategoryResource extends Resource
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
                     ->visibility('private')
-                        ->disk('s3'),
+                    ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')

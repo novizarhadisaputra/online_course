@@ -17,7 +17,6 @@ class CreateBranch extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $slug = Str::slug($data['name']);
-
         $code = Str::upper(Str::random(10));
         $branch_code = Branch::where('code', $code)->select(['id', 'code'])->first();
         while ($branch_code) {

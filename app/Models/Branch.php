@@ -9,6 +9,7 @@ use App\Models\BranchUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Branch extends Model
@@ -18,13 +19,11 @@ class Branch extends Model
     protected $guarded = [];
 
     /**
-     * The users that belong to the Branch
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Get all of the users that are assigned this branches.
      */
-    public function users(): BelongsToMany
+    public function users(): MorphToMany
     {
-        return $this->belongsToMany(User::class, BranchUser::class, 'branch_id', 'user_id');
+        return $this->morphedByMany(User::class, 'model', Branchable::class);
     }
 
     /**

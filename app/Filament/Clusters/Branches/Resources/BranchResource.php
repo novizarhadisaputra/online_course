@@ -34,10 +34,7 @@ class BranchResource extends Resource
 
     protected static ?string $cluster = Branches::class;
 
-    public static function getBreadcrumbRecordLabel(Model $record)
-    {
-        return $record->name;
-    }
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
@@ -52,7 +49,6 @@ class BranchResource extends Resource
                                 if (($get('slug') ?? '') !== Str::slug($old)) {
                                     return;
                                 }
-
                                 $set('slug', Str::slug($state));
                             })
                             ->unique(ignoreRecord: true)
@@ -77,7 +73,10 @@ class BranchResource extends Resource
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('code')
-                    ->searchable(),
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('Code copied')
+                    ->copyMessageDuration(1500),
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('created_at')
@@ -118,6 +117,7 @@ class BranchResource extends Resource
             'view' => Pages\ViewBranch::route('/{record}'),
             'edit' => Pages\EditBranch::route('/{record}/edit'),
             'stocks' => Pages\ManageBranchStocks::route('/{record}/stocks'),
+            'users' => Pages\ManageBranchUsers::route('/{record}/users'),
             'stocks.create' => Pages\CreateBranchStock::route('/{record}/stocks/create'),
             'stock_movements' => Pages\ManageBranchStockMovements::route('/{record}/stock-movements'),
             'stock_movements.create' => Pages\CreateBranchMovements::route('/{record}/stock-movements/create'),
@@ -129,6 +129,7 @@ class BranchResource extends Resource
         return $page->generateNavigationItems([
             Pages\ViewBranch::class,
             Pages\EditBranch::class,
+            Pages\ManageBranchUsers::class,
             Pages\ManageBranchStocks::class,
             Pages\ManageBranchStockMovements::class,
         ]);
