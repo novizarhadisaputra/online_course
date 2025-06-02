@@ -34,6 +34,30 @@ class ProductResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getSelectCategoryField(): Select
+    {
+        return Select::make('product_category_id')
+            ->searchable()
+            ->relationship(titleAttribute: 'name', name: 'product_category')
+            ->createOptionForm([
+                SpatieMediaLibraryFileUpload::make('image')
+                    ->collection('images')
+                    ->visibility('private')
+                    ->disk('s3')
+                    ->image()
+                    ->previewable()
+                    ->required(),
+                TextInput::make('name')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255),
+                RichEditor::make('description'),
+                Toggle::make('status')
+                    ->required(),
+            ])
+            ->required();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -61,16 +85,15 @@ class ProductResource extends Resource
                         TextInput::make('slug')
                             ->readOnly()
                             ->required(),
+                        TextInput::make('sku')
+                            ->required(),
                     ]),
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->required(),
                     RichEditor::make('description')
                         ->required(),
-                    Select::make('product_category_id')
-                        ->searchable()
-                        ->relationship(titleAttribute: 'name', name: 'product_category')
-                        ->required(),
+                    self::getSelectCategoryField(),
                     KeyValue::make('meta')
                         ->default([
                             'title' => '',

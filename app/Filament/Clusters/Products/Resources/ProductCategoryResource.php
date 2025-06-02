@@ -2,7 +2,6 @@
 
 namespace App\Filament\Clusters\Products\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -11,12 +10,10 @@ use Filament\Resources\Resource;
 use App\Filament\Clusters\Products;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Contracts\Support\Htmlable;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Clusters\Products\Resources\ProductCategoryResource\Pages;
@@ -49,8 +46,7 @@ class ProductCategoryResource extends Resource
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
-                    Textarea::make('description')
-                        ->columnSpanFull(),
+                    RichEditor::make('description'),
                     Toggle::make('status')
                         ->required(),
                 ])
@@ -78,9 +74,7 @@ class ProductCategoryResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
