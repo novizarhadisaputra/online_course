@@ -27,7 +27,7 @@ class NewsController extends Controller
             if ($request->search) {
                 $news = $news->where('name', 'ilike', "%$request->search%");
             }
-            $news = $news->paginate($request->input('limit', 10));
+            $news = $news->orderBy('updated_at')->paginate($request->input('limit', 10));
             return $this->success(data: NewsResource::collection($news), paginate: $news);
         } catch (\Throwable $th) {
             throw $th;

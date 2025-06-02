@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -12,12 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class JobVacancy extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
-
-    public function teams(): MorphToMany
-    {
-        return $this->morphToMany(Team::class, 'model', TeamRelation::class);
-    }
+    use HasUuids, InteractsWithMedia, ModelTrait;
 
     /**
      * Get all of the news's comments.

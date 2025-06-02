@@ -51,7 +51,10 @@ class ProductResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
-                RichEditor::make('description'),
+                RichEditor::make('description')
+                    ->fileAttachmentsDisk('s3')
+                    ->fileAttachmentsDirectory('attachments')
+                    ->fileAttachmentsVisibility('private'),
                 Toggle::make('status')
                     ->required(),
             ])
@@ -92,6 +95,9 @@ class ProductResource extends Resource
                         ->maxLength(255)
                         ->required(),
                     RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private')
                         ->required(),
                     self::getSelectCategoryField(),
                     KeyValue::make('meta')

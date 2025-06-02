@@ -15,6 +15,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\NewsResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -50,8 +51,11 @@ class NewsResource extends Resource
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),
-                    Textarea::make('description')
-                        ->columnSpanFull(),
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private')
+                        ->required(),
                     Toggle::make('status')
                         ->required(),
                     KeyValue::make('meta'),

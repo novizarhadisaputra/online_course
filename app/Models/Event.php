@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Comment;
 use App\Models\Category;
 use App\Models\PaymentLink;
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Event extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, InteractsWithMedia, ModelTrait;
 
     protected $guarded = [];
 

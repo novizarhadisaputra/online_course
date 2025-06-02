@@ -4,11 +4,9 @@ namespace App\Models;
 
 use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Activity as ModelsActivity;
 
-class Address extends Model
+class Activity extends ModelsActivity
 {
     use HasUuids, ModelTrait;
-
-    protected $guarded = [];
 }

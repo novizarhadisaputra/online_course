@@ -1,7 +1,11 @@
 <?php
 
 namespace App\Traits;
+
+use App\Models\Branch;
+use App\Models\Branchable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait ModelTrait
 {
@@ -12,5 +16,10 @@ trait ModelTrait
     public function scopeActive(Builder $query): void
     {
         $query->where('status', true);
+    }
+
+    public function branches(): MorphToMany
+    {
+        return $this->morphToMany(Branch::class, 'model', Branchable::class);
     }
 }

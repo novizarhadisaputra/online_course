@@ -9,18 +9,19 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\UserResource\RelationManagers\ActivitiesRelationManager;
-use Filament\Forms\Components\Grid;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class UserResource extends Resource
 {
@@ -65,6 +66,13 @@ class UserResource extends Resource
                     TextInput::make('password')
                         ->password()
                         ->maxLength(255),
+                    CheckboxList::make('roles')
+                        ->relationship('roles', 'name')
+                        ->searchable()
+                        ->columns([
+                            'sm' => 2,
+                            'md' => 3,
+                        ]),
                 ]),
             ]);
     }

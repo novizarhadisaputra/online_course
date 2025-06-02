@@ -4,9 +4,12 @@ namespace App\Providers\Filament;
 
 use Filament\Panel;
 use Filament\Widgets;
+use App\Models\Branch;
 use Filament\PanelProvider;
 use App\Filament\Pages\Dashboard;
 use Filament\Http\Middleware\Authenticate;
+use Rmsramos\Activitylog\ActivitylogPlugin;
+use App\Filament\Pages\Tenancy\RegisterTeam;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Nuxtifyts\DashStackTheme\DashStackThemePlugin;
@@ -34,6 +37,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->profile(EditProfile::class)
             ->login()
+            // ->tenant(Branch::class, ownershipRelationship: 'branches')
+            // ->tenantRegistration(RegisterTeam::class,)
             ->passwordReset()
             ->emailVerification()
             ->colors([])
@@ -83,9 +88,11 @@ class AdminPanelProvider extends PanelProvider
                         ]),
                     FilamentFullCalendarPlugin::make(),
                     DashStackThemePlugin::make(),
+                    ActivitylogPlugin::make(),
                     RenewPasswordPlugin::make()
                         ->passwordExpiresIn(days: 30)
                         ->forceRenewPassword()
+
                 ]
             )
             ->databaseNotifications()

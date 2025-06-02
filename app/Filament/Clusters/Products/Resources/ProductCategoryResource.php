@@ -46,7 +46,10 @@ class ProductCategoryResource extends Resource
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
-                    RichEditor::make('description'),
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private'),
                     Toggle::make('status')
                         ->required(),
                 ])

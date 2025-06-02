@@ -12,7 +12,6 @@ class Branchable extends Model
      */
     public function model(): MorphTo
     {
-        dd($this->morphTo());
         return $this->morphTo();
     }
 }

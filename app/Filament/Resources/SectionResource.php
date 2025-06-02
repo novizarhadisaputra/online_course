@@ -16,6 +16,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\SectionResource\Pages;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
@@ -47,8 +48,10 @@ class SectionResource extends Resource
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),
-                    Textarea::make('description')
-                        ->columnSpanFull()
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private')
                         ->required(),
                     Toggle::make('status')
                         ->required(),

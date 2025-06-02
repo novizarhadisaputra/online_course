@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('language')->default('Bahasa Indonesia');
             $table->boolean('status')->default(false);
             $table->boolean('is_get_certificate')->default(false);
-            $table->string('meta')->nullable();
+            $table->longText('meta')->nullable();
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();

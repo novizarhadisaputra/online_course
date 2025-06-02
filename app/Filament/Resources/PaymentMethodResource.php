@@ -15,6 +15,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\PaymentMethodResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -52,8 +53,10 @@ class PaymentMethodResource extends Resource
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),
-                    Textarea::make('description')
-                        ->columnSpanFull(),
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private'),
                     KeyValue::make('configs')
                         ->columnSpanFull(),
                     Toggle::make('status')

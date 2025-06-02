@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('meeting_type', ['online', 'offline']);
             $table->boolean('status')->default(false);
             $table->string('url')->nullable();
-            $table->string('meta')->nullable();
+            $table->longText('meta')->nullable();
             $table->dateTime('start_time');
             $table->dateTime('end_time');
 

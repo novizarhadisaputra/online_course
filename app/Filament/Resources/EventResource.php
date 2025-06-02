@@ -26,6 +26,7 @@ use App\Filament\Resources\EventResource\RelationManagers\TagsRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\PricesRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\CommentsRelationManager;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class EventResource extends Resource
@@ -59,8 +60,10 @@ class EventResource extends Resource
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),
-                    Textarea::make('description')
-                        ->columnSpanFull(),
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private'),
                     Textarea::make('url')
                         ->columnSpanFull(),
                     Select::make('meeting_type')

@@ -9,14 +9,15 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\TagResource\Pages;
-use App\Filament\Resources\TagResource\RelationManagers\CoursesRelationManager;
 use App\Filament\Resources\TagResource\RelationManagers\NewsRelationManager;
-use Filament\Forms\Components\Section;
+use App\Filament\Resources\TagResource\RelationManagers\CoursesRelationManager;
 
 class TagResource extends Resource
 {
@@ -37,8 +38,10 @@ class TagResource extends Resource
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
-                    Textarea::make('description')
-                        ->columnSpanFull(),
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private'),
                     Toggle::make('status')
                         ->required(),
                 ])

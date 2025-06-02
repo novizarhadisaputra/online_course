@@ -2,7 +2,6 @@
 
 namespace App\Filament\Clusters\Branches\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -11,9 +10,7 @@ use Filament\Resources\Resource;
 use App\Filament\Clusters\Branches;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Contracts\Support\Htmlable;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use App\Filament\Clusters\Branches\Resources\StockMovementResource\Pages;

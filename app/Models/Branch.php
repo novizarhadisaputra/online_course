@@ -5,18 +5,26 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Stock;
 use App\Models\Product;
-use App\Models\BranchUser;
+use Illuminate\Support\Carbon;
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Models\Contracts\HasAvatar;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Branch extends Model
+class Branch extends Model implements HasAvatar, HasMedia
 {
-    use HasUuids;
+    use HasUuids, InteractsWithMedia;
 
     protected $guarded = [];
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null;
+    }
 
     /**
      * Get all of the users that are assigned this branches.

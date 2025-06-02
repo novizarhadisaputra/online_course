@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use App\Models\Tag;
-use App\Models\Cart;
 use App\Models\User;
 use App\Models\View;
 use App\Models\Bundle;
 use App\Models\Comment;
 use App\Models\Category;
-use App\Models\Progress;
 use App\Models\Taggable;
 use App\Models\BundleItem;
 use App\Traits\ModelTrait;

@@ -18,6 +18,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\CouponResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -52,8 +53,10 @@ class CouponResource extends Resource
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),
-                    Textarea::make('description')
-                        ->columnSpanFull(),
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private'),
                     TextInput::make('code')
                         ->maxLength(255)
                         ->visibleOn('edit')

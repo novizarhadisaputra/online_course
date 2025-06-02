@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Community extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, InteractsWithMedia, ModelTrait;
 
     /**
      * Get all of the community's posts.

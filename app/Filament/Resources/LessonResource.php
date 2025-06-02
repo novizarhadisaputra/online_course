@@ -15,6 +15,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\LessonResource\Pages;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
@@ -53,8 +54,10 @@ class LessonResource extends Resource
                     TextInput::make('short_description')
                         ->maxLength(255)
                         ->default(null),
-                    Textarea::make('description')
-                        ->columnSpanFull()
+                    RichEditor::make('description')
+                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDirectory('attachments')
+                        ->fileAttachmentsVisibility('private')
                         ->required(),
                     Grid::make()->schema([
                         Toggle::make('is_paid')

@@ -92,12 +92,12 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
 
     public function getTenants(Panel $panel): Collection
     {
-        return $this->teams;
+        return $this->branches;
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->teams()->whereKey($tenant)->exists();
+        return $this->branches()->whereKey($tenant)->exists();
     }
 
     public function getFilamentAvatarUrl(): ?string
