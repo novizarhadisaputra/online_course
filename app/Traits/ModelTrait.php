@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Branch;
-use App\Models\Branchable;
+use App\Models\ModelHasBranch;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
@@ -20,6 +20,6 @@ trait ModelTrait
 
     public function branches(): MorphToMany
     {
-        return $this->morphToMany(Branch::class, 'model', Branchable::class);
+        return $this->morphToMany(Branch::class, 'model', ModelHasBranch::class);
     }
 }

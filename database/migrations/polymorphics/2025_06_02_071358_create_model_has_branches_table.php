@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('branchables', function (Blueprint $table) {
+        Schema::create('model_has_branches', function (Blueprint $table) {
             $table->uuidMorphs('model');
             $table->foreignUuid('branch_id')->constrained()->cascadeOnDelete();
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('branchables');
+        Schema::dropIfExists('model_has_branches');
     }
 };

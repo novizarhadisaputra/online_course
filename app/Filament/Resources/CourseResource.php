@@ -4,10 +4,13 @@ namespace App\Filament\Resources;
 
 use Filament\Tables;
 use App\Models\Course;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use App\Enums\CourseLevel;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
 use Filament\Resources\Resource;
@@ -35,8 +38,8 @@ use App\Filament\Resources\CourseResource\Pages\ManageCourseSections;
 use App\Filament\Resources\CourseResource\RelationManagers\PricesRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\CommentsRelationManager;
-use App\Filament\Resources\CourseResource\RelationManagers\LearningMethodsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\TransactionsRelationManager;
+use App\Filament\Resources\CourseResource\RelationManagers\LearningMethodsRelationManager;
 
 class CourseResource extends Resource
 {
@@ -74,6 +77,102 @@ class CourseResource extends Resource
         };
 
         return $query->count();
+    }
+
+    public static function getSelectCategories(): Select
+    {
+        return Select::make('category_id')
+            ->searchable()
+            ->relationship(titleAttribute: 'name', name: 'category')
+            ->createOptionForm([
+                SpatieMediaLibraryFileUpload::make('image')
+                    ->collection('images')
+                    ->visibility('private')
+                    ->disk('s3'),
+                Grid::make()->schema([
+                    TextInput::make('name')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                            if (($get('slug') ?? '') !== Str::slug($old)) {
+                                return;
+                            }
+
+                            $set('slug', Str::slug($state));
+                        }),
+                    TextInput::make('slug')
+                        ->readOnly()
+                        ->required(),
+                ]),
+                RichEditor::make('description')
+                    ->fileAttachmentsDisk('s3')
+                    ->fileAttachmentsDirectory('attachments')
+                    ->fileAttachmentsVisibility('private'),
+                Toggle::make('status')
+                    ->default(true)
+                    ->required(),
+            ]);
+    }
+
+    public static function getSelectCompetences(): Select
+    {
+        return Select::make('competences')
+            ->multiple()
+            ->searchable()
+            ->relationship(titleAttribute: 'name')
+            ->createOptionForm([
+                Grid::make()->schema([
+                    TextInput::make('name')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                            if (($get('slug') ?? '') !== Str::slug($old)) {
+                                return;
+                            }
+
+                            $set('slug', Str::slug($state));
+                        }),
+                    TextInput::make('slug')
+                        ->readOnly()
+                        ->required(),
+                ]),
+                TextInput::make('short_description')
+                    ->maxLength(255),
+                Textarea::make('description')
+                    ->columnSpanFull(),
+                Toggle::make('status')
+                    ->default(true)
+                    ->required(),
+            ]);
+    }
+
+    public static function getSelectTags(): Select
+    {
+        return Select::make('tags')
+            ->multiple()
+            ->searchable()
+            ->relationship(titleAttribute: 'name')
+            ->createOptionForm([
+                Grid::make()->schema([
+                    TextInput::make('name')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                            if (($get('slug') ?? '') !== Str::slug($old)) {
+                                return;
+                            }
+
+                            $set('slug', Str::slug($state));
+                        }),
+                    TextInput::make('slug')
+                        ->readOnly()
+                        ->required(),
+                ]),
+                TextInput::make('short_description')
+                    ->maxLength(255),
+                Textarea::make('description')
+                    ->columnSpanFull(),
+                Toggle::make('status')
+                    ->default(true)
+                    ->required(),
+            ]);
     }
 
     public static function form(Form $form): Form
@@ -118,13 +217,9 @@ class CourseResource extends Resource
                             ->default('minutes')
                             ->maxLength(255),
                     ]),
-                    Select::make('category_id')
-                        ->searchable()
-                        ->relationship(titleAttribute: 'name', name: 'category'),
-                    Select::make('tags')
-                        ->multiple()
-                        ->searchable()
-                        ->relationship(titleAttribute: 'name'),
+                    static::getSelectCategories(),
+                    static::getSelectCompetences(),
+                    static::getSelectTags(),
                     Select::make('language')
                         ->options([
                             'bahasa indonesia' => 'Bahasa Indonesia',

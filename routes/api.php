@@ -65,6 +65,7 @@ Route::prefix('courses')->name('courses.')->group(function () {
         Route::get('/sections', [CourseController::class, 'sections'])->name('sections');
         Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
         Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
+        Route::get('/latest-section', [CourseController::class, 'latestSection'])->name('latest.section');
     });
 });
 

@@ -13,7 +13,7 @@ use App\Models\Follow;
 use App\Models\Review;
 use App\Models\Address;
 use App\Models\Progress;
-use App\Models\Branchable;
+use App\Models\ModelHasBranch;
 use App\Models\Couponable;
 use App\Models\Transaction;
 use Illuminate\Support\Carbon;
@@ -87,7 +87,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
 
     public function branches(): MorphToMany
     {
-        return $this->morphToMany(Branch::class, 'model', Branchable::class);
+        return $this->morphToMany(Branch::class, 'model', ModelHasBranch::class);
     }
 
     public function getTenants(Panel $panel): Collection

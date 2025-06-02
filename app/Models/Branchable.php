@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Branchable extends Model
+class ModelHasBranch extends Model
 {
     /**
      * Get the parent model (user or etc).

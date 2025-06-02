@@ -31,7 +31,7 @@ class Branch extends Model implements HasAvatar, HasMedia
      */
     public function users(): MorphToMany
     {
-        return $this->morphedByMany(User::class, 'model', Branchable::class);
+        return $this->morphedByMany(User::class, 'model', ModelHasBranch::class);
     }
 
     /**

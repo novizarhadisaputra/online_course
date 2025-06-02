@@ -21,7 +21,7 @@ class CourseResource extends JsonResource
             ->where('user_id', $request->user()->id)
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
-        $progress = !$request->user() ? null : $request->user()->progressCourses()->where('courses.id', $this->id)->first();
+        $progress = !$request->user() ? null : $request->user()->progressCourses()->where('courses.id', $this->id)->orderBy('created_at', 'desc')->first();
 
         return [
             'id' => $this->id,
@@ -33,6 +33,7 @@ class CourseResource extends JsonResource
             'description' => $this->description,
             'requirement' => $this->requirement,
             'duration' => $this->duration,
+            'duration_units' => $this->duration_units,
             'level' => $this->level,
             'meta' => $this->meta,
             'language' => $this->language,
@@ -43,12 +44,19 @@ class CourseResource extends JsonResource
             'is_buy' => $is_buy,
             'category' => new CategoryResource($this->category),
             'tags' => TagResource::collection($this->tags),
-            'lessons' => $this->lessons->count(),
-            'students' => $this->transactions->count(),
+            'students' => $this->transactions()->select(['id'])->count(),
+            'sections' => $this->sections()->select(['id'])->count(),
+            'lessons' => $this->lessons()->select(['id'])->count(),
+            'total_quiz' => $this->lessons()->select(['id'])->where('is_quiz', true)->count(),
             'price' => new PriceResource($this->price),
             'progress' => $progress,
-            'competences' => $this->competences,
-            'learning_methods' => $this->learningMethods,
+            'competences' => CompetenceResource::collection($this->competences),
+            'learning_methods' => LearningMethodResource::collection($this->learningMethods),
+            'rating' => (object) [
+                'avg' => $this->reviews()->select(['id', 'rating'])->avg('rating') ?? 0,
+                'count' => $this->reviews()->select(['id'])->count()
+            ],
+            'latest_section' => new LatestSectionResource($this->latestSection),
         ];
     }
 }

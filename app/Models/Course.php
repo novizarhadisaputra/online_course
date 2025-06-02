@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Course extends Model implements HasMedia
 {
@@ -132,6 +133,16 @@ class Course extends Model implements HasMedia
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class, 'course_id', 'id');
+    }
+
+    /**
+     * Get all of the sections for the Course
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function latestSection(): HasOne
+    {
+        return $this->hasOne(Section::class, 'course_id', 'id')->orderBy('created_at', 'desc');
     }
 
     /**
