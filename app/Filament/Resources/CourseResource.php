@@ -187,6 +187,13 @@ class CourseResource extends Resource
                         ->image()
                         ->previewable()
                         ->required(),
+                    SpatieMediaLibraryFileUpload::make('thumbnail')
+                        ->collection('thumbnails')
+                        ->visibility('private')
+                        ->disk('s3')
+                        ->image()
+                        ->previewable()
+                        ->required(),
                     SpatieMediaLibraryFileUpload::make('preview')
                         ->collection('previews')
                         ->visibility('private')
