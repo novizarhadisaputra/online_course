@@ -27,6 +27,8 @@ class BundleResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form

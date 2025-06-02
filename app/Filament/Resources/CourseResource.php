@@ -48,9 +48,22 @@ class CourseResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'User' => $record->user->name,
+            'Category' => $record->category->name,
+        ];
+    }
+
     public static function getBreadcrumbRecordLabel(Model $record)
     {
         return $record->name;
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['user', 'category']);
     }
 
     public static function getNavigationBadge(): ?string
