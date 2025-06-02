@@ -47,6 +47,8 @@ class CourseResource extends JsonResource
             'students' => $this->transactions->count(),
             'price' => new PriceResource($this->price),
             'progress' => $progress,
+            'competences' => $this->competences,
+            'learning_methods' => $this->learningMethods,
         ];
     }
 }
