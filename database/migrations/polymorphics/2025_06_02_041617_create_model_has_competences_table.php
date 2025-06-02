@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('model_has_competences', function (Blueprint $table) {
             $table->uuidMorphs('model');
-            $table->foreignUuid('model_has_competence_id')
+            $table->foreignUuid('competence_id')
                 ->references('id')
                 ->on('competences')
                 ->cascadeOnDelete();
