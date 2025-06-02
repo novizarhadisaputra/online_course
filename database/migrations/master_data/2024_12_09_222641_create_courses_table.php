@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
             $table->text('requirement')->nullable();
-            $table->bigInteger('duration')->nullable();
+            $table->bigInteger('duration')->default(0);
+            $table->char('duration_units')->default('minutes');
             $table->enum('level', ['beginner', 'middle', 'advance']);
             $table->string('language')->default('Bahasa Indonesia');
             $table->boolean('status')->default(false);

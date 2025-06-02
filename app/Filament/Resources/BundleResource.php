@@ -17,6 +17,7 @@ use App\Filament\Resources\BundleResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\BundleResource\RelationManagers\CoursesRelationManager;
 use App\Filament\Resources\BundleResource\RelationManagers\ProductsRelationManager;
+use Filament\Forms\Components\Grid;
 
 class BundleResource extends Resource
 {
@@ -47,6 +48,14 @@ class BundleResource extends Resource
                         ->fileAttachmentsDisk('s3')
                         ->fileAttachmentsDirectory('attachments')
                         ->fileAttachmentsVisibility('private'),
+                    Grid::make()->schema([
+                        TextInput::make('duration')
+                            ->numeric()
+                            ->minValue(1),
+                        TextInput::make('duration_units')
+                            ->default('minutes')
+                            ->maxLength(255),
+                    ]),
                     Toggle::make('status')
                         ->required(),
                 ])

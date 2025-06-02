@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -34,6 +35,7 @@ use App\Filament\Resources\CourseResource\Pages\ManageCourseSections;
 use App\Filament\Resources\CourseResource\RelationManagers\PricesRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\CommentsRelationManager;
+use App\Filament\Resources\CourseResource\RelationManagers\LearningMethodsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\TransactionsRelationManager;
 
 class CourseResource extends Resource
@@ -95,9 +97,14 @@ class CourseResource extends Resource
                         ->required(),
                     Select::make('level')
                         ->options(CourseLevel::class),
-                    TextInput::make('duration')
-                        ->numeric()
-                        ->minValue(1),
+                    Grid::make()->schema([
+                        TextInput::make('duration')
+                            ->numeric()
+                            ->minValue(1),
+                        TextInput::make('duration_units')
+                            ->default('minutes')
+                            ->maxLength(255),
+                    ]),
                     Select::make('category_id')
                         ->searchable()
                         ->relationship(titleAttribute: 'name', name: 'category'),
@@ -180,8 +187,9 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            TransactionsRelationManager::make(['status' => TransactionStatus::SUCCESS]),
+            LearningMethodsRelationManager::make(),
             PricesRelationManager::make(),
+            TransactionsRelationManager::make(['status' => TransactionStatus::SUCCESS]),
             ReviewsRelationManager::make(),
             CommentsRelationManager::make(),
         ];

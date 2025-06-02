@@ -53,6 +53,22 @@ class Course extends Model implements HasMedia
     }
 
     /**
+     * Get all of the competences for the courses.
+     */
+    public function competences(): MorphToMany
+    {
+        return $this->morphToMany(Competence::class, 'model', ModelHasCompetence::class);
+    }
+
+    /**
+     * Get all of the courses's learningMethods.
+     */
+    public function learningMethods(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    /**
      * Get all of the coupons for the courses.
      */
     public function coupons(): MorphToMany

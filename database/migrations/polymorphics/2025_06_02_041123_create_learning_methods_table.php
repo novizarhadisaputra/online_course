@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bundles', function (Blueprint $table) {
+        Schema::create('learning_methods', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
+            $table->uuidMorphs('model');
             $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('short_description')->nullable();
-            $table->text('description')->nullable();
-            $table->boolean('status')->default(false);
-            $table->bigInteger('duration')->default(0);
-            $table->char('duration_units')->default('minutes');
+            $table->boolean('status')->default(true);
 
             $table->timestamps();
         });
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bundles');
+        Schema::dropIfExists('learning_methods');
     }
 };
