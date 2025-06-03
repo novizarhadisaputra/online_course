@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Enrollment extends Model
 {
-    use HasUuids;
+    use HasUuids, ModelTrait;
 
     protected $guarded = [];
 
@@ -29,5 +31,13 @@ class Enrollment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the enrollment's certificate.
+     */
+    public function certificate(): MorphOne
+    {
+        return $this->morphOne(Certificate::class, 'model');
     }
 }

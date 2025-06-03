@@ -37,10 +37,10 @@ class NewsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
         try {
-            $news = News::find($id);
+            $news = News::where('slug', $slug)->first();
             if (!$news) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
@@ -53,10 +53,10 @@ class NewsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function likes(Request $request, string $id)
+    public function likes(Request $request, string $slug)
     {
         try {
-            $news = News::find($id);
+            $news = News::where('slug', $slug)->first();
             if (!$news) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
@@ -70,10 +70,10 @@ class NewsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function comments(Request $request, string $id)
+    public function comments(Request $request, string $slug)
     {
         try {
-            $news = News::find($id);
+            $news = News::where('slug', $slug)->first();
             if (!$news) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
@@ -87,11 +87,11 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeComment(StoreCommentRequest $request, string $id)
+    public function storeComment(StoreCommentRequest $request, string $slug)
     {
         try {
             DB::beginTransaction();
-            $news = News::find($id);
+            $news = News::where('slug', $slug)->first();
             if (!$news) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
@@ -115,11 +115,11 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeLike(Request $request, string $id)
+    public function storeLike(Request $request, string $slug)
     {
         try {
             DB::beginTransaction();
-            $news = News::find($id);
+            $news = News::where('slug', $slug)->first();
             if (!$news) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
@@ -127,7 +127,7 @@ class NewsController extends Controller
             $request->user()->likeNews()->toggle($news->id);
 
             DB::commit();
-            $news = News::find($id);
+            $news = News::where('slug', $slug)->first();
             return $this->success(data: new NewsResource($news), status: 200);
         } catch (\Throwable $th) {
             DB::rollBack();

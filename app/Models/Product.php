@@ -7,6 +7,7 @@ use App\Models\Price;
 use App\Models\Stock;
 use App\Models\Branch;
 use App\Models\ProductCategory;
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Product extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, InteractsWithMedia, ModelTrait;
 
     protected $guarded = [];
 

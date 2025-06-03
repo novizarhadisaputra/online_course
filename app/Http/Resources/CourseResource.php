@@ -46,16 +46,16 @@ class CourseResource extends JsonResource
             'category' => new CategoryResource($this->category),
             'tags' => TagResource::collection($this->tags),
             'students' => $this->transactions()->select(['id'])->count(),
-            'sections' => $this->sections()->select(['id'])->count(),
-            'lessons' => $this->lessons()->select(['id'])->count(),
-            'total_quiz' => $this->lessons()->select(['id'])->where('is_quiz', true)->count(),
+            'sections' => $this->sections()->select(['id'])->where('sections.status', true)->count(),
+            'lessons' => $this->lessons()->select(['id'])->where('lessons.status', true)->count(),
+            'total_quiz' => $this->lessons()->select(['id'])->where('lessons.status', true)->where('is_quiz', true)->count(),
             'price' => new PriceResource($this->price),
             'progress' => $progress,
             'competences' => CompetenceResource::collection($this->competences),
             'learning_methods' => LearningMethodResource::collection($this->learningMethods),
             'rating' => (object) [
-                'avg' => $this->reviews()->select(['id', 'rating'])->avg('rating') ?? 0,
-                'count' => $this->reviews()->select(['id'])->count()
+                'avg' => $this->reviews()->select(['id', 'rating'])->active()->avg('rating') ?? 0,
+                'count' => $this->reviews()->select(['id'])->active()->count()
             ],
             'latest_section' => new LatestSectionResource($this->latestSection),
         ];

@@ -119,6 +119,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::post('/reviews', [CourseController::class, 'storeReview'])->name('store.reviews');
             Route::post('/comments', [CourseController::class, 'storeComment'])->name('store.comments');
             Route::post('/likes', [CourseController::class, 'storeLike'])->name('store.likes');
+            Route::post('/certificates', [CourseController::class, 'storeCertificate'])->name('store.certificates');
 
             Route::prefix('sections')->name('sections.')->group(function () {
                 Route::get('/', [CourseController::class, 'sections'])->name('index');

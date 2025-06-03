@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Answer;
+use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Quiz extends Model
 {
-    use HasUuids;
+    use HasUuids, ModelTrait;
 
     protected $guarded = [];
 

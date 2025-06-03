@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -11,7 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Progress extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, ModelTrait, InteractsWithMedia;
+
+    protected $guarded = [];
 
     /**
      * Get the attributes that should be cast.

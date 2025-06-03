@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Quiz;
 use App\Models\Section;
+use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Lesson extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, ModelTrait, InteractsWithMedia;
 
     protected $guarded = [];
 

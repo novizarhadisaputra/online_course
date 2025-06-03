@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class BundleItem extends Model
 {
-    use ModelTrait;
+    use HasUuids, ModelTrait;
 
     protected $guarded = [];
 

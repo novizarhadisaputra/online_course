@@ -3,23 +3,28 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Course;
+use App\Models\Lesson;
+use App\Models\Progress;
+use App\Models\Enrollment;
+use App\Models\Certificate;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\QuizResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\CouponResource;
 use App\Http\Resources\CourseResource;
+use App\Http\Resources\LessonResource;
+use App\Http\Resources\OptionResource;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\SectionResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
-use App\Http\Resources\CouponResource;
-use App\Http\Resources\LessonResource;
-use App\Http\Resources\OptionResource;
-use App\Http\Resources\QuizResource;
-use App\Http\Resources\UserResource;
-use Illuminate\Database\Eloquent\Builder;
 
 class CourseController extends Controller
 {
@@ -50,10 +55,10 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function reviews(Request $request, string $id)
+    public function reviews(Request $request, string $slug)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -67,10 +72,10 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function coupons(Request $request, string $id)
+    public function coupons(Request $request, string $slug)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -84,14 +89,14 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function sections(Request $request, string $id)
+    public function sections(Request $request, string $slug)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
-            $sections = $course->sections()->paginate($request->input('limit', 10));
+            $sections = $course->sections()->active()->paginate($request->input('limit', 10));
             return $this->success(data: SectionResource::collection($sections), paginate: $sections);
         } catch (\Throwable $th) {
             throw $th;
@@ -101,18 +106,18 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function lessons(Request $request, string $id, string $section_id)
+    public function lessons(Request $request, string $slug, string $section_id)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
-            $section = $course->sections()->where('id', $section_id)->first();
+            $section = $course->sections()->active()->where('id', $section_id)->first();
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
-            $lessons = $section->lessons()->paginate($request->input('limit', 10));
+            $lessons = $section->lessons()->active()->paginate($request->input('limit', 10));
             return $this->success(data: LessonResource::collection($lessons), paginate: $lessons);
         } catch (\Throwable $th) {
             throw $th;
@@ -122,14 +127,14 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function quizzes(Request $request, string $id, string $section_id, string $lesson_id)
+    public function quizzes(Request $request, string $slug, string $section_id, string $lesson_id)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
-            $section = $course->sections()->where('id', $section_id)->first();
+            $section = $course->sections()->active()->where('id', $section_id)->first();
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
@@ -147,14 +152,14 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function options(Request $request, string $id, string $section_id, string $lesson_id, string $quiz_id)
+    public function options(Request $request, string $slug, string $section_id, string $lesson_id, string $quiz_id)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
-            $section = $course->sections()->where('id', $section_id)->first();
+            $section = $course->sections()->active()->where('id', $section_id)->first();
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
@@ -176,10 +181,10 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function comments(Request $request, string $id)
+    public function comments(Request $request, string $slug)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -193,10 +198,10 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function latestSection(Request $request, string $id)
+    public function latestSection(Request $request, string $slug)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -212,10 +217,10 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function likes(Request $request, string $id)
+    public function likes(Request $request, string $slug)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -237,11 +242,11 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeReview(StoreReviewRequest $request, string $id)
+    public function storeReview(StoreReviewRequest $request, string $slug)
     {
         try {
             DB::beginTransaction();
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -269,11 +274,11 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeComment(StoreCommentRequest $request, string $id)
+    public function storeComment(StoreCommentRequest $request, string $slug)
     {
         try {
             DB::beginTransaction();
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -298,11 +303,11 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeLike(Request $request, string $id)
+    public function storeLike(Request $request, string $slug)
     {
         try {
             DB::beginTransaction();
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -310,7 +315,7 @@ class CourseController extends Controller
             $request->user()->likeCourses()->toggle($course->id);
 
             DB::commit();
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             return $this->success(data: new CourseResource($course), status: 200);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -319,12 +324,53 @@ class CourseController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Store a newly created resource in storage.
      */
-    public function show(Request $request, string $id)
+    public function storeCertificate(Request $request, string $slug)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            DB::beginTransaction();
+
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course'])]);
+            }
+
+            $enrollment = Enrollment::where('user_id', $request->user()->id)
+                ->where('course_id', $course->id)
+                ->first();
+            if (!$enrollment) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'enrollment'])]);
+            }
+
+            if ($this->hasGraduated($request->user()->id, $course)) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'graduated'])]);
+            }
+
+            $certificate = $enrollment->certificate()->orderBy('created_at', 'desc')->first();
+            if (!$certificate) {
+                $certificate->certificate_number = Str::upper(env('APP_NAME', "Online Course")) . "-" . Str::upper(Str::random(4)) . "-" . date('ddMMYYYY');
+                $certificate->issue_date = now();
+                $certificate->save();
+            }
+
+            DB::commit();
+            return $this->success(data: new CourseResource($course), status: 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    // storeCertificate
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Request $request, string $slug)
+    {
+        try {
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
@@ -337,14 +383,14 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function showSection(Request $request, string $id, string $section_id)
+    public function showSection(Request $request, string $slug, string $section_id)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
-            $section = $course->sections()->where('id', $section_id)->first();
+            $section = $course->sections()->active()->where('id', $section_id)->first();
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
@@ -357,14 +403,14 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function showLesson(Request $request, string $id, string $section_id, string $lesson_id)
+    public function showLesson(Request $request, string $slug, string $section_id, string $lesson_id)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
-            $section = $course->sections()->where('id', $section_id)->first();
+            $section = $course->sections()->active()->where('id', $section_id)->first();
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
@@ -381,14 +427,14 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function showQuiz(Request $request, string $id, string $section_id, string $lesson_id, string $quiz_id)
+    public function showQuiz(Request $request, string $slug, string $section_id, string $lesson_id, string $quiz_id)
     {
         try {
-            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->find($id);
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
-            $section = $course->sections()->where('id', $section_id)->first();
+            $section = $course->sections()->active()->where('id', $section_id)->first();
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
@@ -404,5 +450,14 @@ class CourseController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    private function hasGraduated(string $user_id, Course $course): bool
+    {
+        $lessons = $course->lessons()->active();
+        $total_lessons = $lessons->count();
+        $completed_lessons = $lessons->progress()->where('user_id', $user_id)->count();
+
+        return $lessons > 0 && $total_lessons == $completed_lessons;
     }
 }

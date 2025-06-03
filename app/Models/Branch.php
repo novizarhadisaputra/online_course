@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Stock;
 use App\Models\Product;
+use App\Traits\ModelTrait;
 use Illuminate\Support\Carbon;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Branch extends Model implements HasAvatar, HasMedia
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids, ModelTrait, InteractsWithMedia;
 
     protected $guarded = [];
 

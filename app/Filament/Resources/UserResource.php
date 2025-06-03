@@ -41,6 +41,7 @@ class UserResource extends Resource
                         ->avatar()
                         ->visibility('private')
                         ->disk('s3')
+                        ->image()
                         ->circleCropper()
                         ->required(),
                     Grid::make()->schema([
