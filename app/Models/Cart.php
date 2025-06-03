@@ -27,16 +27,6 @@ class Cart extends Model
     }
 
     /**
-     * Get all of the reviews for the Cart
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function reviews(): HasMany
-    {
-        return $this->hasMany(Review::class, 'reviewable_id', 'model_id');
-    }
-
-    /**
      * Get the user that owns the Cart
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
