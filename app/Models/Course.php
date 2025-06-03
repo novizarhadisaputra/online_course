@@ -10,12 +10,14 @@ use App\Models\Comment;
 use App\Models\Category;
 use App\Models\Taggable;
 use App\Models\BundleItem;
+use App\Models\Enrollment;
 use App\Traits\ModelTrait;
 use App\Models\Certificate;
 use App\Models\PaymentLink;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -23,7 +25,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Course extends Model implements HasMedia
 {
@@ -183,11 +184,18 @@ class Course extends Model implements HasMedia
     }
 
     /**
-     * Get all of the certificates for the course.
+     * Get all of the students for the course.
      */
-    public function certificates(): MorphToMany
+    public function students(): MorphToMany
     {
-        return $this->morphToMany(User::class, 'model', Certificate::class)
-            ->withPivot(['certificate_number', 'issue_date', 'expiration_date']);
+        return $this->morphToMany(User::class, 'model', Enrollment::class);
+    }
+
+    /**
+     * Get all of the course's enrollments.
+     */
+    public function enrollments(): MorphMany
+    {
+        return $this->morphMany(Enrollment::class, 'model');
     }
 }

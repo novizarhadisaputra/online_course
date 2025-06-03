@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Price;
+use App\Models\Course;
+use App\Models\Product;
 use App\Models\BundleItem;
 use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
@@ -50,5 +54,13 @@ class Bundle extends Model implements HasMedia
     public function price(): MorphOne
     {
         return $this->morphOne(Price::class, 'priceable');
+    }
+
+    /**
+     * Get all of the enrollments for the course.
+     */
+    public function enrollments(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'model', Enrollment::class);
     }
 }

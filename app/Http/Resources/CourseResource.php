@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
@@ -16,15 +17,17 @@ class CourseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $id = $this->id;
         $is_like = !$request->user() ? false : $this->likes()->where('user_id', $request->user()->id)->exists();
         $is_buy = !$request->user() ? false : $this->transactions()
             ->where('user_id', $request->user()->id)
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
-        $progress = !$request->user() ? null : $request->user()->progressCourses()->where('courses.id', $this->id)->orderBy('created_at', 'desc')->first();
+        $progress = !$request->user() ? null : $request->user()->progressCourses()->where('courses.id', $id)->orderBy('created_at', 'desc')->first();
+        $enrollment = !$request->user() ? [] : $this->enrollments()->where('user_id', $request->user()->id)->orderBy('created_at', 'desc')->first();
 
         return [
-            'id' => $this->id,
+            'id' => $id,
             'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             'thumbnail' => $this->hasMedia('thumbnails') ? $this->getMedia('thumbnails')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             'preview' => $this->hasMedia('previews') ? $this->getMedia('previews')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
@@ -58,6 +61,7 @@ class CourseResource extends JsonResource
                 'count' => $this->reviews()->select(['id'])->active()->count()
             ],
             'latest_section' => new LatestSectionResource($this->latestSection),
+            'certificate' => $enrollment ? $enrollment->certificate : null,
         ];
     }
 }

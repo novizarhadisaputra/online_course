@@ -259,7 +259,7 @@ class CourseResource extends Resource
                     ->visibility('private')
                     ->disk('s3'),
                 TextColumn::make('name')
-                    ->description(fn(Course $record): string => $record->short_description)
+                    ->description(fn(Course $record): string | null => $record->description)
                     ->searchable(),
                 TextColumn::make('user.name')
                     ->label('Instructor')

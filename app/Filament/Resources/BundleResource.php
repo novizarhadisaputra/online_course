@@ -43,6 +43,7 @@ class BundleResource extends Resource
                         ->required(),
                     TextInput::make('name')
                         ->required()
+                        ->unique(ignoreRecord: true)
                         ->maxLength(255),
                     TextInput::make('short_description')
                         ->maxLength(255),

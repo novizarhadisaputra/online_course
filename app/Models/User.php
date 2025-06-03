@@ -13,9 +13,9 @@ use App\Models\Follow;
 use App\Models\Review;
 use App\Models\Address;
 use App\Models\Progress;
-use App\Models\ModelHasBranch;
 use App\Models\Couponable;
 use App\Models\Transaction;
+use App\Models\ModelHasBranch;
 use Illuminate\Support\Carbon;
 use App\Models\TransactionDetail;
 use Laravel\Sanctum\HasApiTokens;
@@ -29,13 +29,14 @@ use Filament\Models\Contracts\HasTenants;
 use Filament\Models\Contracts\FilamentUser;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
-use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 
 class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar, HasTenants, RenewPasswordContract
 {
@@ -186,7 +187,6 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
     /**
      * Get all of the enrollment courses that are assigned this user.
      */
-
     public function enrollmentCourses(): MorphToMany
     {
         return $this->morphedByMany(Course::class, 'model', Enrollment::class);
