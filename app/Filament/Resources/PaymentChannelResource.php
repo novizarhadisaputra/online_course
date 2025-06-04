@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\PaymentChannel;
 use Filament\Resources\Resource;
@@ -103,9 +104,7 @@ class PaymentChannelResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            PaymentMethodsRelationManager::class
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -118,6 +117,15 @@ class PaymentChannelResource extends Resource
             'payment_methods' => Pages\ManageChannelMethod::route('/{record}/payment-methods'),
             'payment_methods.create' => Pages\CreateChannelMethod::route('/{record}/payment-methods/create'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewPaymentChannel::class,
+            Pages\EditPaymentChannel::class,
+            Pages\ManageChannelMethod::class,
+        ]);
     }
 
     public static function getAncestor(): ?Ancestor
