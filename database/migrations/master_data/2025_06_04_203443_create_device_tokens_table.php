@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stocks', function (Blueprint $table) {
+        Schema::create('device_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->foreignUuid('branch_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('product_id')->constrained()->cascadeOnDelete();
-
-            $table->unique(['branch_id', 'product_id']);
-            $table->integer('qty')->default(0);
+            $table->text('token')->nullable();
+            $table->json('data')->nullable();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stocks');
+        Schema::dropIfExists('device_tokens');
     }
 };

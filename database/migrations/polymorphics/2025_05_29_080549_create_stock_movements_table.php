@@ -18,8 +18,10 @@ return new class extends Migration
             $table->bigInteger('qty')->default(0);
             $table->text('notes')->nullable();
 
-            $table->foreignUuid('branch_id')->unique()->constrained()->cascadeOnDelete();
-            $table->foreignUuid('product_id')->unique()->constrained()->cascadeOnDelete();
+            $table->foreignUuid('branch_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('product_id')->constrained()->cascadeOnDelete();
+
+            $table->unique(['branch_id', 'product_id']);
 
             $table->timestamps();
         });

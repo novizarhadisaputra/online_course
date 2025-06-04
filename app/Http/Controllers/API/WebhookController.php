@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Traits\ResponseTrait;
 use App\Services\XenditService;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
-use App\Traits\ResponseTrait;
+use App\Notifications\PaymentCallbackNotification;
 
 class WebhookController extends Controller
 {
@@ -66,6 +68,7 @@ class WebhookController extends Controller
     public function receiveFromPayment(Request $request, string $gateway)
     {
         try {
+            DB::beginTransaction();
             $input = json_decode(json_encode($request->input()));
 
             switch ($gateway) {
@@ -79,8 +82,17 @@ class WebhookController extends Controller
                 default:
                     break;
             }
+
+            $data = [
+                'id' => $transaction->id,
+                'status' => $transaction->status,
+            ];
+
+            $transaction->user->notify(new PaymentCallbackNotification($data)->afterCommit());
+            DB::commit();
             return $this->success(data:new TransactionResource($transaction));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }

@@ -22,6 +22,7 @@
         "filament/widgets": "^3.2",
         "guava/filament-nested-resources": "^1.2",
         "hugomyb/filament-media-action": "^3.1",
+        "laravel-notification-channels/fcm": "^5.1",
         "laravel/framework": "12.0.1",
         "laravel/octane": "^2.9",
         "laravel/sanctum": "^4.0",

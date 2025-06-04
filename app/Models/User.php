@@ -86,6 +86,26 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
         return $this->hasVerifiedEmail();
     }
 
+    /**
+     * Specifies the user's FCM tokens
+     *
+     * @return string|array
+     */
+    public function routeNotificationForFcm(): array
+    {
+        return $this->deviceTokens()->select(['token'])->pluck('token')->toArray();
+    }
+
+    /**
+     * Get all of the deviceTokens for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function deviceTokens(): HasMany
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
+
     public function branches(): MorphToMany
     {
         return $this->morphToMany(Branch::class, 'model', ModelHasBranch::class);
