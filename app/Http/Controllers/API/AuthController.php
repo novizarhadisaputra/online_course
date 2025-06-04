@@ -42,6 +42,8 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
+            $user->assignRole(['customer']);
+
             $token = $user->createToken('auth_token')->plainTextToken;
 
             // Send verification email

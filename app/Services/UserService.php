@@ -52,7 +52,6 @@ class UserService
         if (!$user) {
             throw ValidationException::withMessages([
                 'email' => trans('validation.exists', ['attribute' => 'email']),
-                'password' => trans('validation.exists', ['attribute' => 'password'])
             ]);
         }
         return $user;
