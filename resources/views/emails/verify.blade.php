@@ -86,7 +86,7 @@
             <h2>Hi {{ $user->name }},</h2>
             <p>Thank you for signing up for our service! We're excited to have you onboard. To get started, click the
                 button below:</p>
-            <a href="{{ route('auth.verify', ['id' => $user->id]) }}" class="email-button">Get Started</a>
+            <a href="{{ route('api.auth.verify', ['id' => $user->id]) }}" class="email-button">Get Started</a>
             <p>If you have any questions, feel free to reply to this email or visit our <a href="#">help
                     center</a>.</p>
         </div>
