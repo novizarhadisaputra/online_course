@@ -46,17 +46,6 @@ class UserService
         return $user;
     }
 
-    public static function checkEmail(string $email): User
-    {
-        $user = self::findOneByEmail($email);
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'email' => trans('validation.exists', ['attribute' => 'email']),
-            ]);
-        }
-        return $user;
-    }
-
     public static function findUserByEmail(string $email, array $roles = ['customer']): User
     {
         $user = self::findOneByEmail(email: $email, roles: $roles);

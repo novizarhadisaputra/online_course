@@ -111,7 +111,7 @@ class AuthController extends Controller
 
             DB::commit();
 
-            return redirect()->away(env('APP_URL_WEBSITE', 'localhost:3000'));
+            return redirect()->away(env('APP_URL_WEBSITE', 'localhost:3000') . '/account/verified');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
