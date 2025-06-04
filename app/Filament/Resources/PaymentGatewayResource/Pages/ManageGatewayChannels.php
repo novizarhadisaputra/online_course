@@ -2,17 +2,15 @@
 
 namespace App\Filament\Resources\PaymentGatewayResource\Pages;
 
-use Filament\Forms;
 use Filament\Tables;
-use Filament\Actions;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\PaymentGatewayResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
@@ -24,4 +22,31 @@ class ManageGatewayChannels extends ManageRelatedRecords
     protected static string $resource = PaymentGatewayResource::class;
 
     protected static string $relationship = 'payment_channels';
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->recordTitleAttribute('name')
+            ->columns([
+                TextColumn::make('name'),
+                TextColumn::make('payment_methods_count')->default(0),
+            ])
+            ->filters([
+                //
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
 }

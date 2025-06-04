@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\CourseResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
@@ -31,7 +32,7 @@ class ManageCourseSections extends ManageRelatedRecords
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
             ]);
