@@ -99,7 +99,7 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
 
-            $user = AuthService::findById($id);
+            $user = UserService::findUserById($id);
             if (AuthService::isEmailVerified($user)) {
                 throw  ValidationException::withMessages([
                     'email' => trans('validation.has_verify', ['attribute' => 'email']),
@@ -122,7 +122,7 @@ class AuthController extends Controller
     public function resendVerifyEmail(ResendVerifyEmailRequest $request)
     {
         try {
-            $user = UserService::checkEmail($request->email);
+            $user = UserService::findUserByEmail($request->email);
             if (AuthService::isEmailVerified($user)) {
                 return $this->success(message: 'Email already verified', status: 200);
             }
