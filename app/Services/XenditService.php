@@ -34,10 +34,10 @@ class XenditService
             if ($this->transaction->payment_method->payment_channel && $this->transaction->payment_method->payment_channel->payment_gateway) {
                 if ($this->transaction->payment_method->payment_channel->payment_gateway->configs) {
                     $configs = $this->transaction->payment_method->payment_channel->payment_gateway->configs;
-                    if (!$configs['xendit_api_key']) {
+                    if (!$configs['api_key']) {
                         throw ValidationException::withMessages(['config' => trans('validation.exists', ['attribute' => 'Config API Key'])]);
                     }
-                    $this->config = Configuration::setXenditKey($configs['xendit_api_key']);
+                    $this->config = Configuration::setXenditKey($configs['api_key']);
                 }
             }
 

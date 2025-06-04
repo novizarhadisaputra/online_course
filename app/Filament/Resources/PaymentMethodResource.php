@@ -58,6 +58,7 @@ class PaymentMethodResource extends Resource
                         ->fileAttachmentsDirectory('attachments')
                         ->fileAttachmentsVisibility('private'),
                     KeyValue::make('configs')
+                        ->helperText('Example: code, service_fee, service_fee_type, tax_fee, tax_fee_type')
                         ->columnSpanFull(),
                     Toggle::make('status')
                         ->required(),

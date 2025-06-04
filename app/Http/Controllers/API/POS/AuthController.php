@@ -8,7 +8,6 @@ use App\Traits\ResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\POS\Auth\LoginRequest;
-use App\Models\Branch;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -20,12 +19,13 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            $branch = Branch::where('code', $request->branch_code)->select(['id', 'code'])->first();
-            if (!$branch) {
-                throw ValidationException::withMessages(['branch_code' => trans('validation.exists', ['attribute' => 'branch code'])]);
-            }
             $user = AuthService::check($request, ['cashier']);
             AuthService::checkEmailVerified($user);
+
+            $exists = $user->branches()->where('code', $request->branch_code)->exists();
+            if (!$exists) {
+                throw ValidationException::withMessages(['branch_code' => trans('validation.exists', ['attribute' => 'branch code'])]);
+            }
 
             $data = (object) [
                 'token' => $user->createToken('auth_token')->plainTextToken,

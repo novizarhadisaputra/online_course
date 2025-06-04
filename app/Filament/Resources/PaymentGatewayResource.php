@@ -62,6 +62,7 @@ class PaymentGatewayResource extends Resource
                         ->fileAttachmentsDirectory('attachments')
                         ->fileAttachmentsVisibility('private'),
                     KeyValue::make('configs')
+                        ->helperText('Example: api_key')
                         ->columnSpanFull(),
                     Toggle::make('status')
                         ->required(),
