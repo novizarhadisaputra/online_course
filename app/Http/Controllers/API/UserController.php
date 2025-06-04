@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\AuthService;
+use App\Services\UserService;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -13,8 +16,6 @@ use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\InstructorResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\User\UpdateAvatarRequest;
-use App\Services\AuthService;
-use App\Services\UserService;
 
 class UserController extends Controller
 {
@@ -133,7 +134,9 @@ class UserController extends Controller
 
             if ($request->hasFile('avatar')) {
                 $user->clearMediaCollection('avatars');
-                $user->addMediaFromRequest('avatar')->toMediaCollection('avatars', 's3');
+                $user->addMediaFromRequest('avatar')
+                    ->usingFileName($request->user()->id . '.png')
+                    ->toMediaCollection('avatars', 's3');
             }
             $user->save();
 

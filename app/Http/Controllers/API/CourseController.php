@@ -353,7 +353,7 @@ class CourseController extends Controller
                         ->setPaper('a4', 'landscape')->setWarnings(false)->output();
                     $certificate
                         ->addMediaFromString($pdf)
-                        ->usingFileName(Str::slug($request->user()->id . '_' . $certificate->certificate_number, '_'))
+                        ->usingFileName(Str::slug($request->user()->id . '_' . $certificate->certificate_number, '_') . '.pdf')
                         ->toMediaCollection('certificates', 's3');
                 }
                 $certificate->save();
