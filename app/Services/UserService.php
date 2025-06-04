@@ -31,7 +31,7 @@ class UserService
         return $user;
     }
 
-    public static function findByEmail(
+    public static function findOneByEmail(
         string $email,
         array $fields = ['*'],
         array $roles = ['customer'],
@@ -42,12 +42,25 @@ class UserService
             ->where('email', $email);
         $user = $user->whereHas('roles', fn(Builder $q) => $q->whereIn('name', $roles));
         $user = $user->first();
+
+        return $user;
+    }
+
+    public static function checkEmail(string $email): User
+    {
+        $user = self::findOneByEmail($email);
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => trans('validation.exists', ['attribute' => 'email']),
+                'password' => trans('validation.exists', ['attribute' => 'password'])
+            ]);
+        }
         return $user;
     }
 
     public static function findUserByEmail(string $email, array $roles = ['customer']): User
     {
-        $user = self::findByEmail(email: $email, roles: $roles);
+        $user = self::findOneByEmail(email: $email, roles: $roles);
         if (!$user) {
             throw  ValidationException::withMessages([
                 'email' => trans('validation.exists', ['attribute' => 'email']),

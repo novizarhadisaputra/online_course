@@ -17,7 +17,9 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\ResendVerifyEmailRequest;
 use App\Services\AuthService;
+use App\Services\UserService;
 use Exception;
 use Illuminate\Validation\ValidationException;
 
@@ -115,10 +117,10 @@ class AuthController extends Controller
     }
 
     // Resend Verification Email
-    public function resendVerifyEmail(Request $request)
+    public function resendVerifyEmail(ResendVerifyEmailRequest $request)
     {
         try {
-            $user = AuthService::check($request);
+            $user = UserService::checkEmail($request->email);
             if (AuthService::isEmailVerified($user)) {
                 return $this->success(message: 'Email already verified', status: 200);
             }
