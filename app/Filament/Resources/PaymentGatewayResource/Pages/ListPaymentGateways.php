@@ -13,6 +13,8 @@ class ListPaymentGateways extends ListRecords
 
     protected static string $resource = PaymentGatewayResource::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
     protected function getHeaderActions(): array
     {
         return [

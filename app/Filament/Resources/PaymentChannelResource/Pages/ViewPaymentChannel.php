@@ -19,4 +19,9 @@ class ViewPaymentChannel extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
+
+    public function getTitle(): string
+    {
+        return $this->record->name;
+    }
 }

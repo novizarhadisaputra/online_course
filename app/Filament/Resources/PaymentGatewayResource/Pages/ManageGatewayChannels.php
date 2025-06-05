@@ -3,12 +3,9 @@
 namespace App\Filament\Resources\PaymentGatewayResource\Pages;
 
 use Filament\Tables;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
+use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\PaymentGatewayResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
@@ -23,7 +20,9 @@ class ManageGatewayChannels extends ManageRelatedRecords
 
     protected static string $relationship = 'payment_channels';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public function getTitle(): string {
+        return $this->record->name . "'s " . ' channels';
+    }
 
     public function table(Table $table): Table
     {

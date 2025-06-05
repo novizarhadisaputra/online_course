@@ -20,4 +20,9 @@ class EditPaymentChannel extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    public function getTitle(): string
+    {
+        return $this->record->name . ' edit';
+    }
 }

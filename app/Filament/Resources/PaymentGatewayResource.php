@@ -22,7 +22,6 @@ use App\Filament\Resources\PaymentGatewayResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\PaymentGatewayResource\RelationManagers\PaymentChannelsRelationManager;
 
 class PaymentGatewayResource extends Resource
 {
@@ -111,10 +110,10 @@ class PaymentGatewayResource extends Resource
             ]);
     }
 
-    // public static function getRelations(): array
-    // {
-    //     return [PaymentChannelsRelationManager::class];
-    // }
+    public static function getRelations(): array
+    {
+        return [];
+    }
 
     public static function getPages(): array
     {
@@ -131,6 +130,7 @@ class PaymentGatewayResource extends Resource
     public static function getRecordSubNavigation(Page $page): array
     {
         return $page->generateNavigationItems([
+            Pages\ListPaymentGateways::class,
             Pages\ViewPaymentGateway::class,
             Pages\EditPaymentGateway::class,
             Pages\ManageGatewayChannels::class,

@@ -2,16 +2,11 @@
 
 namespace App\Filament\Resources\PaymentChannelResource\Pages;
 
-use Filament\Forms;
 use Filament\Tables;
-use Filament\Actions;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\PaymentChannelResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
@@ -24,6 +19,11 @@ class ManageChannelMethod extends ManageRelatedRecords
     protected static string $resource = PaymentChannelResource::class;
 
     protected static string $relationship = 'payment_methods';
+
+    public function getTitle(): string
+    {
+        return $this->record->name . ' methods';
+    }
 
     public function table(Table $table): Table
     {
