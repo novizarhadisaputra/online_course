@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\ThirdPartyLog;
 use App\Traits\ResponseTrait;
 use App\Services\XenditService;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,13 @@ class WebhookController extends Controller
      */
     public function receiveFromPayment(Request $request, string $gateway)
     {
+        ThirdPartyLog::create([
+            'name' => $gateway,
+            'event_name' => 'webhook receive data',
+            'ip_address' => $request->ip(),
+            'data' => $request->input(),
+        ]);
+
         try {
             DB::beginTransaction();
             $input = json_decode(json_encode($request->input()));
@@ -90,7 +98,7 @@ class WebhookController extends Controller
 
             $transaction->user->notify(new PaymentCallbackNotification($data)->afterCommit());
             DB::commit();
-            return $this->success(data:new TransactionResource($transaction));
+            return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;

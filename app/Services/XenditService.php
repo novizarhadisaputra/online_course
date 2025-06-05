@@ -196,13 +196,6 @@ class XenditService
 
             $receive_data = json_decode(json_encode($request->input()));
 
-            ThirdPartyLog::create([
-                'name' => 'xendit',
-                'event_name' => 'webhook receive data',
-                'ip_address' => $request->ip(),
-                'data' => $request->input(),
-            ]);
-
             if ($receive_data->data && $receive_data->data->status) {
                 if ($receive_data->data->status === 'SUCCEEDED') {
                     $this->transaction->status = 'success';

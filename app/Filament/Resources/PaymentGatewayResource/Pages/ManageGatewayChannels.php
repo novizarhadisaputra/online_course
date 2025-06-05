@@ -5,7 +5,6 @@ namespace App\Filament\Resources\PaymentGatewayResource\Pages;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\PaymentGatewayResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
