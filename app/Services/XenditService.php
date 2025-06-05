@@ -161,7 +161,7 @@ class XenditService
             $result = json_decode(json_encode($response_payment_request));
             if ($result->payment_method && $result->payment_method->virtual_account && $result->payment_method->virtual_account->channel_properties) {
                 $data = [
-                    'id' => $result->id,
+                    'id' => $result->payment_method->id,
                     'customer_name' => $result->payment_method->virtual_account->channel_properties->customer_name,
                     'virtual_account_number' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
                     'expires_at' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
@@ -169,7 +169,7 @@ class XenditService
                 $this->transaction->data = $data;
             } else if ($result->payment_method && $result->payment_method->qr_code && $result->payment_method->qr_code->channel_properties) {
                 $data = [
-                    'id' => $result->id,
+                    'id' => $result->payment_method->id,
                     'qr_string' => $result->payment_method->qr_code->channel_properties->qr_string,
                 ];
                 $this->transaction->payment_link = $data['qr_string'];
