@@ -6,12 +6,12 @@ use App\Models\Tag;
 use App\Models\Cart;
 use App\Models\Comment;
 use App\Models\Category;
-use App\Models\PaymentLink;
+use App\Models\Enrollment;
 use App\Traits\ModelTrait;
+use App\Models\PaymentLink;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -101,5 +101,13 @@ class Event extends Model implements HasMedia
     public function appointments(): MorphMany
     {
         return $this->morphMany(Appointment::class, 'model');
+    }
+
+    /**
+     * Get all of the course's enrollments.
+     */
+    public function enrollments(): MorphMany
+    {
+        return $this->morphMany(Enrollment::class, 'model');
     }
 }

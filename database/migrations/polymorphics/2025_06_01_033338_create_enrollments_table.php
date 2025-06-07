@@ -15,7 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('model');
 
-            $table->foreignUuid('user_id')->unique()->constrained()->cascadeOnDelete();
+            $table->foreignUuid('transaction_detail_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });

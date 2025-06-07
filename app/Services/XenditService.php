@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Bundle;
+use App\Models\Course;
+use App\Models\Event;
 use App\Models\ThirdPartyLog;
 use Xendit\Configuration;
 use Illuminate\Support\Str;
