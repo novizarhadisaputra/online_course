@@ -108,9 +108,9 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                 Route::get('/', [UserController::class, 'addresses'])->name('index');
                 Route::post('/', [UserController::class, 'storeAddress'])->name('store');
                 Route::prefix('{address}')->group(function () {
-                    Route::get('/{address}', [UserController::class, 'showAddress'])->name('show');
-                    Route::put('/{address}', [UserController::class, 'updateAddress'])->name('update');
-                    Route::delete('/{address}', [UserController::class, 'destroyAddress'])->name('destroy');
+                    Route::get('/', [UserController::class, 'showAddress'])->name('show');
+                    Route::put('/', [UserController::class, 'updateAddress'])->name('update');
+                    Route::delete('/', [UserController::class, 'destroyAddress'])->name('destroy');
                 });
             });
         });
