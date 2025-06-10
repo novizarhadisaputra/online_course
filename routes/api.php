@@ -1,24 +1,25 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\TagController;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\BundleController;
 use App\Http\Controllers\API\CartController;
-use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\NewsController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\BundleController;
 use App\Http\Controllers\API\CouponController;
 use App\Http\Controllers\API\CourseController;
-use App\Http\Controllers\API\GetInTouchController;
-use App\Http\Controllers\API\InstructorController;
-use App\Http\Controllers\API\NewsController;
-use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
-use App\Http\Controllers\API\QuestionAndAnswerController;
 use App\Http\Controllers\API\ReviewController;
-use App\Http\Controllers\API\TagController;
-use App\Http\Controllers\API\TransactionController;
-use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\WebhookController;
-use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\GetInTouchController;
+use App\Http\Controllers\API\GoogleAuthController;
+use App\Http\Controllers\API\InstructorController;
+use App\Http\Controllers\API\TransactionController;
+use App\Http\Controllers\API\QuestionAndAnswerController;
+use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 
 Route::prefix('check')->name('check.')->group(function () {
     Route::name('env')->get('/', function () {
@@ -30,6 +31,10 @@ Route::prefix('check')->name('check.')->group(function () {
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+    Route::prefix('google')->name('google.')->group(function () {
+        Route::post('/login', [GoogleAuthController::class, 'login'])->name('login');
+    });
 
     Route::get('/verify-email/{id}', [AuthController::class, 'verifyEmail'])->name('verify');
     Route::post('/resend-verification', [AuthController::class, 'resendVerifyEmail'])->name('resend-verification');

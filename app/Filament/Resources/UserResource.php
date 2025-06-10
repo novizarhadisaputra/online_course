@@ -2,26 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\UserResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\UserResource\RelationManagers\ActivitiesRelationManager;
 
 class UserResource extends Resource
 {
@@ -49,7 +42,8 @@ class UserResource extends Resource
                             ->maxLength(255)
                             ->required(),
                         TextInput::make('last_name')
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->required(),
                     ]),
                     TextInput::make('description')
                         ->maxLength(255)

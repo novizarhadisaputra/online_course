@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use App\Models\Lesson;
 use Filament\Forms\Form;
@@ -12,7 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
@@ -59,6 +57,16 @@ class LessonResource extends Resource
                         ->fileAttachmentsDirectory('attachments')
                         ->fileAttachmentsVisibility('private')
                         ->required(),
+                    Grid::make()->schema([
+                        TextInput::make('duration')
+                            ->numeric()
+                            ->required()
+                            ->minValue(1),
+                        TextInput::make('duration_units')
+                            ->default('minutes')
+                            ->required()
+                            ->maxLength(255),
+                    ]),
                     Grid::make()->schema([
                         Toggle::make('is_paid')
                             ->default(true),

@@ -20,7 +20,6 @@ use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\ResendVerifyEmailRequest;
 use App\Services\AuthService;
 use App\Services\UserService;
-use Exception;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller

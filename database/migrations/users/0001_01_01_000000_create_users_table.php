@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();
             $table->char('otp')->nullable();
+            $table->string('google_id')->nullable()->unique();
+
             $table->rememberToken();
 
             $table->timestamp('email_verified_at')->nullable();

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->boolean('is_paid')->default(true);
             $table->boolean('is_quiz')->default(false);
             $table->boolean('status')->default(false);
+            $table->bigInteger('duration')->default(0);
+            $table->char('duration_units')->default('minutes');
 
             $table->foreignUuid('section_id')->nullable()->constrained()->cascadeOnDelete();
 
