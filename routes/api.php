@@ -104,6 +104,15 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::put('/update-avatar', [UserController::class, 'updateAvatar'])->name('update.avatar');
             Route::get('/following', [UserController::class, 'following'])->name('following');
             Route::get('/followers', [UserController::class, 'followers'])->name('followers');
+            Route::prefix('addresses')->name('addresses.')->group(function () {
+                Route::get('/', [UserController::class, 'addresses'])->name('index');
+                Route::post('/', [UserController::class, 'storeAddress'])->name('store');
+                Route::prefix('{address}')->group(function () {
+                    Route::get('/{address}', [UserController::class, 'showAddress'])->name('show');
+                    Route::put('/{address}', [UserController::class, 'updateAddress'])->name('update');
+                    Route::delete('/{address}', [UserController::class, 'destroyAddress'])->name('destroy');
+                });
+            });
         });
     });
 
@@ -112,6 +121,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
     Route::prefix('courses')->name('courses.')->group(function () {
         Route::prefix('{course}')->group(function () {
+            Route::get('/lessons', [CourseController::class, 'searchLessons'])->name('lessons');
             Route::get('/likes', [CourseController::class, 'likes'])->name('likes');
             Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
             Route::get('/coupons', [CourseController::class, 'coupons'])->name('coupons');
@@ -142,6 +152,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                                 });
                             });
                             Route::post('progress', [CourseController::class, 'storeLessonProgress']);
+                            Route::post('likes', [CourseController::class, 'storeLikeLesson']);
                         });
                     });
                 });

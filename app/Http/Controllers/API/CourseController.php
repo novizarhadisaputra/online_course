@@ -103,6 +103,27 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function searchLessons(Request $request, string $slug)
+    {
+        try {
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $lessons = $course->lessons()->where('lessons.status', true);
+            if ($request->search) {
+                $lessons = $lessons->where('name', 'ilike', "%$request->search%");
+            }
+            $lessons = $lessons->paginate($request->input('limit', 10));
+            return $this->success(data: LessonResource::collection($lessons), paginate: $lessons);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
     public function lessons(Request $request, string $slug, string $section_id)
     {
         try {
@@ -342,8 +363,7 @@ class CourseController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'graduated'])]);
             }
 
-            $certificate = $enrollment->certificate()
-                ->orderBy('created_at', 'desc')->first();
+            $certificate = $enrollment->certificate()->orderBy('created_at', 'desc')->first();
             if (!$certificate) {
                 $certificate->certificate_number = Str::upper(env('APP_NAME', "Online Course")) . "-" . Str::upper(Str::random(4)) . "-" . date('ddMMYYYY');
                 $certificate->issue_date = now();
@@ -367,7 +387,59 @@ class CourseController extends Controller
         }
     }
 
-    // storeCertificate
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeLikeLesson(Request $request, string $slug, string $section_id, string $lesson_id)
+    {
+        try {
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+
+            $request->user()->likeLessons()->toggle($lesson->id);
+
+            return $this->success(data: new LessonResource($lesson));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeLessonProgress(Request $request, string $slug, string $section_id, string $lesson_id)
+    {
+        try {
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+
+            // $request->user()->likeLessons()->toggle($lesson->id);
+
+            // return $this->success(data: new LessonResource($lesson));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
     /**
      * Display the specified resource.

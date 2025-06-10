@@ -15,6 +15,8 @@ class LessonResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $is_like = !$request->user() ? false : $this->likes()->where('user_id', $request->user()->id)->exists();
+
         return [
             "id" => $this->id,
             "name" => $this->name,
@@ -23,6 +25,7 @@ class LessonResource extends JsonResource
             "description" => $this->description,
             "is_quiz" => $this->is_quiz,
             "is_paid" => $this->is_paid,
+            'is_like' => $is_like,
             "quiz_count" => $this->quizzes()->count(),
         ];
     }

@@ -10,6 +10,7 @@ use App\Models\Branch;
 use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\Follow;
+use App\Models\Lesson;
 use App\Models\Review;
 use App\Models\Address;
 use App\Models\Progress;
@@ -167,6 +168,15 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
     public function likeNews(): MorphToMany
     {
         return $this->morphedByMany(News::class, 'likeable', Like::class);
+    }
+
+    /**
+     * Get all of the like lesson that are assigned this user.
+     */
+
+    public function likeLessons(): MorphToMany
+    {
+        return $this->morphedByMany(Lesson::class, 'likeable', Like::class);
     }
 
     /**

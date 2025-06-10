@@ -11,6 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Lesson extends Model implements HasMedia
 {
@@ -42,5 +43,13 @@ class Lesson extends Model implements HasMedia
     public function quizzes(): MorphMany
     {
         return $this->morphMany(Quiz::class, 'model');
+    }
+
+    /**
+     * Get all of the likes for the lesson.
+     */
+    public function likes(): MorphToMany
+    {
+        return $this->morphToMany(User::class, 'likeable', Like::class);
     }
 }

@@ -10,12 +10,15 @@ use App\Services\UserService;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreAddressRequest;
+use App\Http\Requests\User\UpdateAddressRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\InstructorResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\User\UpdateAvatarRequest;
+use App\Http\Resources\AddressResource;
 
 class UserController extends Controller
 {
@@ -24,9 +27,14 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function addresses(Request $request)
     {
-        //
+        try {
+            $addresses = $request->user()->addresses()->paginate($request->input('limit', 10));
+            return $this->success(data: AddressResource::collection($addresses), paginate: $addresses);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -66,9 +74,17 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function storeAddress(StoreAddressRequest $request, string $id)
     {
-        //
+        try {
+            if ($request->user()->id !== $id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
+            }
+            $address = $request->user()->addresses()->create($request->validated());
+            return $this->success(data: new AddressResource($address));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -77,6 +93,28 @@ class UserController extends Controller
     public function show(string $id)
     {
         //
+    }
+
+    public function showAddress(Request $request, string $id, string $address_id)
+    {
+        try {
+            DB::beginTransaction();
+            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
+            }
+
+            $user = UserService::findUserById($id);
+
+            $address = $user->addresses()->where('id', $address_id)->first();
+            if (!$address) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
+            }
+
+            DB::commit();
+            return $this->success(data: new AddressResource($address));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -148,10 +186,71 @@ class UserController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     */
+    public function updateAddress(UpdateAddressRequest $request, string $id, string $address_id)
+    {
+        try {
+            DB::beginTransaction();
+            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
+            }
+
+            $user = UserService::findUserById($id);
+
+            $address = $user->addresses()->where('id', $address_id)->first();
+            if (!$address) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
+            }
+
+            $address->country = $request->country;
+            $address->street_line1 = $request->street_line1;
+            $address->street_line2 = $request->street_line2;
+            $address->city = $request->city;
+            $address->province = $request->province;
+            $address->state = $request->state;
+            $address->postal_code = $request->postal_code;
+            $address->save();
+
+            DB::commit();
+            return $this->success(data: new AddressResource($address));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function destroyAddress(Request $request, string $id, string $address_id)
+    {
+        try {
+            DB::beginTransaction();
+            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
+            }
+
+            $user = UserService::findUserById($id);
+
+            $address = $user->addresses()->where('id', $address_id)->first();
+            if (!$address) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
+            }
+
+            $address->delete();
+
+            DB::commit();
+            return $this->success(data: null);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
