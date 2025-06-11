@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
+use App\Http\Resources\AnnouncementResource;
 
 class CourseController extends Controller
 {
@@ -44,6 +45,23 @@ class CourseController extends Controller
                 ->whereHas('lessons', fn(Builder $q) => $q->where('lessons.status', true))
                 ->paginate($request->input('limit', 10));
             return $this->success(data: CourseResource::collection($courses), paginate: $courses);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function announcements(Request $request, string $slug)
+    {
+        try {
+            $course = Course::with(['latestSection.lessons', 'sections.lessons', 'reviews', 'enrollments', 'announcements'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $announcements = $course->announcements()->paginate($request->input('limit', 10));
+            return $this->success(data: AnnouncementResource::collection($announcements), paginate: $announcements);
         } catch (\Throwable $th) {
             throw $th;
         }

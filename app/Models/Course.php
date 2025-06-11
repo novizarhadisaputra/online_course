@@ -111,6 +111,14 @@ class Course extends Model implements HasMedia
     }
 
     /**
+     * Get all of the courses's announcements.
+     */
+    public function announcements(): MorphMany
+    {
+        return $this->morphMany(Announcement::class, 'model');
+    }
+
+    /**
      * Get all of the courses's price.
      */
     public function price(): MorphOne

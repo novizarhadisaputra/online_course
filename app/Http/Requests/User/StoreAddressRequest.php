@@ -22,6 +22,9 @@ class StoreAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'first_name' => ['required'],
+            'last_name' => ['nullable'],
+            'email' => ['required', 'email'],
             'country' => ['required'],
             'street_line1' => ['required'],
             'street_line2' => ['nullable'],
@@ -29,6 +32,7 @@ class StoreAddressRequest extends FormRequest
             'province' => ['required'],
             'state' => ['required'],
             'postal_code' => ['required'],
+            'status' => ['required', 'boolean']
         ];
     }
 }

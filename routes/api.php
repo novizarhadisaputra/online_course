@@ -51,7 +51,7 @@ Route::prefix('webhooks')->name('webhooks.')->group(function () {
     });
 });
 
-Route::apiResource('get-in-touches', GetInTouchController::class)->only(['index', 'show']);
+Route::apiResource('get-in-touches', GetInTouchController::class)->only(['store']);
 Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
 
 Route::apiResource('instructors', InstructorController::class)->only(['index', 'show']);
@@ -127,6 +127,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
     Route::prefix('courses')->name('courses.')->group(function () {
         Route::prefix('{course}')->group(function () {
+            Route::get('/announcements', [CourseController::class, 'announcements'])->name('announcements');
             Route::get('/lessons', [CourseController::class, 'searchLessons'])->name('lessons');
             Route::get('/likes', [CourseController::class, 'likes'])->name('likes');
             Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');

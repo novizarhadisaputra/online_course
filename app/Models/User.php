@@ -149,7 +149,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
 
     public function addresses(): MorphMany
     {
-        return $this->morphMany(Address::class, 'addressable');
+        return $this->morphMany(Address::class, 'model');
     }
 
     /**

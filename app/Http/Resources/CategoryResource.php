@@ -21,6 +21,7 @@ class CategoryResource extends JsonResource
             'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             'short_description' => $this->short_description,
             'description' => $this->description,
+            'courses_count' => $this->courses ? count($this->courses) : 0,
         ];
     }
 }

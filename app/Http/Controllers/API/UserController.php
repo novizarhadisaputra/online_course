@@ -203,6 +203,9 @@ class UserController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
             }
 
+            $address->first_name = $request->first_name ?? $address->first_name;
+            $address->last_name = $request->last_name ?? $address->last_name;
+            $address->email = $request->email ?? $address->email;
             $address->country = $request->country;
             $address->street_line1 = $request->street_line1;
             $address->street_line2 = $request->street_line2;

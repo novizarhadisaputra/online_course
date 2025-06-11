@@ -20,7 +20,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $categories = Category::active()->paginate($request->input('limit', 10));
+            $categories = Category::active()->with(['courses'])->paginate($request->input('limit', 10));
             return $this->success(data: CategoryResource::collection($categories), paginate: $categories);
         } catch (\Throwable $th) {
             throw $th;
@@ -66,7 +66,7 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $category = Category::find($id);
+            $category = Category::with(['courses'])->find($id);
             if (!$category) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'category id'])]);
             }

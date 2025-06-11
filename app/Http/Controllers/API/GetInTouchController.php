@@ -36,10 +36,10 @@ class GetInTouchController extends Controller
         try {
             DB::beginTransaction();
 
-            GetInTouch::create($request->validated());
+            $get_in_touch = GetInTouch::create($request->validated());
 
             DB::commit();
-            return $this->success(data: true, status: 201);
+            return $this->success(data: $get_in_touch, status: 201);
         } catch (\Throwable $th) {
             DB::rollback();
             throw $th;
