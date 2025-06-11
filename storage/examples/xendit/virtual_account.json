@@ -1,0 +1,54 @@
+{
+    "id": "pr-a9a58888-20a0-498b-8e49-f5413f65cc34",
+    "created": "2025-06-11T23:05:32.513931368Z",
+    "updated": "2025-06-11T23:05:32.513931368Z",
+    "reference_id": "CHORLVDLHU",
+    "business_id": "6840c5faf4c35e55cd52350c",
+    "customer_id": null,
+    "customer": null,
+    "amount": 225000,
+    "min_amount": null,
+    "max_amount": null,
+    "country": "ID",
+    "currency": "IDR",
+    "payment_method": {
+        "id": "pm-eb7acf50-878f-4106-bd15-ebd47d37615e",
+        "type": "VIRTUAL_ACCOUNT",
+        "created": "2025-06-11T23:05:32.556170153Z",
+        "updated": "2025-06-11T23:05:32.882275007Z",
+        "description": null,
+        "reference_id": "0197613d-2a66-7325-a8dd-ff9661b0707b",
+        "card": null,
+        "direct_debit": null,
+        "ewallet": null,
+        "over_the_counter": null,
+        "virtual_account": {
+            "min_amount": null,
+            "max_amount": null,
+            "amount": 225000,
+            "currency": "IDR",
+            "channel_code": "BCA",
+            "channel_properties": {
+                "customer_name": "Novizar Customer",
+                "virtual_account_number": "381659999812300",
+                "expires_at": "2025-06-12T23:05:31+00:00"
+            }
+        },
+        "qr_code": null,
+        "reusability": "ONE_TIME_USE",
+        "status": "PENDING",
+        "metadata": null
+    },
+    "description": null,
+    "failure_code": null,
+    "capture_method": "AUTOMATIC",
+    "initiator": null,
+    "card_verification_results": null,
+    "status": "PENDING",
+    "actions": [],
+    "metadata": {
+        "sku": "transaction-sku-0197613d-2a66-7325-a8dd-ff9661b0707b"
+    },
+    "shipping_information": null,
+    "items": null
+}

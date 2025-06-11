@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Bundle;
-use App\Models\Course;
-use App\Models\Event;
 use App\Models\ThirdPartyLog;
 use Xendit\Configuration;
 use Illuminate\Support\Str;
@@ -118,16 +115,14 @@ class XenditService
                         'expires_at' => now()->addDay()
                     ]
                 ];
-            } else if ($payment_channel && Str::slug(Str::lower($payment_channel->name), '_') === 'ewallet') {
+            } else if ($payment_channel && Str::slug(Str::lower($payment_channel->name), '') === 'ewallet') {
                 $params['payment_method']['type'] = 'EWALLET';
                 $params['payment_method']['ewallet'] = [
                     'channel_code' => $payment_method->configs['code'],
                     'channel_properties' => [
                         'customer_name' => $this->transaction->user->name,
                         'expires_at' => now()->addDay(),
-                        'channel_properties' => [
-                            'success_return_url' => $this->transaction->payment_method->configs['success_return_url']
-                        ]
+                        'success_return_url' => $this->transaction->payment_method->configs['success_return_url']
                     ]
                 ];
             } else if ($payment_channel && Str::slug(Str::lower($payment_channel->name), '_') === 'qr_code') {
@@ -146,7 +141,7 @@ class XenditService
                 'name' => 'xendit',
                 'event_name' => 'create payment request',
                 'ip_address' => $request->ip(),
-                'data' => $params,
+                'data' => json_encode($params),
             ]);
 
             $payment_request_parameters = new PaymentRequestParameters($params);
@@ -156,7 +151,7 @@ class XenditService
                 'name' => 'xendit',
                 'event_name' => 'response create payment request',
                 'ip_address' => null,
-                'data' => $response_payment_request,
+                'data' => json_encode($response_payment_request),
             ]);
 
             Log::info(json_encode($response_payment_request));
@@ -167,7 +162,7 @@ class XenditService
                     'id' => $result->payment_method->id,
                     'customer_name' => $result->payment_method->virtual_account->channel_properties->customer_name,
                     'virtual_account_number' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
-                    'expires_at' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
+                    'expires_at' => $result->payment_method->virtual_account->channel_properties->expires_at,
                 ];
                 $this->transaction->data = $data;
             } else if ($result->payment_method && $result->payment_method->qr_code && $result->payment_method->qr_code->channel_properties) {
@@ -176,6 +171,14 @@ class XenditService
                     'qr_string' => $result->payment_method->qr_code->channel_properties->qr_string,
                 ];
                 $this->transaction->payment_link = $data['qr_string'];
+                $this->transaction->data = $data;
+            } else if ($result->payment_method && $result->payment_method->ewallet && $result->payment_method->ewallet->channel_properties) {
+                $data = [
+                    'id' => $result->payment_method->id,
+                    'payment_link' => $result->actions[0]->url,
+                    'qr_string' => $result->actions[1]->qr_code
+                ];
+                $this->transaction->payment_link = $data['payment_link'];
                 $this->transaction->data = $data;
             }
 

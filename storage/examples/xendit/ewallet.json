@@ -1,0 +1,96 @@
+{
+    "id": "pr-da8652b9-3fd1-42c2-a6c2-bac979756ba3",
+    "created": "2025-06-11T22:53:48.056594555Z",
+    "updated": "2025-06-11T22:53:48.056594555Z",
+    "reference_id": "GK17RTRLVS",
+    "business_id": "6840c5faf4c35e55cd52350c",
+    "customer_id": null,
+    "customer": null,
+    "amount": 229000,
+    "min_amount": null,
+    "max_amount": null,
+    "country": "ID",
+    "currency": "IDR",
+    "payment_method": {
+        "id": "pm-237a7fe3-09fb-4580-a7f7-ba989980157a",
+        "type": "EWALLET",
+        "created": "2025-06-11T22:53:47.944501485Z",
+        "updated": "2025-06-11T22:53:47.944501485Z",
+        "description": null,
+        "reference_id": "01975e07-6161-70c2-8afb-00714faafc98",
+        "card": null,
+        "direct_debit": null,
+        "ewallet": {
+            "channel_code": "SHOPEEPAY",
+            "channel_properties": {
+                "success_return_url": "https:\/\/corexa-lms-frontend-three.vercel.app"
+            },
+            "account": {
+                "name": null,
+                "account_details": null,
+                "balance": null,
+                "point_balance": null
+            }
+        },
+        "over_the_counter": null,
+        "virtual_account": null,
+        "qr_code": null,
+        "reusability": "ONE_TIME_USE",
+        "status": "ACTIVE",
+        "metadata": null
+    },
+    "description": null,
+    "failure_code": null,
+    "capture_method": "AUTOMATIC",
+    "initiator": null,
+    "card_verification_results": null,
+    "status": "REQUIRES_ACTION",
+    "actions": [
+        {
+            "action": "AUTH",
+            "url_type": "DEEPLINK",
+            "method": "GET",
+            "url": "https:\/\/ewallet-mock-connector.xendit.co\/v1\/ewallet_connector\/checkouts?token=d150hv1fphsu12jjcusg",
+            "qr_code": null
+        },
+        {
+            "action": "PRESENT_TO_CUSTOMER",
+            "method": null,
+            "url": null,
+            "qr_code": "test-qr-string"
+        }
+    ],
+    "metadata": {
+        "sku": "transaction-sku-01975e07-6161-70c2-8afb-00714faafc98"
+    },
+    "shipping_information": null,
+    "items": [
+        {
+            "reference_id": "01973499-eb5e-7248-8a80-30a94ea4be81",
+            "name": "Dev Ups to Dev Ops",
+            "type": "App\\Models\\Course",
+            "category": "App\\Models\\Course",
+            "currency": "IDR",
+            "quantity": 1,
+            "price": 200000
+        },
+        {
+            "reference_id": "01975e0e-0a35-724c-84b3-a085eaa87dcb",
+            "name": "Service Fee",
+            "type": "Fee",
+            "category": "Fee",
+            "currency": "IDR",
+            "quantity": 1,
+            "price": 5000
+        },
+        {
+            "reference_id": "01975e0e-0a35-724c-84b3-a085eaa87dcb",
+            "name": "Tax Fee",
+            "type": "Fee",
+            "category": "Fee",
+            "currency": "IDR",
+            "quantity": 1,
+            "price": 24000
+        }
+    ]
+}

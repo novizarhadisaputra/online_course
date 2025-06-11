@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Event;
-use App\Models\Course;
 use App\Models\Transaction;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ThirdPartyLog;
 use App\Traits\ResponseTrait;
@@ -14,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Notifications\PaymentCallbackNotification;
+use App\Services\TransactionService;
 
 class WebhookController extends Controller
 {
@@ -25,7 +23,7 @@ class WebhookController extends Controller
             'name' => $gateway,
             'event_name' => 'webhook receive data',
             'ip_address' => $request->ip(),
-            'data' => $request->input(),
+            'data' => json_encode($request->input()),
         ]);
 
         try {
@@ -44,7 +42,7 @@ class WebhookController extends Controller
                     break;
             }
 
-            $this->enrollmentProcess($transaction);
+            TransactionService::enrollmentProcess($transaction);
 
             $data = [
                 'id' => $transaction->id,
@@ -57,46 +55,6 @@ class WebhookController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
-        }
-    }
-
-    private function enrollmentProcess(Transaction $transaction)
-    {
-        if ($transaction && $transaction->details()->count()) {
-            foreach ($transaction->details as $item) {
-                if ($item->model_type == Course::class) {
-                    $course = Course::find($item->model_id);
-                    if ($course) {
-                        $enrollment = $course->enrollments()->where('transaction_detail_id', $item->id)->first();
-                        if (!$enrollment) {
-                            $enrollment = $course->enrollments()->create([
-                                'transaction_detail_id' => $item->id,
-                                'user_id' => $transaction->user_id,
-                            ]);
-                        }
-                    }
-                } else if ($item == Event::class) {
-                    $event = Event::find($item->model_id);
-                    if ($event) {
-                        $enrollment = $event->enrollments()->where('transaction_detail_id', $item->id)->first();
-                        if (!$enrollment) {
-                            $enrollment = $event->enrollments()->create([
-                                'transaction_detail_id' => $item->id,
-                                'user_id' => $transaction->user_id,
-                            ]);
-                        }
-                        $appointment = $event->appointments()->where('transaction_detail_id', $item->id)->first();
-                        if ($appointment) {
-                            $appointment = $event->appointments()->create([
-                                'code' => Str::upper(Str::random(10)),
-                                'transaction_detail_id' => $item->id,
-                                'user_id' => $transaction->user_id,
-                                'created_by' => $event->user_id,
-                            ]);
-                        }
-                    }
-                }
-            }
         }
     }
 }
