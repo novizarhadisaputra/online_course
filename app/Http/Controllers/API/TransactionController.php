@@ -24,6 +24,10 @@ use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Requests\Transaction\CheckoutRequest;
+use App\Http\Requests\Transaction\StoreEnrollmentCourseRequest;
+use App\Http\Requests\Transaction\StoreEnrollmentEventRequest;
+use App\Models\Event;
+use App\Services\TransactionService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TransactionController extends Controller
@@ -109,7 +113,12 @@ class TransactionController extends Controller
             $transaction->tax_fee = 0;
             $transaction->service_fee = 0;
             $transaction->total_price = $total_price;
+            $transaction->status = $total_price > 0 ? TransactionStatus::WAITING_PAYMENT : TransactionStatus::SUCCESS;
             $transaction->save();
+
+            if ($transaction->status == TransactionStatus::SUCCESS) {
+                TransactionService::enrollmentProcess($transaction);
+            }
 
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));

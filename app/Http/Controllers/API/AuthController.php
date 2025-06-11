@@ -66,7 +66,6 @@ class AuthController extends Controller
     {
         try {
             $user = AuthService::check($request);
-            AuthService::checkEmailVerified($user);
 
             $data = (object) [
                 'token' => $user->createToken('auth_token')->plainTextToken,

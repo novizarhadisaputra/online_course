@@ -14,6 +14,7 @@ use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\WebhookController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\EnrollmentController;
 use App\Http\Controllers\API\GetInTouchController;
 use App\Http\Controllers\API\GoogleAuthController;
 use App\Http\Controllers\API\InstructorController;
@@ -205,6 +206,11 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     });
 
     Route::apiResource('carts', CartController::class);
+
+    Route::prefix('enrollments')->name('enrollments.')->group(function () {
+        Route::post('/course', [EnrollmentController::class, 'storeEnrollmentCourse'])->name('course.store');
+        Route::post('/event', [EnrollmentController::class, 'storeEnrollmentEvent'])->name('event.store');
+    });
 
     Route::apiResource('transactions', TransactionController::class)->except(['destroy']);
     Route::prefix('transactions')->name('transactions.')->group(function () {
