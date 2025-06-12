@@ -145,16 +145,6 @@ class Course extends Model implements HasMedia
     }
 
     /**
-     * Get all of the sections for the Course
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function latestSection(): HasOne
-    {
-        return $this->hasOne(Section::class, 'course_id', 'id')->orderBy('created_at', 'desc');
-    }
-
-    /**
      * Get all of the lessons for the Course
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough

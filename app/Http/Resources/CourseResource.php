@@ -60,7 +60,6 @@ class CourseResource extends JsonResource
                 'avg' => $this->reviews()->select(['id', 'rating'])->active()->avg('rating') ?? 0,
                 'count' => $this->reviews()->select(['id'])->active()->count()
             ],
-            'latest_section' => new LatestSectionResource($this->latestSection),
             'certificate' => $enrollment ? $enrollment->certificate : null,
         ];
     }
