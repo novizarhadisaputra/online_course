@@ -41,6 +41,31 @@ class CourseController extends Controller
             if ($request->search) {
                 $courses = $courses->where('name', 'ilike', "%$request->search%");
             }
+            if ($request->filter) {
+                if (isset($request->filter['prices'])) {
+                    if (Str::contains(implode(' ', $request->filter['prices']), ['paid', 'free'])) {
+                        $courses = $courses->where('is_paid', '<>', null);
+                    } else {
+                        $is_paid = Str::contains(implode(' ', $request->filter['prices']), ['paid']);
+                        $courses = $courses->where('is_paid', $is_paid);
+                    }
+                }
+                if (isset($request->filter['levels'])) {
+                    $courses = $courses->where('level', $request->filter['levels']);
+                }
+                if (isset($request->filter['categories'])) {
+                    $courses = $courses->whereHas('category', fn(Builder $q) => $q->whereIn('name', $request->filter['categories']));
+                }
+                if (isset($request->filter['ratings'])) {
+                    $query = "";
+                    foreach ($request->filter['ratings'] as $i => $value) {
+                        if ($i > 0) $query .= " OR ";
+                        $query .= "reviews_avg_rating =  " . $value;
+                    }
+                    $courses = $courses->withAvg('reviews', 'rating')->havingRaw("($query)");
+                }
+            }
+
             $courses = $courses
                 ->whereHas('lessons', fn(Builder $q) => $q->where('lessons.status', true))
                 ->paginate($request->input('limit', 10));

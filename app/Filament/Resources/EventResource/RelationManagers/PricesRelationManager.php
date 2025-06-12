@@ -3,12 +3,13 @@
 namespace App\Filament\Resources\EventResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -17,6 +18,11 @@ use Filament\Resources\RelationManagers\RelationManager;
 class PricesRelationManager extends RelationManager
 {
     protected static string $relationship = 'price';
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return $ownerRecord->is_paid;
+    }
 
     public function form(Form $form): Form
     {

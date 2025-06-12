@@ -52,7 +52,7 @@ class CourseResource extends JsonResource
             'sections' => $this->sections()->select(['id'])->where('sections.status', true)->count(),
             'lessons' => $this->lessons()->select(['id'])->where('lessons.status', true)->count(),
             'total_quiz' => $this->lessons()->select(['id'])->where('lessons.status', true)->where('is_quiz', true)->count(),
-            'price' => new PriceResource($this->price),
+            'price' => $this->is_paid ? new PriceResource($this->price) : null,
             'progress' => $progress,
             'competences' => CompetenceResource::collection($this->competences),
             'learning_methods' => LearningMethodResource::collection($this->learningMethods),

@@ -237,8 +237,12 @@ class CourseResource extends Resource
                             'title' => '',
                             'description' => ''
                         ]),
-                    Toggle::make('status')
-                        ->required(),
+                    Grid::make()->schema([
+                        Toggle::make('is_paid')
+                            ->required(),
+                        Toggle::make('status')
+                            ->required(),
+                    ])
                 ]),
             ]);
     }

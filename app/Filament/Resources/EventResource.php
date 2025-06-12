@@ -82,7 +82,10 @@ class EventResource extends Resource
                             'title' => '',
                             'description' => ''
                         ]),
-                    Toggle::make('status'),
+                    Grid::make()->schema([
+                        Toggle::make('is_paid'),
+                        Toggle::make('status'),
+                    ]),
                 ]),
             ]);
     }

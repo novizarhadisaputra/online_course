@@ -22,6 +22,7 @@ return new class extends Migration
             $table->char('duration_units')->default('minutes');
             $table->enum('level', ['beginner', 'middle', 'advance']);
             $table->string('language')->default('Bahasa Indonesia');
+            $table->boolean('is_paid')->default(false);
             $table->boolean('status')->default(false);
             $table->boolean('is_get_certificate')->default(false);
             $table->longText('meta')->nullable();
