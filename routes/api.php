@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AreaController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\TagController;
@@ -65,6 +66,25 @@ Route::apiResource('news', NewsController::class)->only(['index', 'show']);
 Route::apiResource('question-and-answers', QuestionAndAnswerController::class)->only(['index', 'show']);
 Route::apiResource('question-and-answer-categories', QuestionAndAnswerCategoryController::class)->only(['index', 'show']);
 Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
+
+Route::prefix('provinces')->name('provinces.')->group(function () {
+    Route::get('/', [AreaController::class, 'provinces'])->name('index');
+    Route::prefix('{province}')->group(function () {
+        Route::prefix('regencies')->name('regencies.')->group(function () {
+            Route::get('/', [AreaController::class, 'regencies'])->name('index');
+            Route::prefix('{regency}')->group(function () {
+                Route::prefix('districts')->name('districts.')->group(function () {
+                    Route::get('/', [AreaController::class, 'districts'])->name('index');
+                    Route::prefix('{district}')->group(function () {
+                        Route::prefix('villages')->name('villages.')->group(function () {
+                            Route::get('/', [AreaController::class, 'villages'])->name('index');
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
 
 Route::prefix('courses')->name('courses.')->group(function () {
     Route::prefix('{course}')->group(function () {

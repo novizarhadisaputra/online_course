@@ -22,6 +22,11 @@ return new class extends Migration
             $table->bigInteger('duration')->default(0);
             $table->char('duration_units')->default('minutes');
 
+            $table->boolean('has_assignment')->default(false);
+            $table->string('title_assignment')->nullable();
+            $table->text('description_assignment')->nullable();
+            $table->dateTime('due_date')->nullable();
+
             $table->foreignUuid('section_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->timestamps();

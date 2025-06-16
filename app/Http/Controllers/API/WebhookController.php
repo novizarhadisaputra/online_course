@@ -49,7 +49,7 @@ class WebhookController extends Controller
                 'status' => $transaction->status,
             ];
 
-            $transaction->user->notify(new PaymentCallbackNotification($data)->afterCommit());
+            $transaction->user->notify((new PaymentCallbackNotification($data))->afterCommit());
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
