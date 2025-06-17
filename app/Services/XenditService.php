@@ -160,6 +160,7 @@ class XenditService
             if ($result->payment_method && $result->payment_method->virtual_account && $result->payment_method->virtual_account->channel_properties) {
                 $data = [
                     'id' => $result->payment_method->id,
+                    'reference_id' => $result->payment_method->reference_id,
                     'customer_name' => $result->payment_method->virtual_account->channel_properties->customer_name,
                     'virtual_account_number' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
                     'expires_at' => $result->payment_method->virtual_account->channel_properties->expires_at,
@@ -168,6 +169,7 @@ class XenditService
             } else if ($result->payment_method && $result->payment_method->qr_code && $result->payment_method->qr_code->channel_properties) {
                 $data = [
                     'id' => $result->payment_method->id,
+                    'reference_id' => $result->payment_method->reference_id,
                     'qr_string' => $result->payment_method->qr_code->channel_properties->qr_string,
                 ];
                 $this->transaction->payment_link = $data['qr_string'];
@@ -175,6 +177,7 @@ class XenditService
             } else if ($result->payment_method && $result->payment_method->ewallet && $result->payment_method->ewallet->channel_properties) {
                 $data = [
                     'id' => $result->payment_method->id,
+                    'reference_id' => $result->payment_method->reference_id,
                     'payment_link' => $result->actions[0]->url,
                     'qr_string' => $result->actions[1]->qr_code
                 ];
