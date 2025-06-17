@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('tax_percentage')->default(11);
             $table->enum('status', ['waiting payment', 'refund', 'success', 'cancel', 'expire', 'pending', 'fail'])->default('waiting payment');
             $table->enum('category', ['debit', 'credit'])->default('debit');
-            $table->text('data')->nullable();
+            $table->json('data')->nullable();
 
             $table->foreignUuid('cashier_id')->nullable()->references('id')->on('users');
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('is_paid')->default(false);
             $table->boolean('status')->default(false);
             $table->boolean('is_get_certificate')->default(false);
-            $table->longText('meta')->nullable();
+            $table->json('meta')->nullable();
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();

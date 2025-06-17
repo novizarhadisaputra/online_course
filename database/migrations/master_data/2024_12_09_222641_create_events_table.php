@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('is_paid')->default(false);
             $table->boolean('status')->default(false);
             $table->string('url')->nullable();
-            $table->longText('meta')->nullable();
+            $table->json('meta')->nullable();
             $table->dateTime('start_time');
             $table->dateTime('end_time');
 

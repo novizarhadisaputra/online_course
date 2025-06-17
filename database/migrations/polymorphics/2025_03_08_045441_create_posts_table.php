@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(false);
-            $table->longText('meta')->nullable();
+            $table->json('meta')->nullable();
 
             $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();

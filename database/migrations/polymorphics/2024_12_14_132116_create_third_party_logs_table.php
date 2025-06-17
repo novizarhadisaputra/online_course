@@ -16,7 +16,7 @@ return new class extends Migration
             $table->char('name');
             $table->string('event_name');
             $table->string('ip_address')->nullable();
-            $table->longText('data')->nullable();
+            $table->json('data')->nullable();
             $table->timestamps();
         });
     }
