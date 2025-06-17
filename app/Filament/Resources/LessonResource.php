@@ -96,7 +96,7 @@ class LessonResource extends Resource
                             ->fileAttachmentsDisk('s3')
                             ->fileAttachmentsDirectory('attachments')
                             ->fileAttachmentsVisibility('private'),
-                        DateTimePicker::make('published_at')
+                        DateTimePicker::make('due_date')
                             ->seconds(false)
 
                     ])->visible(fn(Get $get): bool => $get('has_assignment'))
