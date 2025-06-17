@@ -23,7 +23,7 @@ class WebhookController extends Controller
             'name' => $gateway,
             'event_name' => 'webhook receive data',
             'ip_address' => $request->ip(),
-            'data' => json_encode($request->input()),
+            'data' => $request->input(),
         ]);
 
         try {
@@ -42,16 +42,16 @@ class WebhookController extends Controller
                     break;
             }
 
-            TransactionService::enrollmentProcess($transaction);
-
-            $data = [
-                'id' => $transaction->id,
-                'status' => $transaction->status,
-            ];
-
-            $transaction->user->notify((new PaymentCallbackNotification($data))->afterCommit());
-            DB::commit();
-            return $this->success(data: new TransactionResource($transaction));
+            if ($transaction) {
+                TransactionService::enrollmentProcess($transaction);
+                $data = [
+                    'id' => $transaction->id,
+                    'status' => $transaction->status,
+                ];
+                $transaction->user->notify((new PaymentCallbackNotification($data))->afterCommit());
+                DB::commit();
+                return $this->success(data: new TransactionResource($transaction));
+            }
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;

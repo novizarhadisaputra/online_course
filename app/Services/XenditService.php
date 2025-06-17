@@ -141,7 +141,7 @@ class XenditService
                 'name' => 'xendit',
                 'event_name' => 'create payment request',
                 'ip_address' => $request->ip(),
-                'data' => json_encode($params),
+                'data' => $params,
             ]);
 
             $payment_request_parameters = new PaymentRequestParameters($params);
@@ -151,7 +151,7 @@ class XenditService
                 'name' => 'xendit',
                 'event_name' => 'response create payment request',
                 'ip_address' => null,
-                'data' => json_encode($response_payment_request),
+                'data' => $response_payment_request,
             ]);
 
             Log::info(json_encode($response_payment_request));
