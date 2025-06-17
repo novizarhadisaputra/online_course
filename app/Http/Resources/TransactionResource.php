@@ -19,7 +19,7 @@ class TransactionResource extends JsonResource
         return [
             'id' => $this->id,
             'code' => $this->code,
-            'payment_method' => $this->payment_method,
+            'payment_method' => new PaymentMethodResource($this->payment_method),
             'payment_link' => $this->payment_link,
             'service_fee' => $this->service_fee,
             'tax_fee' => $this->tax_fee,
@@ -30,6 +30,7 @@ class TransactionResource extends JsonResource
             'status' => $this->status,
             'category' => $this->category,
             'data' => $this->data,
+            'details' => TransactionDetailResource::collection($this->details),
             'created_at' => $this->created_at,
         ];
     }
