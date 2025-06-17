@@ -10,7 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\KeyValue;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -62,6 +62,26 @@ class PaymentMethodResource extends Resource
                         ->columnSpanFull(),
                     Toggle::make('status')
                         ->required(),
+                    Repeater::make('tutorials')
+                        ->schema([
+                            SpatieMediaLibraryFileUpload::make('image')
+                                ->collection('images')
+                                ->visibility('private')
+                                ->disk('s3')
+                                ->image()
+                                ->previewable()
+                                ->required(),
+                            TextInput::make('name')
+                                ->label('Title')
+                                ->required()
+                                ->maxLength(255),
+                            RichEditor::make('description')
+                                ->fileAttachmentsDisk('s3')
+                                ->fileAttachmentsDirectory('attachments')
+                                ->fileAttachmentsVisibility('private'),
+
+                        ])
+                        ->columns(2)
                 ])
             ]);
     }
@@ -78,6 +98,7 @@ class PaymentMethodResource extends Resource
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('tutorials_count')->counts('tutorials'),
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('created_at')

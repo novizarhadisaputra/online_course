@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->bigInteger('duration')->default(0);
             $table->char('duration_units')->default('minutes');
+            $table->boolean('has_appointment')->default(false);
 
             $table->boolean('has_assignment')->default(false);
             $table->string('title_assignment')->nullable();

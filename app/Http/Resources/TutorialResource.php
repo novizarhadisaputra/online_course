@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PaymentMethodResource extends JsonResource
+class TutorialResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,9 +17,9 @@ class PaymentMethodResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
             'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
-            'tutorials' => TutorialResource::collection($this->tutorials),
+            'title' => $this->name,
+            'description' => $this->description,
         ];
     }
 }

@@ -20,6 +20,7 @@ use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\LessonResource\Pages\CreateLessonQuiz;
 use App\Filament\Resources\LessonResource\Pages\ManageLessonQuiz;
+use App\Filament\Resources\LessonResource\RelationManagers\EventsRelationManager;
 use App\Filament\Resources\LessonResource\RelationManagers\CommentsRelationManager;
 
 class LessonResource extends Resource
@@ -102,6 +103,7 @@ class LessonResource extends Resource
     public static function getRelations(): array
     {
         return [
+            EventsRelationManager::make(),
             CommentsRelationManager::make(),
         ];
     }
@@ -113,7 +115,6 @@ class LessonResource extends Resource
             // 'create' => Pages\CreateLesson::route('/create'),
             'view' => Pages\ViewLesson::route('/{record}'),
             'edit' => Pages\EditLesson::route('/{record}/edit'),
-
             'quizzes' => ManageLessonQuiz::route('/{record}/quizzes'),
             'quizzes.create' => CreateLessonQuiz::route('/{record}/quizzes/create'),
         ];

@@ -28,7 +28,6 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
 
-            $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
     }

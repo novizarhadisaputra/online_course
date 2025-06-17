@@ -52,4 +52,12 @@ class Lesson extends Model implements HasMedia
     {
         return $this->morphToMany(User::class, 'likeable', Like::class);
     }
+
+    /**
+     * Get all of the events for the lesson.
+     */
+    public function events(): MorphToMany
+    {
+        return $this->morphToMany(Event::class, 'model', ModelHasEvent::class);
+    }
 }
