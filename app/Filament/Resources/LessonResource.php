@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use Filament\Tables;
 use App\Models\Lesson;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use Guava\FilamentNestedResources\Ancestor;
+use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\LessonResource\Pages;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -73,9 +75,37 @@ class LessonResource extends Resource
                             ->default(true),
                         Toggle::make('is_quiz')
                             ->default(false),
+                        Toggle::make('has_appointment')
+                            ->default(false),
+                        Toggle::make('has_assignment')
+                            ->live(debounce: 500)
+                            ->default(false),
                         Toggle::make('status')
                             ->required(),
-                    ])->columns(3)
+                    ])->columns([
+                        'sm' => 2,
+                        'md' => 2,
+                        'lg' => 3,
+                        'xl' => 3,
+                    ]),
+                    Grid::make()->schema([
+                        TextInput::make('title_assignment')
+                            ->required()
+                            ->maxLength(255),
+                        RichEditor::make('description_assignment')
+                            ->fileAttachmentsDisk('s3')
+                            ->fileAttachmentsDirectory('attachments')
+                            ->fileAttachmentsVisibility('private'),
+                        DateTimePicker::make('published_at')
+                            ->seconds(false)
+
+                    ])->visible(fn(Get $get): bool => $get('has_assignment'))
+                        ->columns([
+                            'sm' => 1,
+                            'md' => 1,
+                            'lg' => 1,
+                            'xl' => 1,
+                        ]),
                 ]),
             ]);
     }
