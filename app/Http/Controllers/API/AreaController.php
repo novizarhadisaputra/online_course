@@ -24,7 +24,11 @@ class AreaController extends Controller
     public function provinces(Request $request)
     {
         try {
-            $provinces = Province::paginate($request->input('limit', 10));
+            $provinces = Province::select(['*']);
+            if ($request->search) {
+                $provinces = $provinces->where('name', 'ilike', "%$request->search%");
+            }
+            $provinces = $provinces->paginate($request->input('limit', 10));
             return $this->success(data: ProvinceResource::collection($provinces), paginate: $provinces);
         } catch (\Throwable $th) {
             throw $th;
@@ -41,7 +45,11 @@ class AreaController extends Controller
             if (!$province) {
                 throw ValidationException::withMessages(['province_id', trans('validation.exists', ['attribute' => 'province'])]);
             }
-            $regencies = $province->regencies()->paginate($request->input('limit', 10));
+            $regencies = $province->regencies()->select(['*']);
+            if ($request->search) {
+                $regencies = $regencies->where('regencies.name', 'ilike', "%$request->search%");
+            }
+            $regencies = $regencies->paginate($request->input('limit', 10));
             return $this->success(data: RegencyResource::collection($regencies), paginate: $regencies);
         } catch (\Throwable $th) {
             throw $th;
@@ -62,7 +70,11 @@ class AreaController extends Controller
             if (!$regency) {
                 throw ValidationException::withMessages(['regency_id', trans('validation.exists', ['attribute' => 'regency'])]);
             }
-            $districts = $regency->districts()->paginate($request->input('limit', 10));
+            $districts = $regency->districts()->select(['*']);
+            if ($request->search) {
+                $districts = $districts->where('districts.name', 'ilike', "%$request->search%");
+            }
+            $districts = $districts->paginate($request->input('limit', 10));
             return $this->success(data: DistrictResource::collection($districts), paginate: $districts);
         } catch (\Throwable $th) {
             throw $th;
@@ -87,7 +99,11 @@ class AreaController extends Controller
             if (!$district) {
                 throw ValidationException::withMessages(['district_id', trans('validation.exists', ['attribute' => 'district'])]);
             }
-            $villages = $district->villages()->paginate($request->input('limit', 10));
+            $villages = $district->villages()->select(['*']);
+            if ($request->search) {
+                $villages = $villages->where('villages.name', 'ilike', "%$request->search%");
+            }
+            $villages = $villages->paginate($request->input('limit', 10));
             return $this->success(data: VillageResource::collection($villages), paginate: $villages);
         } catch (\Throwable $th) {
             throw $th;
