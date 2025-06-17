@@ -33,7 +33,6 @@ class WebhookController extends Controller
 
             switch ($gateway) {
                 case 'xendit':
-                    dd($input);
                     $transaction = Transaction::whereJsonContains('data->reference_id', $input->data->reference_id)->first();
                     if ($transaction) {
                         $xendit = new XenditService($transaction);
