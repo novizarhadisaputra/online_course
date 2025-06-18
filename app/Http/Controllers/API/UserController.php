@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Services\UserService;
@@ -81,6 +79,18 @@ class UserController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
             $address = $request->user()->addresses()->create($request->validated());
+            $note = $address->note()->first();
+            if (!$note) {
+                $address->note()->create([
+                    'name' => $address->label,
+                    'description' => $request->note,
+                    'status' => true,
+                ]);
+            } else {
+                $note->name = $address->label;
+                $note->description = $address->note;
+                $note->save();
+            }
             return $this->success(data: new AddressResource($address));
         } catch (\Throwable $th) {
             throw $th;
@@ -203,9 +213,11 @@ class UserController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
             }
 
+            $address->label = $request->label ?? $address->label;
             $address->first_name = $request->first_name ?? $address->first_name;
             $address->last_name = $request->last_name ?? $address->last_name;
             $address->email = $request->email ?? $address->email;
+            $address->phone = $request->phone ?? $address->phone;
             $address->country = $request->country;
             $address->street_line1 = $request->street_line1;
             $address->street_line2 = $request->street_line2;
@@ -214,6 +226,19 @@ class UserController extends Controller
             $address->state = $request->state;
             $address->postal_code = $request->postal_code;
             $address->save();
+
+            $note = $address->note()->first();
+            if (!$note) {
+                $address->note()->create([
+                    'name' => $address->label,
+                    'description' => $request->note,
+                    'status' => true,
+                ]);
+            } else {
+                $note->name = $address->label;
+                $note->description = $address->note;
+                $note->save();
+            }
 
             DB::commit();
             return $this->success(data: new AddressResource($address));

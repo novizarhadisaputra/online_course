@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('model');
+
+            $table->dateTime('date');
             $table->string('code')->unique()->nullable();
             $table->text('notes')->nullable();
             $table->boolean('is_attended')->default(false);
@@ -23,7 +25,7 @@ return new class extends Migration
 
             $table->foreignUuid('transaction_detail_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('created_by')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignUuid('with_user_id')->references('id')->on('users')->cascadeOnDelete();
 
             $table->timestamps();
         });

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('priceable');
             $table->integer('qty');
-            $table->char('units');
+            $table->char('units')->default('pcs');
             $table->text('description')->nullable();
             $table->bigInteger('value');
 

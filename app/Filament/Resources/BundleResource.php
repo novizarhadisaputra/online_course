@@ -23,7 +23,7 @@ class BundleResource extends Resource
 {
     protected static ?string $model = Bundle::class;
 
-    protected static ?string $navigationIcon = 'hugeicons-collections-bookmark';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $navigationGroup = 'Master Data';
 

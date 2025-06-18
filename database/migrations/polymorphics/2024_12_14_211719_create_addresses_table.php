@@ -15,9 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('model');
 
+            $table->char('label')->nullable();
             $table->char('first_name')->nullable();
             $table->char('last_name')->nullable();
             $table->string('email')->nullable();
+            $table->string('phone')->nullable();
             $table->string('country')->nullable();
             $table->string('street_line1')->nullable();
             $table->string('street_line2')->nullable();
