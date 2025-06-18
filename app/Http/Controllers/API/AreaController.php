@@ -28,7 +28,7 @@ class AreaController extends Controller
             if ($request->search) {
                 $provinces = $provinces->where('name', 'ilike', "%$request->search%");
             }
-            $provinces = $provinces->paginate($request->input('limit', 10));
+            $provinces = $provinces->with(['regencies'])->paginate($request->input('limit', 10));
             return $this->success(data: ProvinceResource::collection($provinces), paginate: $provinces);
         } catch (\Throwable $th) {
             throw $th;
@@ -49,7 +49,7 @@ class AreaController extends Controller
             if ($request->search) {
                 $regencies = $regencies->where('regencies.name', 'ilike', "%$request->search%");
             }
-            $regencies = $regencies->paginate($request->input('limit', 10));
+            $regencies = $regencies->with(['districts'])->paginate($request->input('limit', 10));
             return $this->success(data: RegencyResource::collection($regencies), paginate: $regencies);
         } catch (\Throwable $th) {
             throw $th;
@@ -74,7 +74,7 @@ class AreaController extends Controller
             if ($request->search) {
                 $districts = $districts->where('districts.name', 'ilike', "%$request->search%");
             }
-            $districts = $districts->paginate($request->input('limit', 10));
+            $districts = $districts->with(['villages'])->paginate($request->input('limit', 10));
             return $this->success(data: DistrictResource::collection($districts), paginate: $districts);
         } catch (\Throwable $th) {
             throw $th;
