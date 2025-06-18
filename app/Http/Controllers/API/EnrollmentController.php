@@ -61,6 +61,7 @@ class EnrollmentController extends Controller
 
             $total_price += $price->value;
 
+            $transaction->address_id = $request->address_id ?? null;
             $transaction->total_qty = $total_qty;
             $transaction->tax_fee = 0;
             $transaction->service_fee = 0;
@@ -122,6 +123,7 @@ class EnrollmentController extends Controller
 
             $total_price += $price->value;
 
+            $transaction->address_id = $request->address_id ?? null;
             $transaction->total_qty = $total_qty;
             $transaction->tax_fee = 0;
             $transaction->service_fee = 0;

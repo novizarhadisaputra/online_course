@@ -170,6 +170,7 @@ class TransactionController extends Controller
                 ]);
             }
 
+            $transaction->address_id = $request->address_id ?? null;
             $transaction->payment_method_id = $request->payment_method_id;
             $transaction->save();
 

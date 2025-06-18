@@ -23,6 +23,7 @@ class StoreEnrollmentCourseRequest extends FormRequest
     {
         return [
             'course_id' => ['required'],
+            'address_id' => ['required'],
         ];
     }
 }

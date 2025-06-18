@@ -35,7 +35,7 @@ class StoreAddressRequest extends FormRequest
             'state' => ['required'],
             'postal_code' => ['required'],
             'status' => ['required', 'boolean'],
-            'notes' => ['nullable']
+            'note' => ['nullable']
         ];
     }
 }

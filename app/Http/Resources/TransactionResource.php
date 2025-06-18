@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\TransactionStatus;
-use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -29,6 +27,7 @@ class TransactionResource extends JsonResource
             'total_paid' => $this->total_price + $this->service_fee + $this->tax_fee,
             'status' => $this->status,
             'category' => $this->category,
+            'address' => $this->address,
             'data' => $this->data,
             'details' => TransactionDetailResource::collection($this->details),
             'created_at' => $this->created_at,

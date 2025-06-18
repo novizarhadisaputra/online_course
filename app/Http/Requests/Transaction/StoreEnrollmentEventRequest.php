@@ -23,6 +23,7 @@ class StoreEnrollmentEventRequest extends FormRequest
     {
         return [
             'event_id' => ['required'],
+            'address_id' => ['required'],
         ];
     }
 }
