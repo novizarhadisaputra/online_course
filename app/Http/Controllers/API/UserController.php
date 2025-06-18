@@ -82,13 +82,13 @@ class UserController extends Controller
             $note = $address->note()->first();
             if (!$note) {
                 $address->note()->create([
-                    'name' => $address->label,
+                    'name' => $request->label,
                     'description' => $request->note,
                     'status' => true,
                 ]);
             } else {
-                $note->name = $address->label;
-                $note->description = $address->note;
+                $note->name = $request->label;
+                $note->description = $request->note;
                 $note->save();
             }
             return $this->success(data: new AddressResource($address));
@@ -231,13 +231,13 @@ class UserController extends Controller
             $note = $address->note()->first();
             if (!$note) {
                 $address->note()->create([
-                    'name' => $address->label,
+                    'name' => $request->label,
                     'description' => $request->note,
                     'status' => true,
                 ]);
             } else {
-                $note->name = $address->label;
-                $note->description = $address->note;
+                $note->name = $request->label;
+                $note->description = $request->note;
                 $note->save();
             }
 
