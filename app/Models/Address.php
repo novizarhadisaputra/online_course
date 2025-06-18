@@ -19,6 +19,6 @@ class Address extends Model
      */
     public function note(): MorphOne
     {
-        return $this->morphOne(Note::class, 'priceable');
+        return $this->morphOne(Note::class, 'model');
     }
 }
