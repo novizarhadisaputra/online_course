@@ -19,10 +19,11 @@ use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\SectionResource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Resources\AnnouncementResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
-use App\Http\Resources\AnnouncementResource;
+use App\Http\Requests\Course\UpdateReviewRequest;
 
 class CourseController extends Controller
 {
@@ -555,6 +556,39 @@ class CourseController extends Controller
             }
             return $this->success(data: new QuizResource($quiz));
         } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function updateReview(UpdateReviewRequest $request, string $slug, string $review_id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+
+            $transaction = $course->transactions()->where('user_id', $request->user()->id)->first();
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+
+            $review = $course->reviews()->where('id', $review_id)->first();
+            if ($review) {
+                $review->rating = $request->rating;
+                $review->description = $request->description;
+                $review->save();
+            }
+
+            DB::commit();
+            return $this->success(data: new ReviewResource($review), status: 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }

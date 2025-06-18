@@ -152,7 +152,10 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
             Route::get('/coupons', [CourseController::class, 'coupons'])->name('coupons');
             Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
-            Route::post('/reviews', [CourseController::class, 'storeReview'])->name('store.reviews');
+            Route::prefix('reviews')->name('reviews.')->group(function () {
+                Route::post('/', [CourseController::class, 'storeReview'])->name('store');
+                Route::put('/{review}', [CourseController::class, 'updateReview'])->name('update');
+            });
             Route::post('/comments', [CourseController::class, 'storeComment'])->name('store.comments');
             Route::post('/likes', [CourseController::class, 'storeLike'])->name('store.likes');
             Route::post('/certificates', [CourseController::class, 'storeCertificate'])->name('store.certificates');
