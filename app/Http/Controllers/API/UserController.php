@@ -218,12 +218,13 @@ class UserController extends Controller
             $address->last_name = $request->last_name ?? $address->last_name;
             $address->email = $request->email ?? $address->email;
             $address->phone = $request->phone ?? $address->phone;
-            $address->country = $request->country;
             $address->street_line1 = $request->street_line1;
             $address->street_line2 = $request->street_line2;
-            $address->city = $request->city;
-            $address->province = $request->province;
-            $address->state = $request->state;
+            $address->country = $request->country;
+            $address->province_id = $request->province_id;
+            $address->regency_id = $request->regency_id;
+            $address->district_id = $request->district_id;
+            $address->village_id = $request->village_id;
             $address->postal_code = $request->postal_code;
             $address->save();
 

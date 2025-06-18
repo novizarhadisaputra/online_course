@@ -20,12 +20,13 @@ return new class extends Migration
             $table->char('last_name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
-            $table->string('country')->nullable();
             $table->string('street_line1')->nullable();
             $table->string('street_line2')->nullable();
-            $table->string('city')->nullable();
-            $table->string('province')->nullable();
-            $table->string('state')->nullable();
+            $table->string('country')->nullable();
+            $table->foreignUuid('province_id')->constrained()->nullable();
+            $table->foreignUuid('regency_id')->constrained()->nullable();
+            $table->foreignUuid('district_id')->constrained()->nullable();
+            $table->foreignUuid('village_id')->constrained()->nullable();
             $table->string('postal_code')->nullable();
             $table->boolean('status')->default(false);
 
