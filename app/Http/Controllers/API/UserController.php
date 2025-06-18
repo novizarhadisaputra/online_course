@@ -202,7 +202,7 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
-            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+            if ($request->user()->id != $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
 
