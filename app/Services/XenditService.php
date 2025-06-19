@@ -204,8 +204,9 @@ class XenditService
             DB::beginTransaction();
 
             $receive_data = json_decode(json_encode($request->input()));
+            $payment_events = ['payment.succeeded', 'payment.awaiting_capture', 'payment.failed'];
 
-            if ($receive_data->event) {
+            if ($receive_data->event && in_array($receive_data->event, $payment_events)) {
                 if ($receive_data->data && $receive_data->data->status) {
                     if ($receive_data->data->status === 'SUCCEEDED') {
                         $this->transaction->status = 'success';
@@ -218,14 +219,12 @@ class XenditService
                     } else if ($receive_data->data->status === 'FAILED') {
                         $this->transaction->status = 'fail';
                     }
-
                     $this->transaction->logs()->create([
                         'payment_method_id' => $this->transaction->payment_method_id,
                         'total_qty' => $this->transaction->total_qty,
                         'total_price' => $this->transaction->total_price,
                         'status' => $this->transaction->status,
                     ]);
-
                     $this->transaction->save();
                 }
             }
