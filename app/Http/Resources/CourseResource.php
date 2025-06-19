@@ -61,6 +61,8 @@ class CourseResource extends JsonResource
                 'count' => $this->reviews()->select(['id'])->active()->count()
             ],
             'certificate' => $enrollment ? $enrollment->certificate : null,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

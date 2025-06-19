@@ -60,6 +60,7 @@ class UserResource extends Resource
                     ]),
                     TextInput::make('password')
                         ->password()
+                        ->revealable()
                         ->maxLength(255),
                     CheckboxList::make('roles')
                         ->relationship('roles', 'name')

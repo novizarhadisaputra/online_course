@@ -25,7 +25,8 @@ class NewsResource extends JsonResource
             'status' => $this->status,
             'meta' => $this->meta,
             'user' => new InstructorResource($this->user),
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
