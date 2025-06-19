@@ -25,7 +25,6 @@ class StoreAddressRequest extends FormRequest
             'label' => ['required'],
             'first_name' => ['required'],
             'last_name' => ['nullable'],
-            'email' => ['required', 'email'],
             'phone' => ['required'],
             'street_line1' => ['required'],
             'street_line2' => ['nullable'],

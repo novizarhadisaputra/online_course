@@ -78,7 +78,22 @@ class UserController extends Controller
             if ($request->user()->id !== $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
-            $address = $request->user()->addresses()->create($request->validated());
+            $address = $request->user()->addresses()->create([
+                "label" => $request->label,
+                "first_name" => $request->first_name,
+                "last_name" => $request->last_name,
+                "email" => $request->user()->email,
+                "phone" => $request->phone,
+                "street_line1" => $request->street_line1,
+                "street_line2" => $request->street_line2,
+                "country" => $request->country,
+                "province_id" => $request->province_id,
+                "regency_id" => $request->regency_id,
+                "district_id" => $request->district_id,
+                "village_id" => $request->village_id,
+                "postal_code" => $request->postal_code,
+            ]);
+
             $note = $address->note()->first();
             if (!$note) {
                 $address->note()->create([
@@ -216,7 +231,7 @@ class UserController extends Controller
             $address->label = $request->label ?? $address->label;
             $address->first_name = $request->first_name ?? $address->first_name;
             $address->last_name = $request->last_name ?? $address->last_name;
-            $address->email = $request->email ?? $address->email;
+            $address->email = $request->user()->email;
             $address->phone = $request->phone ?? $address->phone;
             $address->street_line1 = $request->street_line1;
             $address->street_line2 = $request->street_line2;
