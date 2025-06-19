@@ -205,27 +205,29 @@ class XenditService
 
             $receive_data = json_decode(json_encode($request->input()));
 
-            if ($receive_data->data && $receive_data->data->status) {
-                if ($receive_data->data->status === 'SUCCEEDED') {
-                    $this->transaction->status = 'success';
-                } else if ($receive_data->data->status === 'EXPIRED') {
-                    $this->transaction->status = 'expire';
-                } else if ($receive_data->data->status === 'CANCELLED') {
-                    $this->transaction->status = 'cancel';
-                } else if ($receive_data->data->status === 'PENDING') {
-                    $this->transaction->status = 'pending';
-                } else if ($receive_data->data->status === 'FAILED') {
-                    $this->transaction->status = 'fail';
+            if ($receive_data->event) {
+                if ($receive_data->data && $receive_data->data->status) {
+                    if ($receive_data->data->status === 'SUCCEEDED') {
+                        $this->transaction->status = 'success';
+                    } else if ($receive_data->data->status === 'EXPIRED') {
+                        $this->transaction->status = 'expire';
+                    } else if ($receive_data->data->status === 'CANCELLED') {
+                        $this->transaction->status = 'cancel';
+                    } else if ($receive_data->data->status === 'PENDING') {
+                        $this->transaction->status = 'pending';
+                    } else if ($receive_data->data->status === 'FAILED') {
+                        $this->transaction->status = 'fail';
+                    }
+
+                    $this->transaction->logs()->create([
+                        'payment_method_id' => $this->transaction->payment_method_id,
+                        'total_qty' => $this->transaction->total_qty,
+                        'total_price' => $this->transaction->total_price,
+                        'status' => $this->transaction->status,
+                    ]);
+
+                    $this->transaction->save();
                 }
-
-                $this->transaction->logs()->create([
-                    'payment_method_id' => $this->transaction->payment_method_id,
-                    'total_qty' => $this->transaction->total_qty,
-                    'total_price' => $this->transaction->total_price,
-                    'status' => $this->transaction->status,
-                ]);
-
-                $this->transaction->save();
             }
             DB::commit();
         } catch (\Throwable $th) {
