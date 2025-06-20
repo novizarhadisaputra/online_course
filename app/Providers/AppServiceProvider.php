@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Listeners\DeleteExpiredNotificationTokens;
+use App\Models\User;
 use App\Models\Activity;
 use Laravel\Sanctum\Sanctum;
 use App\Policies\ActivityPolicy;
@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Notifications\ResetPassword;
+use App\Listeners\DeleteExpiredNotificationTokens;
 use Illuminate\Notifications\Events\NotificationFailed;
 
 class AppServiceProvider extends ServiceProvider
@@ -48,5 +50,9 @@ class AppServiceProvider extends ServiceProvider
             NotificationFailed::class,
             DeleteExpiredNotificationTokens::class,
         );
+
+        ResetPassword::createUrlUsing(function (User $user, string $token) {
+            return env('APP_URL_WEBSITE', 'http://localhost:3000') . '/reset-password?token=' . $token;
+        });
     }
 }
