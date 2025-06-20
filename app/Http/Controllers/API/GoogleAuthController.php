@@ -23,6 +23,7 @@ class GoogleAuthController extends Controller
             $user = User::where('email', $googleUser->getEmail())->first();
             if (!$user) {
                 $user = User::create([
+                    'email' => $googleUser->getEmail(),
                     'name' => $googleUser->getName(),
                     'avatar' => $googleUser->getAvatar(),
                     'password' => Hash::make(Str::random(16)),
