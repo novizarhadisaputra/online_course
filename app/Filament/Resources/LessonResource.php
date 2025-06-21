@@ -18,10 +18,12 @@ use Filament\Forms\Components\RichEditor;
 use Guava\FilamentNestedResources\Ancestor;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\LessonResource\Pages;
+use App\Filament\Resources\LessonResource\Pages\CreateLessonComment;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\LessonResource\Pages\CreateLessonQuiz;
 use App\Filament\Resources\LessonResource\Pages\ManageLessonQuiz;
+use App\Filament\Resources\LessonResource\Pages\ManageLessonComment;
 use App\Filament\Resources\LessonResource\RelationManagers\EventsRelationManager;
 use App\Filament\Resources\LessonResource\RelationManagers\CommentsRelationManager;
 
@@ -134,7 +136,7 @@ class LessonResource extends Resource
     {
         return [
             EventsRelationManager::make(),
-            CommentsRelationManager::make(),
+            // CommentsRelationManager::make(),
         ];
     }
 
@@ -147,6 +149,8 @@ class LessonResource extends Resource
             'edit' => Pages\EditLesson::route('/{record}/edit'),
             'quizzes' => ManageLessonQuiz::route('/{record}/quizzes'),
             'quizzes.create' => CreateLessonQuiz::route('/{record}/quizzes/create'),
+            'comments' => ManageLessonComment::route('/{record}/comments'),
+            'comments.create' => CreateLessonComment::route('/{record}/comments/create'),
         ];
     }
 
@@ -156,6 +160,7 @@ class LessonResource extends Resource
             Pages\ViewLesson::class,
             Pages\EditLesson::class,
             Pages\ManageLessonQuiz::class,
+            Pages\ManageLessonComment::class,
         ]);
     }
 

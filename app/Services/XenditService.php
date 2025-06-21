@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\TransactionStatus;
 use App\Models\ThirdPartyLog;
 use Xendit\Configuration;
 use Illuminate\Support\Str;
@@ -204,9 +205,8 @@ class XenditService
             DB::beginTransaction();
 
             $receive_data = json_decode(json_encode($request->input()));
-            $payment_events = ['payment.succeeded', 'payment.awaiting_capture', 'payment.failed'];
 
-            if ($receive_data->event && in_array($receive_data->event, $payment_events)) {
+            if ($receive_data->event && $this->transaction->status == TransactionStatus::WAITING_PAYMENT->value) {
                 if ($receive_data->data && $receive_data->data->status) {
                     if ($receive_data->data->status === 'SUCCEEDED') {
                         $this->transaction->status = 'success';

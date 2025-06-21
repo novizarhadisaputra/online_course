@@ -263,7 +263,17 @@ class CourseResource extends Resource
                     ->visibility('private')
                     ->disk('s3'),
                 TextColumn::make('name')
-                    ->description(fn(Course $record): string | null => $record->short_description)
+                    ->limit(50)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+
+                        return $state;
+                    })
+                    ->description(fn(Course $record): string | null => Str::limit($record->short_description, 50))
                     ->searchable(),
                 TextColumn::make('user.name')
                     ->label('Instructor')

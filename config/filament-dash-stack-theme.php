@@ -7,11 +7,11 @@ return [
         'primary' => Color::Blue,
     ],
 
-    'side-bar-collapsable-on-desktop' => false,
+    'side-bar-collapsable-on-desktop' => true,
 
     'collapsible-navigation-groups' => true,
 
-    'breadcrumbs' => false,
+    'breadcrumbs' => true,
 
     /**
      * Nunito Sans is the default font for the theme.

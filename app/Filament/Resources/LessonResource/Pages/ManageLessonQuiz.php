@@ -22,7 +22,7 @@ class ManageLessonQuiz extends ManageRelatedRecords
 
     protected static string $relationship = 'quizzes';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
     public static function canAccess(array $parameters = []): bool
     {
@@ -31,7 +31,7 @@ class ManageLessonQuiz extends ManageRelatedRecords
 
     public static function getNavigationLabel(): string
     {
-        return 'Manage  Quizzes';
+        return 'Manage Quizzes';
     }
 
     public function form(Form $form): Form

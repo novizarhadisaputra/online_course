@@ -2,16 +2,11 @@
 
 namespace App\Filament\Resources\SectionResource\Pages;
 
-use Filament\Forms;
 use Filament\Tables;
-use Filament\Actions;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\SectionResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
@@ -23,6 +18,8 @@ class ManageSectionLessons extends ManageRelatedRecords
     protected static string $resource = SectionResource::class;
 
     protected static string $relationship = 'lessons';
+
+    protected static ?string $navigationLabel = 'Manage Lessons';
 
     public function table(Table $table): Table
     {

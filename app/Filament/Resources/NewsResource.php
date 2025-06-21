@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -71,8 +72,17 @@ class NewsResource extends Resource
                     ->visibility('private')
                     ->disk('s3'),
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('short_description')
+                    ->limit(50)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+
+                        return $state;
+                    })
+                    ->description(fn(News $record): string | null => Str::limit($record->short_description, 50))
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),

@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Filament\Resources\EventResource;
 use App\Models\Event;
 use App\Models\Bundle;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\BundleResource;
 use App\Http\Resources\CourseResource;
 use Illuminate\Http\Resources\Json\JsonResource;

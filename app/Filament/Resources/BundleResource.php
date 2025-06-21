@@ -6,7 +6,9 @@ use Filament\Tables;
 use App\Models\Bundle;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\IconColumn;
@@ -14,10 +16,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\BundleResource\Pages;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\BundleResource\RelationManagers\CoursesRelationManager;
 use App\Filament\Resources\BundleResource\RelationManagers\ProductsRelationManager;
-use Filament\Forms\Components\Grid;
 
 class BundleResource extends Resource
 {
@@ -69,9 +71,22 @@ class BundleResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('images')
+                    ->visibility('private')
+                    ->disk('s3'),
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('short_description')
+                    ->limit(50)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+
+                        return $state;
+                    })
+                    ->description(fn(Bundle $record): string | null => Str::limit($record->short_description, 50))
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),
