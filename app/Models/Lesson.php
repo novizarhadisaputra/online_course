@@ -84,4 +84,14 @@ class Lesson extends Model implements HasMedia
     {
         return $this->morphOne(Score::class, 'model');
     }
+
+    /**
+     * Get the answer associated with the Quiz
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function answer(): MorphOne
+    {
+        return $this->morphOne(Answer::class, 'model');
+    }
 }

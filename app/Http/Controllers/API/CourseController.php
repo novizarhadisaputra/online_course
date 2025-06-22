@@ -24,6 +24,8 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
 use App\Http\Requests\Course\UpdateReviewRequest;
+use App\Http\Requests\Course\StoreQuizAnswerRequest;
+use App\Http\Requests\Course\StoreLessonAnswerRequest;
 use App\Http\Requests\Course\StoreLessonProgressRequest;
 use App\Http\Requests\Course\StoreAppointmentLessonRequest;
 
@@ -206,11 +208,12 @@ class CourseController extends Controller
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
-            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            $lesson = $section->lessons()->with(['quizzes'])->where('id', $lesson_id)->first();
             if (!$lesson) {
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
-            $quizzes = $lesson->quizzes()->paginate($request->input('limit', 10));
+            $quizzes = $lesson->quizzes()->with(['answer', 'user', 'options'])->paginate($request->input('limit', 10));
+
             return $this->success(data: QuizResource::collection($quizzes), paginate: $quizzes);
         } catch (\Throwable $th) {
             throw $th;
@@ -231,11 +234,11 @@ class CourseController extends Controller
             if (!$section) {
                 throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
             }
-            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            $lesson = $section->lessons()->with(['quizzes'])->where('id', $lesson_id)->first();
             if (!$lesson) {
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
-            $quiz = $lesson->quizzes()->where('id', $quiz_id)->first();
+            $quiz = $lesson->quizzes()->with(['answer', 'user', 'options'])->where('id', $quiz_id)->first();
             if (!$quiz) {
                 throw ValidationException::withMessages(['quiz_id' => trans('validation.exists', ['attribute' => 'quiz id'])]);
             }
@@ -449,6 +452,7 @@ class CourseController extends Controller
         }
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
@@ -538,6 +542,78 @@ class CourseController extends Controller
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
             DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function storeLessonAnswer(StoreLessonAnswerRequest $request, string $slug, string $section_id, string $lesson_id, string $quiz_id)
+    {
+        try {
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $answer = $lesson->answer()->where('user_id', $request->user()->id)->first();
+            if (!$answer) {
+                $lesson->answer()->create([
+                    'text' => $request->text,
+                    'user_id' => $request->user()->id,
+                ]);
+            } else {
+                $answer->text = $request->text;
+                $answer->user_id = $request->user()->id;
+                $answer->save();
+            }
+            return $this->success(data: new LessonResource($lesson));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function storeQuizAnswer(StoreQuizAnswerRequest $request, string $slug, string $section_id, string $lesson_id, string $quiz_id)
+    {
+        try {
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $quiz = $lesson->quizzes()->where('id', $quiz_id)->first();
+            if (!$quiz) {
+                throw ValidationException::withMessages(['quiz_id' => trans('validation.exists', ['attribute' => 'quiz id'])]);
+            }
+            $option = $quiz->options()->where('id', $request->option_id)->first();
+            if (!$option) {
+                throw ValidationException::withMessages(['option_id' => trans('validation.exists', ['attribute' => 'option id'])]);
+            }
+            $answer = $quiz->answer()->where('user_id', $request->user()->id)->first();
+            if (!$answer) {
+                $quiz->answer()->create([
+                    'option_id' => $request->option_id,
+                    'user_id' => $request->user()->id,
+                ]);
+            } else {
+                $answer->option_id = $request->option_id;
+                $answer->user_id = $request->user()->id;
+                $answer->save();
+            }
+            return $this->success(data: new QuizResource($quiz));
+        } catch (\Throwable $th) {
             throw $th;
         }
     }

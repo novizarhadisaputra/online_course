@@ -6,6 +6,7 @@ use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Quiz extends Model
@@ -20,6 +21,16 @@ class Quiz extends Model
     public function options(): MorphMany
     {
         return $this->morphMany(Option::class, 'model');
+    }
+
+    /**
+     * Get the answer associated with the Quiz
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function answer(): MorphOne
+    {
+        return $this->morphOne(Answer::class, 'model');
     }
 
     /**
