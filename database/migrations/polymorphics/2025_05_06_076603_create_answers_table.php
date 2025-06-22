@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('progress', function (Blueprint $table) {
+        Schema::create('answers', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
 
             $table->uuidMorphs('model');
-            $table->json('data');
-            $table->boolean('status')->default(false);
+            $table->text('text')->nullable();
 
+            $table->foreignUuid('option_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('progress');
+        Schema::dropIfExists('answers');
     }
 };

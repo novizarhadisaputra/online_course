@@ -20,7 +20,6 @@ class DistrictResource extends JsonResource
             "slug" => $this->slug,
             "latitude" => $this->latitude,
             "longitude" => $this->longitude,
-            "villages_count" => $this->villages()->select(['id'])->count(),
         ];
     }
 }

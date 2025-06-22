@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
+
             $table->uuidMorphs('model');
             $table->string('option');
             $table->text('text');

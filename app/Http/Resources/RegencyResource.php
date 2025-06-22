@@ -20,7 +20,6 @@ class RegencyResource extends JsonResource
             "slug" => $this->slug,
             "latitude" => $this->latitude,
             "longitude" => $this->longitude,
-            "districts_count" => $this->districts()->select(['id'])->count(),
         ];
     }
 }

@@ -23,9 +23,9 @@ return new class extends Migration
             $table->timestamp('check_in_at')->nullable();
             $table->timestamp('check_out_at')->nullable();
 
-            $table->foreignUuid('transaction_detail_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('transaction_detail_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('with_user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignUuid('source_id')->references('id')->on('users')->cascadeOnDelete();
 
             $table->timestamps();
         });

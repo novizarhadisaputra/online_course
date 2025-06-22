@@ -3,17 +3,31 @@
 namespace App\Models;
 
 use App\Models\Tag;
+use App\Models\Like;
 use App\Models\User;
 use App\Models\View;
+use App\Models\Price;
+use App\Models\Score;
 use App\Models\Bundle;
+use App\Models\Coupon;
+use App\Models\Lesson;
+use App\Models\Review;
 use App\Models\Comment;
+use App\Models\Section;
 use App\Models\Category;
+use App\Models\Progress;
 use App\Models\Taggable;
 use App\Models\BundleItem;
+use App\Models\Competence;
+use App\Models\Couponable;
 use App\Models\Enrollment;
 use App\Traits\ModelTrait;
 use App\Models\PaymentLink;
+use App\Models\Transaction;
+use App\Models\Announcement;
+use App\Models\TransactionDetail;
 use Spatie\MediaLibrary\HasMedia;
+use App\Models\ModelHasCompetence;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -193,5 +207,21 @@ class Course extends Model implements HasMedia
     public function enrollments(): MorphMany
     {
         return $this->morphMany(Enrollment::class, 'model');
+    }
+
+    /**
+     * Get the lesson's most recent progress.
+     */
+    public function progress(): MorphOne
+    {
+        return $this->morphOne(Progress::class, 'model')->latestOfMany();
+    }
+
+    /**
+     * Get the lesson's most recent score.
+     */
+    public function score(): MorphOne
+    {
+        return $this->morphOne(Score::class, 'model')->latestOfMany();
     }
 }

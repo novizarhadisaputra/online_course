@@ -2,13 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\Like;
 use App\Models\Quiz;
+use App\Models\User;
+use App\Models\Event;
+use App\Models\Score;
+use App\Models\Comment;
 use App\Models\Section;
+use App\Models\Progress;
 use App\Traits\ModelTrait;
+use App\Models\ModelHasEvent;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -59,5 +67,21 @@ class Lesson extends Model implements HasMedia
     public function events(): MorphToMany
     {
         return $this->morphToMany(Event::class, 'model', ModelHasEvent::class);
+    }
+
+    /**
+     * Get the lesson's most recent progress.
+     */
+    public function progress(): MorphOne
+    {
+        return $this->morphOne(Progress::class, 'model');
+    }
+
+    /**
+     * Get the lesson's most recent score.
+     */
+    public function score(): MorphOne
+    {
+        return $this->morphOne(Score::class, 'model');
     }
 }

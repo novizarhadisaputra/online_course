@@ -20,7 +20,6 @@ class ProvinceResource extends JsonResource
             "slug" => $this->slug,
             "latitude" => $this->latitude,
             "longitude" => $this->longitude,
-            "regencies_count" => $this->regencies()->select(['id'])->count(),
         ];
     }
 }

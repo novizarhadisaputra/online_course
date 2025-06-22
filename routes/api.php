@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\AreaController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -180,8 +181,9 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                                     });
                                 });
                             });
-                            Route::post('progress', [CourseController::class, 'storeLessonProgress']);
-                            Route::post('likes', [CourseController::class, 'storeLikeLesson']);
+                            Route::post('progress', [CourseController::class, 'storeLessonProgress'])->name('progress');
+                            Route::post('likes', [CourseController::class, 'storeLikeLesson'])->name('likes');
+                            Route::post('appointments', [CourseController::class, 'storeAppointmentLesson'])->name('appointments');
                         });
                     });
                 });
@@ -245,4 +247,6 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
 
     Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
     Route::apiResource('coupons', CouponController::class)->only(['index', 'show']);
+
+    Route::apiResource('appointments', AppointmentController::class)->only(['index', 'show']);
 });

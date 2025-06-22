@@ -14,6 +14,12 @@ class VillageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            "name" => $this->name,
+            "slug" => $this->slug,
+            "latitude" => $this->latitude,
+            "longitude" => $this->longitude,
+        ];
     }
 }

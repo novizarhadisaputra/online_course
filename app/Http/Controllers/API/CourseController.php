@@ -24,6 +24,8 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
 use App\Http\Requests\Course\UpdateReviewRequest;
+use App\Http\Requests\Course\StoreLessonProgressRequest;
+use App\Http\Requests\Course\StoreAppointmentLessonRequest;
 
 class CourseController extends Controller
 {
@@ -372,6 +374,8 @@ class CourseController extends Controller
         }
     }
 
+
+
     /**
      * Store a newly created resource in storage.
      */
@@ -448,7 +452,7 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeLessonProgress(Request $request, string $slug, string $section_id, string $lesson_id)
+    public function storeAppointmentLesson(StoreAppointmentLessonRequest $request, string $slug, string $section_id, string $lesson_id)
     {
         try {
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
@@ -463,11 +467,77 @@ class CourseController extends Controller
             if (!$lesson) {
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
+            $event = $lesson->events()->where('id', $request->event_id)->first();
+            if (!$event) {
+                throw ValidationException::withMessages(['event_id' => trans('validation.exists', ['attribute' => 'event id'])]);
+            }
+            $appointment = $event->appointments()->where('user_id', $request->user()->id)->first();
+            if (!$appointment) {
+                $event->appointments()->create([
+                    'date' => $event->start_time,
+                    'code' => Str::upper(Str::random()),
+                    'is_attended' => $request->is_attended,
+                    'user_id' => $request->user()->id,
+                    'source_id' => $event->user_id,
+                ]);
+            } else {
+                $appointment->date = $event->start_time;
+                $appointment->code = Str::upper(Str::random());
+                $appointment->is_attended = $request->is_attended;
+                $appointment->user_id = $request->user()->id;
+                $appointment->source_id = $event->user_id;
+                $appointment->save();
+            }
 
-            // $request->user()->likeLessons()->toggle($lesson->id);
-
-            // return $this->success(data: new LessonResource($lesson));
+            return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeLessonProgress(StoreLessonProgressRequest $request, string $slug, string $section_id, string $lesson_id)
+    {
+        try {
+            DB::beginTransaction();
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+
+            if (!$lesson->progress) {
+                $lesson->progress->create([
+                    'data' => [
+                        'seconds' => $request->seconds,
+                        'page' => $request->page,
+                    ],
+                    'status' => $request->status,
+                    'user_id' => $request->user()->id,
+                ]);
+            } else {
+                $progress = $lesson->progress;
+                $progress->data =  [
+                    'seconds' => $request->seconds,
+                    'page' => $request->page,
+                ];
+                $progress->status = $request->status;
+                $progress->save();
+            }
+            $this->updateProgressCourse($request->user()->id, $course);
+            DB::commit();
+            return $this->success(data: new LessonResource($lesson));
+        } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -595,10 +665,43 @@ class CourseController extends Controller
 
     private function hasGraduated(string $user_id, Course $course): bool
     {
-        $lessons = $course->lessons()->active();
-        $total_lessons = $lessons->count();
-        $completed_lessons = $lessons->progress()->where('user_id', $user_id)->count();
+        $progress = $this->checkProgress($user_id, $course);
+        $total_lessons = $progress['total_lessons'];
+        $completed_lessons = $progress['completed_lessons'];
 
-        return $lessons > 0 && $total_lessons == $completed_lessons;
+        return $total_lessons > 0 && $total_lessons == $completed_lessons;
+    }
+
+    private function updateProgressCourse(string $user_id, Course $course)
+    {
+        $progress = $this->checkProgress($user_id, $course);
+        $data = (object) [
+            'percentage' => $progress['completed_lessons'] / $progress['completed_lessons'] * 100
+        ];
+        $status = $this->hasGraduated($user_id, $course);
+        if (!$course->progress) {
+            $course->progress->create([
+                'data' => $data,
+                'status' => $status,
+                'user_id' => $user_id,
+            ]);
+        } else {
+            $progress = $course->progress;
+            $progress->data = $data;
+            $progress->status = $status;
+            $progress->save();
+        }
+    }
+
+    private function checkProgress(string $user_id, Course $course)
+    {
+        $lessons = $course->lessons()->select(['lessons.id'])->active();
+        $total_lessons = $lessons->count();
+        $completed_lessons = $lessons
+            ->progress()
+            ->where(['user_id' => $user_id, 'status' => true])
+            ->count();
+
+        return compact('total_lessons', 'completed_lessons');
     }
 }
