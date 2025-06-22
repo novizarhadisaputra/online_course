@@ -182,7 +182,9 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                                     Route::post('/answers', [CourseController::class, 'storeQuizAnswer'])->name('store.answers');
                                 });
                             });
-                            Route::post('/answers', [CourseController::class, 'storeLessonAnswer'])->name('store.answers');
+                            Route::post('answers', [CourseController::class, 'storeLessonAnswer'])->name('store.answers');
+                            Route::post('score-quiz-answer', [CourseController::class, 'storeScoreQuizAnswer'])->name('store.score.quiz.answer');
+                            // storeScoreQuizAnswer
                             Route::post('progress', [CourseController::class, 'storeLessonProgress'])->name('progress');
                             Route::post('likes', [CourseController::class, 'storeLikeLesson'])->name('likes');
                             Route::post('appointments', [CourseController::class, 'storeAppointmentLesson'])->name('appointments');

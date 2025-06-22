@@ -546,9 +546,10 @@ class CourseController extends Controller
         }
     }
 
-    public function storeLessonAnswer(StoreLessonAnswerRequest $request, string $slug, string $section_id, string $lesson_id, string $quiz_id)
+    public function storeLessonAnswer(StoreLessonAnswerRequest $request, string $slug, string $section_id, string $lesson_id)
     {
         try {
+            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -572,6 +573,51 @@ class CourseController extends Controller
                 $answer->user_id = $request->user()->id;
                 $answer->save();
             }
+            DB::commit();
+            return $this->success(data: new LessonResource($lesson));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function storeScoreQuizAnswer(Request $request, string $slug, string $section_id, string $lesson_id)
+    {
+        try {
+            DB::beginTransaction();
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $qty = 0;
+            foreach ($lesson->quizzes as $quiz) {
+                $option = $quiz->options()->where(['id' => $quiz->answer->option_id, 'is_correct' => true])->first();
+                if ($option) {
+                    $qty++;
+                }
+            }
+            $value =  ($qty / count($lesson->quizzes)) * 100;
+            $score = $lesson->score()->where('user_id', $request->user()->id)->first();
+            if ($score) {
+                $score->batches += 1;
+                $score->value = $value;
+                $score->save();
+            } else {
+                $lesson->score()->create([
+                    'batches' => 1,
+                    'value' => $value,
+                    'user_id' => $request->user()->id,
+                ]);
+            }
+
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
             throw $th;
@@ -581,6 +627,7 @@ class CourseController extends Controller
     public function storeQuizAnswer(StoreQuizAnswerRequest $request, string $slug, string $section_id, string $lesson_id, string $quiz_id)
     {
         try {
+            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -612,8 +659,11 @@ class CourseController extends Controller
                 $answer->user_id = $request->user()->id;
                 $answer->save();
             }
+
+            DB::commit();
             return $this->success(data: new QuizResource($quiz));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }

@@ -16,6 +16,8 @@ class LessonResource extends JsonResource
     public function toArray(Request $request): array
     {
         $is_like = !$request->user() ? false : $this->likes()->where('user_id', $request->user()->id)->exists();
+        $score = !$request->user() ? null : $this->score()->where('user_id', $request->user()->id)->first();
+        $quiz_count = $this->quizzes()->select(['id'])->count();
 
         return [
             "id" => $this->id,
@@ -28,7 +30,8 @@ class LessonResource extends JsonResource
             "is_quiz" => $this->is_quiz,
             "is_paid" => $this->is_paid,
             'is_like' => $is_like,
-            "quiz_count" => $this->quizzes()->count(),
+            "quiz_count" => $quiz_count,
+            "score" => $score,
         ];
     }
 }
