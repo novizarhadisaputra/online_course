@@ -32,17 +32,14 @@ Route::prefix('check')->name('check.')->group(function () {
     });
 });
 
-Route::prefix('auth')->name('auth.')->group(function () {
+Route::prefix('auth')->middleware(['throttle:1,1'])->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
-
     Route::prefix('google')->name('google.')->group(function () {
         Route::post('/login', [GoogleAuthController::class, 'login'])->name('login');
     });
-
     Route::get('/verify-email/{id}', [AuthController::class, 'verifyEmail'])->name('verify');
     Route::post('/resend-verification', [AuthController::class, 'resendVerifyEmail'])->name('resend-verification');
-
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
 });
@@ -122,7 +119,9 @@ Route::prefix('comments')->group(function () {
 Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->group(function () {
     Route::prefix('auth')->name('auth.')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-        Route::post('/resend-verification', [AuthController::class, 'resendVerifyEmail'])->name('resend-verification');
+        Route::post('/resend-verification', [AuthController::class, 'resendVerifyEmail'])
+            ->middleware(['throttle:1,1'])
+            ->name('resend-verification');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 
@@ -155,13 +154,15 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
             Route::get('/coupons', [CourseController::class, 'coupons'])->name('coupons');
             Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
-            Route::prefix('reviews')->name('reviews.')->group(function () {
-                Route::post('/', [CourseController::class, 'storeReview'])->name('store');
-                Route::put('/{review}', [CourseController::class, 'updateReview'])->name('update');
+            Route::middleware(['throttle:3,1'])->group(function () {
+                Route::prefix('reviews')->name('reviews.')->group(function () {
+                    Route::post('/', [CourseController::class, 'storeReview'])->name('store');
+                    Route::put('/{review}', [CourseController::class, 'updateReview'])->name('update');
+                });
+                Route::post('/comments', [CourseController::class, 'storeComment'])->name('store.comments');
+                Route::post('/likes', [CourseController::class, 'storeLike'])->name('store.likes');
+                Route::post('/certificates', [CourseController::class, 'storeCertificate'])->name('store.certificates');
             });
-            Route::post('/comments', [CourseController::class, 'storeComment'])->name('store.comments');
-            Route::post('/likes', [CourseController::class, 'storeLike'])->name('store.likes');
-            Route::post('/certificates', [CourseController::class, 'storeCertificate'])->name('store.certificates');
 
             Route::prefix('sections')->name('sections.')->group(function () {
                 Route::get('/', [CourseController::class, 'sections'])->name('index');
@@ -184,11 +185,13 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                                     Route::post('answers', [CourseController::class, 'storeQuizAnswer'])->name('store.answers');
                                 });
                             });
-                            Route::post('answers', [CourseController::class, 'storeLessonAnswer'])->name('store.answers');
-                            Route::post('score-quiz-answer', [CourseController::class, 'storeScoreQuizAnswer'])->name('store.score.quiz.answer');
-                            Route::post('progress', [CourseController::class, 'storeLessonProgress'])->name('progress');
-                            Route::post('likes', [CourseController::class, 'storeLikeLesson'])->name('likes');
-                            Route::post('appointments', [CourseController::class, 'storeAppointmentLesson'])->name('appointments');
+                            Route::middleware(['throttle:3,1'])->group(function () {
+                                Route::post('answers', [CourseController::class, 'storeLessonAnswer'])->name('store.answers');
+                                Route::post('score-quiz-answer', [CourseController::class, 'storeScoreQuizAnswer'])->name('store.score.quiz.answer');
+                                Route::post('progress', [CourseController::class, 'storeLessonProgress'])->name('progress');
+                                Route::post('likes', [CourseController::class, 'storeLikeLesson'])->name('likes');
+                                Route::post('appointments', [CourseController::class, 'storeAppointmentLesson'])->name('appointments');
+                            });
                         });
                     });
                 });
@@ -200,7 +203,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::prefix('instructors')->name('instructors.')->group(function () {
         Route::prefix('{instructor}')->group(function () {
             Route::get('/followers', [InstructorController::class, 'followers'])->name('followers');
-            Route::post('/followers', [InstructorController::class, 'storeFollower'])->name('store.followers');
+            Route::post('/followers', [InstructorController::class, 'storeFollower'])->middleware(['throttle:3,1'])->name('store.followers');
         });
     });
 
@@ -223,8 +226,10 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
         Route::prefix('{news}')->group(function () {
             Route::get('/likes', [NewsController::class, 'likes'])->name('likes');
             Route::get('/comments', [NewsController::class, 'comments'])->name('comments');
-            Route::post('/likes', [NewsController::class, 'storeLike'])->name('store.likes');
-            Route::post('/comments', [NewsController::class, 'storeComment'])->name('store.comments');
+            Route::middleware(['throttle:3,1'])->group(function () {
+                Route::post('/likes', [NewsController::class, 'storeLike'])->name('store.likes');
+                Route::post('/comments', [NewsController::class, 'storeComment'])->name('store.comments');
+            });
         });
     });
 
@@ -237,7 +242,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
 
     Route::apiResource('carts', CartController::class);
 
-    Route::prefix('enrollments')->name('enrollments.')->group(function () {
+    Route::prefix('enrollments')->middleware(['throttle:1,1'])->name('enrollments.')->group(function () {
         Route::post('/course', [EnrollmentController::class, 'storeEnrollmentCourse'])->name('course.store');
         Route::post('/event', [EnrollmentController::class, 'storeEnrollmentEvent'])->name('event.store');
     });
