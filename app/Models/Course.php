@@ -101,9 +101,9 @@ class Course extends Model implements HasMedia
     /**
      * Get all of the viewers for the course.
      */
-    public function viewers(): MorphToMany
+    public function viewers(): MorphMany
     {
-        return $this->morphToMany(User::class, 'viewable', View::class);
+        return $this->morphMany(View::class, 'model');
     }
 
     /**

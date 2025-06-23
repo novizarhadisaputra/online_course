@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('views', function (Blueprint $table) {
-            $table->uuidMorphs('viewable');
+            $table->uuid('id')->primary()->unique();
+
+            $table->uuidMorphs('model');
             $table->foreignUuid('user_id')->nullable()->constrained();
 
             $table->timestamps();

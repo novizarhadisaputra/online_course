@@ -17,6 +17,7 @@ use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\WebhookController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\EnrollmentController;
+use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\GetInTouchController;
 use App\Http\Controllers\API\GoogleAuthController;
 use App\Http\Controllers\API\InstructorController;
@@ -250,6 +251,6 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
 
     Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
     Route::apiResource('coupons', CouponController::class)->only(['index', 'show']);
-
     Route::apiResource('appointments', AppointmentController::class)->only(['index', 'show']);
+    Route::apiResource('events', EventController::class)->only(['index', 'show']);
 });

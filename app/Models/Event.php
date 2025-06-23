@@ -3,12 +3,21 @@
 namespace App\Models;
 
 use App\Models\Tag;
-use App\Models\Cart;
+use App\Models\News;
+use App\Models\View;
+use App\Models\Price;
+use App\Models\Course;
+use App\Models\Review;
 use App\Models\Comment;
 use App\Models\Category;
+use App\Models\Taggable;
 use App\Models\Enrollment;
 use App\Traits\ModelTrait;
+use App\Models\Appointment;
 use App\Models\PaymentLink;
+use App\Models\Transaction;
+use App\Models\ModelHasEvent;
+use App\Models\TransactionDetail;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -49,9 +58,9 @@ class Event extends Model implements HasMedia
     /**
      * Get all of the viewers for the course.
      */
-    public function viewers(): MorphToMany
+    public function viewers(): MorphMany
     {
-        return $this->morphToMany(User::class, 'viewable', View::class);
+        return $this->morphMany(View::class, 'model');
     }
 
     /**
@@ -109,5 +118,21 @@ class Event extends Model implements HasMedia
     public function enrollments(): MorphMany
     {
         return $this->morphMany(Enrollment::class, 'model');
+    }
+
+    /**
+     * Get all of the courses that are assigned this tag.
+     */
+    public function courses(): MorphToMany
+    {
+        return $this->morphedByMany(Course::class, 'model', ModelHasEvent::class);
+    }
+
+    /**
+     * Get all of the news that are assigned this tag.
+     */
+    public function news(): MorphToMany
+    {
+        return $this->morphedByMany(News::class, 'model', ModelHasEvent::class);
     }
 }
