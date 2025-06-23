@@ -18,6 +18,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\ResendVerifyEmailRequest;
+use App\Models\PasswordResetToken;
 use App\Services\AuthService;
 use App\Services\UserService;
 use Illuminate\Validation\ValidationException;
@@ -121,7 +122,11 @@ class AuthController extends Controller
     public function resendVerifyEmail(ResendVerifyEmailRequest $request)
     {
         try {
-            $user = UserService::findUserByEmail($request->email);
+            $email = $request->email ?? null;
+            if ($request->user()) {
+                $email = $request->user()->email;
+            }
+            $user = UserService::findUserByEmail($email);
             if (AuthService::isEmailVerified($user)) {
                 return $this->success(message: 'Email already verified', status: 200);
             }
@@ -138,7 +143,11 @@ class AuthController extends Controller
     // Forgot Password
     public function forgotPassword(ForgotPasswordRequest $request)
     {
-        $status = Password::sendResetLink($request->only('email'));
+        $email = $request->email ?? null;
+        if ($request->user()) {
+            $email = $request->user()->email;
+        }
+        $status = Password::sendResetLink(compact('email'));
 
         return $status === Password::RESET_LINK_SENT
             ? $this->success(status: 200, message: 'Reset link sent to your email')
@@ -148,14 +157,20 @@ class AuthController extends Controller
     // Reset Password
     public function resetPassword(ResetPasswordRequest $request)
     {
+
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+            'password_confirmation' => $request->password_confirmation,
+            'token' => $request->token,
+        ];
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $credentials,
             function ($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
-
                 event(new PasswordReset($user));
             }
         );

@@ -52,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
         );
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
-            return env('APP_URL_WEBSITE', 'http://localhost:3000') . '/reset-password?token=' . $token;
+            return env('APP_URL_WEBSITE', 'http://localhost:3000') . '/reset-password?token=' . $token . '&email=' . $user->email;
         });
     }
 }

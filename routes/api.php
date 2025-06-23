@@ -122,6 +122,7 @@ Route::prefix('comments')->group(function () {
 Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->group(function () {
     Route::prefix('auth')->name('auth.')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+        Route::post('/resend-verification', [AuthController::class, 'resendVerifyEmail'])->name('resend-verification');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 
