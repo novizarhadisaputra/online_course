@@ -606,15 +606,23 @@ class CourseController extends Controller
             }
             $value =  ($qty / count($lesson->quizzes)) * 100;
             $score = $lesson->score()->where('user_id', $request->user()->id)->first();
+            $is_graduated = true;
+            if ($lesson->graduation_score > 0) {
+                if ($score < $lesson->graduation_score) {
+                    $is_graduated = false;
+                }
+            }
             if ($score) {
                 $score->batches += 1;
                 $score->value = $value;
+                $score->is_graduated = $is_graduated;
                 $score->save();
             } else {
                 $lesson->score()->create([
                     'batches' => 1,
                     'value' => $value,
                     'user_id' => $request->user()->id,
+                    'is_graduated' => $is_graduated
                 ]);
             }
 

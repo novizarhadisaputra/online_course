@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuidMorphs('model');
             $table->integer('batches');
             $table->float('value');
+            $table->boolean('is_graduated')->default(true);
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 
