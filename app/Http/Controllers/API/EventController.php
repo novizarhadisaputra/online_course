@@ -43,7 +43,7 @@ class EventController extends Controller
             $end = now()->endOfMonth();
 
             $events = $events->whereBetween('start_time', [$start, $end])->paginate($request->input('limit', 10));
-            return $this->success(data: Event::collection($events), paginate: $events);
+            return $this->success(data: EventResource::collection($events), paginate: $events);
         } catch (\Throwable $th) {
             throw $th;
         }
