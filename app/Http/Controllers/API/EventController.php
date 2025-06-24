@@ -8,11 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
+use App\Traits\ResponseTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 
 class EventController extends Controller
 {
+    use ResponseTrait;
     /**
      * Display a listing of the resource.
      */

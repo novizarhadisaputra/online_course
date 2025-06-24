@@ -82,6 +82,7 @@ class PaymentMethodResource extends Resource
 
                         ])
                         ->columns(1)
+                        ->required()
                 ])
             ]);
     }
