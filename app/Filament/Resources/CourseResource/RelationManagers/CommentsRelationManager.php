@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -24,7 +25,7 @@ class CommentsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                TextInput::make('description')
+                RichEditor::make('description')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('user_id')

@@ -19,7 +19,7 @@ class EventController extends Controller
     public function index(Request $request)
     {
         try {
-            $events = Event::with(['viewers'])->active();
+            $events = Event::with(['viewers']);
             if ($request->search) {
                 $events = $events->where('name', 'ilike', "%$request->search%");
             }

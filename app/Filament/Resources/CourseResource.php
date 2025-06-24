@@ -39,6 +39,7 @@ use App\Filament\Resources\CourseResource\RelationManagers\PricesRelationManager
 use App\Filament\Resources\CourseResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\TransactionsRelationManager;
+use App\Filament\Resources\CourseResource\RelationManagers\AnnouncementsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\LearningMethodsRelationManager;
 
 class CourseResource extends Resource
@@ -318,6 +319,7 @@ class CourseResource extends Resource
         return [
             LearningMethodsRelationManager::make(),
             PricesRelationManager::make(),
+            AnnouncementsRelationManager::make(),
             TransactionsRelationManager::make(['status' => TransactionStatus::SUCCESS]),
             ReviewsRelationManager::make(),
             CommentsRelationManager::make(),

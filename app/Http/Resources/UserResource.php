@@ -29,6 +29,7 @@ class UserResource extends JsonResource
             "email_verified_at" => $this->email_verified_at,
             'followers_count' => $this->followers()->select(['id'])->count(),
             'following_count' => $this->following()->select(['id'])->count(),
+            'addresses' => AddressResource::collection($this->addresses),
         ];
     }
 }

@@ -229,6 +229,7 @@ class UserController extends Controller
             }
 
             $address->label = $request->label ?? $address->label;
+            $address->status = $request->status;
             $address->first_name = $request->first_name ?? $address->first_name;
             $address->last_name = $request->last_name ?? $address->last_name;
             $address->email = $request->user()->email;
