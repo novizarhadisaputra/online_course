@@ -16,7 +16,7 @@ class LessonResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $is_buy = !$request->user() ? false : $this->section()->course()->transactions()
+        $is_buy = !$request->user() ? false : $this->section->course->transactions()
             ->where('user_id', $request->user()->id)
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
