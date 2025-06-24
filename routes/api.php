@@ -32,7 +32,7 @@ Route::prefix('check')->name('check.')->group(function () {
     });
 });
 
-Route::prefix('auth')->middleware(['throttle:1,1'])->name('auth.')->group(function () {
+Route::prefix('auth')->middleware(['throttle:3,1'])->name('auth.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::prefix('google')->name('google.')->group(function () {
@@ -120,7 +120,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::prefix('auth')->name('auth.')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
         Route::post('/resend-verification', [AuthController::class, 'resendVerifyEmail'])
-            ->middleware(['throttle:1,1'])
+            ->middleware(['throttle:3,1'])
             ->name('resend-verification');
         Route::post('/change-password', [AuthController::class, 'resetPassword'])->name('reset-password');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -243,7 +243,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
 
     Route::apiResource('carts', CartController::class);
 
-    Route::prefix('enrollments')->middleware(['throttle:1,1'])->name('enrollments.')->group(function () {
+    Route::prefix('enrollments')->middleware(['throttle:3,1'])->name('enrollments.')->group(function () {
         Route::post('/course', [EnrollmentController::class, 'storeEnrollmentCourse'])->name('course.store');
         Route::post('/event', [EnrollmentController::class, 'storeEnrollmentEvent'])->name('event.store');
     });

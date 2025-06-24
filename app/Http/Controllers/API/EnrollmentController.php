@@ -15,9 +15,11 @@ use App\Http\Resources\TransactionResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreEnrollmentEventRequest;
 use App\Http\Requests\Transaction\StoreEnrollmentCourseRequest;
+use App\Traits\ResponseTrait;
 
 class EnrollmentController extends Controller
 {
+    use ResponseTrait;
     /**
      * Store a newly created resource in storage.
      */
@@ -47,19 +49,21 @@ class EnrollmentController extends Controller
                 'user_id' => $request->user()->id,
             ]);
 
-            $total_qty = 0;
+            $total_qty = 1;
             $total_price = 0;
-
             $price = $course->price;
+            $value = $price ? $price->value : 0;
+            $units = $price ? $price->units : 'courses';
+
             $transaction->details()->create([
                 'model_id' => $course->id,
                 'model_type' => Course::class,
-                'qty' => 1,
-                'units' => $price ? $price->units : 'courses',
-                'price' => $price ? $price->value : 0,
+                'qty' => $total_qty,
+                'units' => $units,
+                'price' => $value,
             ]);
 
-            $total_price += $price->value;
+            $total_price += $value;
 
             $transaction->address_id = $request->address_id ?? null;
             $transaction->total_qty = $total_qty;
@@ -110,16 +114,19 @@ class EnrollmentController extends Controller
                 'user_id' => $request->user()->id,
             ]);
 
-            $total_qty = 0;
+            $total_qty = 1;
             $total_price = 0;
-
             $price = $event->price;
+            $value = $price ? $price->value : 0;
+            $units = $price ? $price->units : 'events';
+
+
             $transaction->details()->create([
                 'model_id' => $event->id,
                 'model_type' => Event::class,
-                'qty' => 1,
-                'units' => $price ? $price->units : 'events',
-                'price' => $price ? $price->value : 0,
+                'qty' => $total_qty,
+                'units' => $units,
+                'price' => $value,
             ]);
 
             $total_price += $price->value;
