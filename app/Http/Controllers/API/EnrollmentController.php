@@ -76,6 +76,7 @@ class EnrollmentController extends Controller
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -138,6 +139,7 @@ class EnrollmentController extends Controller
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }

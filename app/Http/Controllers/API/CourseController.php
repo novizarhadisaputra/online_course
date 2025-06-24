@@ -368,9 +368,9 @@ class CourseController extends Controller
             }
 
             $request->user()->likeCourses()->toggle($course->id);
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
 
             DB::commit();
-            $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             return $this->success(data: new CourseResource($course), status: 200);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -460,6 +460,7 @@ class CourseController extends Controller
     public function storeAppointmentLesson(StoreAppointmentLessonRequest $request, string $slug, string $section_id, string $lesson_id)
     {
         try {
+            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -493,9 +494,10 @@ class CourseController extends Controller
                 $appointment->source_id = $event->user_id;
                 $appointment->save();
             }
-
+            DB::commit();
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -632,9 +634,10 @@ class CourseController extends Controller
                     'is_graduated' => $is_graduated
                 ]);
             }
-
+            DB::commit();
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
