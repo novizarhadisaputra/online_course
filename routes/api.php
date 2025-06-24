@@ -122,6 +122,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
         Route::post('/resend-verification', [AuthController::class, 'resendVerifyEmail'])
             ->middleware(['throttle:1,1'])
             ->name('resend-verification');
+        Route::post('/change-password', [AuthController::class, 'resetPassword'])->name('reset-password');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 

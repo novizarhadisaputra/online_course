@@ -18,7 +18,6 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\ResendVerifyEmailRequest;
-use App\Models\PasswordResetToken;
 use App\Services\AuthService;
 use App\Services\UserService;
 use Illuminate\Validation\ValidationException;
@@ -157,26 +156,45 @@ class AuthController extends Controller
     // Reset Password
     public function resetPassword(ResetPasswordRequest $request)
     {
+        try {
+            DB::beginTransaction();
 
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-            'password_confirmation' => $request->password_confirmation,
-            'token' => $request->token,
-        ];
-        $status = Password::reset(
-            $credentials,
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                    'remember_token' => Str::random(60),
-                ])->save();
-                event(new PasswordReset($user));
+            if ($request->user()) {
+                $request->user()->update([
+                    'password' => Hash::make($request->password)
+                ]);
+                DB::commit();
+                return $this->success(status: 200, message: 'Password change successfully');
+            } else {
+                $request->validate([
+                    'email' => ['required', 'email', 'exists:users,email'],
+                    'token' => ['required'],
+                ]);
+                $email = $request->email;
+                $credentials = [
+                    'email' => $email,
+                    'password' => $request->password,
+                    'password_confirmation' => $request->password_confirmation,
+                    'token' => $request->token,
+                ];
+                $status = Password::reset(
+                    $credentials,
+                    function ($user, $password) {
+                        $user->forceFill([
+                            'password' => Hash::make($password),
+                            'remember_token' => Str::random(60),
+                        ])->save();
+                        event(new PasswordReset($user));
+                    }
+                );
+                DB::commit();
+                return $status === Password::PASSWORD_RESET
+                    ? $this->success(status: 200, message: 'Password reset successfully')
+                    : $this->error(message: 'Invalid token');
             }
-        );
-
-        return $status === Password::PASSWORD_RESET
-            ? $this->success(status: 200, message: 'Password reset successfully')
-            : $this->error(message: 'Invalid token');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 }
