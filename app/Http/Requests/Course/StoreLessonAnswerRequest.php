@@ -22,6 +22,7 @@ class StoreLessonAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'attachment' => ['nullable', 'file', 'mimes:pdf,docx,pptx,xlsx,jpg,png,zip,rar'],
             'text' => ['required'],
         ];
     }

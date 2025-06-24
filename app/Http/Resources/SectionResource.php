@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\LessonResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SectionResource extends JsonResource
@@ -20,7 +21,7 @@ class SectionResource extends JsonResource
             "short_description" => $this->short_description,
             "description" => $this->description,
             "status" => $this->status,
-            "lessons" => $this->lessons()->select(['id', 'name', 'duration', 'duration_units'])->get()
+            "lessons" => LessonResource::collection($this->lessons),
         ];
     }
 }

@@ -564,6 +564,12 @@ class CourseController extends Controller
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
             $answer = $lesson->answer()->where('user_id', $request->user()->id)->first();
+            if ($request->hasFile('attachment')) {
+                $lesson->clearMediaCollection('attachments');
+                $lesson->addMediaFromRequest('attachment')
+                    ->usingFileName($request->user()->id . '.png')
+                    ->toMediaCollection('attachments', 's3');
+            }
             if (!$answer) {
                 $lesson->answer()->create([
                     'text' => $request->text,
