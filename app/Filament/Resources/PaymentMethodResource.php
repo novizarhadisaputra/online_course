@@ -63,6 +63,7 @@ class PaymentMethodResource extends Resource
                     Toggle::make('status')
                         ->required(),
                     Repeater::make('tutorials')
+                        ->relationship(name: 'tutorials')
                         ->schema([
                             SpatieMediaLibraryFileUpload::make('image')
                                 ->collection('images')
