@@ -145,7 +145,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
      */
     public function reviews(): HasManyThrough
     {
-        return $this->hasManyThrough(Transaction::class, Review::class);
+        return $this->hasMany(Review::class);
     }
 
     public function addresses(): MorphMany
