@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Like;
+use App\Models\Note;
 use App\Models\Quiz;
 use App\Models\User;
 use App\Models\Event;
@@ -93,5 +94,13 @@ class Lesson extends Model implements HasMedia
     public function answer(): MorphOne
     {
         return $this->morphOne(Answer::class, 'model');
+    }
+
+    /**
+     * Get all of the lesson's notes.
+     */
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'model');
     }
 }

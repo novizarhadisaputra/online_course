@@ -17,6 +17,7 @@ use App\Http\Resources\InstructorResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\User\UpdateAvatarRequest;
 use App\Http\Resources\AddressResource;
+use App\Http\Resources\CertificateResource;
 
 class UserController extends Controller
 {
@@ -38,9 +39,28 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function following(Request $request)
+    public function certificates(Request $request, string $id)
     {
         try {
+            if ($id != $request->user()->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+            }
+            $certificates = $request->user()->certificates()->paginate($request->input('limit', 10));
+            return $this->success(data: CertificateResource::collection($certificates), paginate: $certificates);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function following(Request $request, string $id)
+    {
+        try {
+            if ($id != $request->user()->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+            }
             $following = $request->user()->following()->paginate($request->input('limit', 10));
             return $this->success(data: InstructorResource::collection($following), paginate: $following);
         } catch (\Throwable $th) {
@@ -51,9 +71,12 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function followers(Request $request)
+    public function followers(Request $request, string $id)
     {
         try {
+            if ($id != $request->user()->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+            }
             $followers = $request->user()->followers()->paginate($request->input('limit', 10));
             return $this->success(data: InstructorResource::collection($followers), paginate: $followers);
         } catch (\Throwable $th) {
@@ -94,11 +117,12 @@ class UserController extends Controller
                 "postal_code" => $request->postal_code,
             ]);
 
-            $note = $address->note()->first();
+            $note = $address->note()->where('user_id', $request->user()->id)->first();
             if (!$note) {
                 $address->note()->create([
                     'name' => $request->label,
                     'description' => $request->note,
+                    'user_id' => $request->user()->id,
                     'status' => true,
                 ]);
             } else {
@@ -244,16 +268,18 @@ class UserController extends Controller
             $address->postal_code = $request->postal_code;
             $address->save();
 
-            $note = $address->note()->first();
+            $note = $address->note()->where('user_id', $request->user()->id)->first();
             if (!$note) {
                 $address->note()->create([
                     'name' => $request->label,
                     'description' => $request->note,
+                    'user_id' => $request->user()->id,
                     'status' => true,
                 ]);
             } else {
                 $note->name = $request->label;
                 $note->description = $request->note;
+                $note->user_id = $request->user()->id;
                 $note->save();
             }
 
@@ -289,7 +315,7 @@ class UserController extends Controller
             if (!$address) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
             }
-
+            $address->note()->where('user_id', $request->user()->id)->delete();
             $address->delete();
 
             DB::commit();

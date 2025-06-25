@@ -15,6 +15,7 @@ use App\Models\Review;
 use App\Models\Address;
 use App\Models\Progress;
 use App\Models\Couponable;
+use App\Models\Certificate;
 use App\Models\Transaction;
 use App\Models\ModelHasBranch;
 use Illuminate\Support\Carbon;
@@ -150,6 +151,11 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'model');
+    }
+
+    public function certificates(): MorphMany
+    {
+        return $this->morphMany(Certificate::class, 'model');
     }
 
     /**

@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NoteResource;
 use App\Http\Resources\QuizResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\CouponResource;
@@ -20,11 +21,13 @@ use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\SectionResource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Resources\CertificateResource;
 use App\Http\Resources\AnnouncementResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Course\StoreReviewRequest;
 use App\Http\Requests\Course\StoreCommentRequest;
 use App\Http\Requests\Course\UpdateReviewRequest;
+use App\Http\Requests\Note\StoreLessonNoteRequest;
 use App\Http\Requests\Course\StoreQuizAnswerRequest;
 use App\Http\Requests\Course\StoreLessonAnswerRequest;
 use App\Http\Requests\Course\StoreLessonProgressRequest;
@@ -267,8 +270,6 @@ class CourseController extends Controller
         }
     }
 
-    // latestSection
-
     /**
      * Display a listing of the resource.
      */
@@ -289,9 +290,36 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function lessonNotes(Request $request, string $slug, string $section_id, string $lesson_id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $notes = $lesson->notes();
+            if ($request->search) {
+                $notes = $notes->whereAny([
+                    'name',
+                    'description'
+                ], 'ilike', "%$request->search%");
+            }
+            $notes = $notes->paginate($request->input('limit', 10));
+            DB::commit();
+            return $this->success(data: NoteResource::collection($notes), paginate: $notes);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**
@@ -404,22 +432,24 @@ class CourseController extends Controller
 
             $certificate = $enrollment->certificate()->orderBy('created_at', 'desc')->first();
             if (!$certificate) {
-                $certificate->certificate_number = Str::upper(env('APP_NAME', "Online Course")) . "-" . Str::upper(Str::random(4)) . "-" . date('ddMMYYYY');
-                $certificate->issue_date = now();
-                if ($certificate->hasMedia('certificates')) {
-                    // Generate PDF using blade
-                    $pdf = Pdf::loadView('pdf.certificate', compact('certificate'))
-                        ->setPaper('a4', 'landscape')->setWarnings(false)->output();
-                    $certificate
-                        ->addMediaFromString($pdf)
-                        ->usingFileName(Str::slug($request->user()->id . '_' . $certificate->certificate_number, '_') . '.pdf')
-                        ->toMediaCollection('certificates', 's3');
-                }
-                $certificate->save();
+                $certificate = $enrollment->certificate()->create([
+                    'certificate_number' => Str::upper(env('APP_NAME', "Online Course")) . "-" . Str::upper(Str::random(4)) . "-" . date('ddMMYYYY'),
+                    'issue_date' => now(),
+                ]);
             }
+            if ($certificate->hasMedia('certificates')) {
+                // Generate PDF using blade
+                $pdf = Pdf::loadView('pdf.certificate', compact('certificate'))
+                    ->setPaper('a4', 'landscape')->setWarnings(false)->output();
+                $certificate
+                    ->addMediaFromString($pdf)
+                    ->usingFileName(Str::slug($request->user()->id . '_' . $certificate->certificate_number, '_') . '.pdf')
+                    ->toMediaCollection('certificates', 's3');
+            }
+            $certificate->save();
 
             DB::commit();
-            return $this->success(data: new CourseResource($course), status: 200);
+            return $this->success(data: new CertificateResource($certificate), status: 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -543,6 +573,38 @@ class CourseController extends Controller
             $this->updateProgressCourse($request->user()->id, $course);
             DB::commit();
             return $this->success(data: new LessonResource($lesson));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeLessonNote(StoreLessonNoteRequest $request, string $slug, string $section_id, string $lesson_id)
+    {
+        try {
+            DB::beginTransaction();
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $note = $lesson->notes()->create([
+                'name' => $request->name,
+                'description' => $request->description,
+            ]);
+
+            DB::commit();
+            return $this->success(data: new NoteResource($note));
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -812,6 +874,70 @@ class CourseController extends Controller
 
             DB::commit();
             return $this->success(data: new ReviewResource($review), status: 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function updateLessonNote(StoreLessonNoteRequest $request, string $slug, string $section_id, string $lesson_id, string $note_id)
+    {
+        try {
+            DB::beginTransaction();
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $note = $lesson->notes()->where('id', $note_id)->first();
+            if (!$note) {
+                throw ValidationException::withMessages(['note_id' => trans('validation.exists', ['attribute' => 'note id'])]);
+            }
+
+            $note->name = $request->name;
+            $note->description = $request->description;
+            $note->user_id = $request->user()->id;
+            $note->save();
+
+            DB::commit();
+            return $this->success(data: new NoteResource($note));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function destroyLessonNote(Request $request, string $slug, string $section_id, string $lesson_id, string $note_id)
+    {
+        try {
+            DB::beginTransaction();
+            $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
+            if (!$course) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
+            }
+            $section = $course->sections()->active()->where('id', $section_id)->first();
+            if (!$section) {
+                throw ValidationException::withMessages(['section_id' => trans('validation.exists', ['attribute' => 'section id'])]);
+            }
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+            if (!$lesson) {
+                throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
+            }
+            $note = $lesson->notes()->where('id', $note_id)->first();
+            if (!$note) {
+                throw ValidationException::withMessages(['note_id' => trans('validation.exists', ['attribute' => 'note id'])]);
+            }
+            $note->delete();
+
+            DB::commit();
+            return $this->success(data: null);
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;

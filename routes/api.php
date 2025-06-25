@@ -131,6 +131,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
         Route::prefix('{user}')->group(function () {
             Route::put('/update-avatar', [UserController::class, 'updateAvatar'])->name('update.avatar');
             Route::get('/following', [UserController::class, 'following'])->name('following');
+            Route::get('/certificates', [UserController::class, 'certificates'])->name('certificates');
             Route::get('/followers', [UserController::class, 'followers'])->name('followers');
             Route::prefix('addresses')->name('addresses.')->group(function () {
                 Route::get('/', [UserController::class, 'addresses'])->name('index');
@@ -187,8 +188,14 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                                 });
                             });
                             Route::middleware(['throttle:3,1'])->group(function () {
-                                Route::post('answers', [CourseController::class, 'storeLessonAnswer'])->name('store.answers');
-                                Route::post('score-quiz-answer', [CourseController::class, 'storeScoreQuizAnswer'])->name('store.score.quiz.answer');
+                                Route::post('answers', [CourseController::class, 'storeLessonAnswer'])->name('answers.notes');
+                                Route::prefix('notes')->name('notes.')->group(function () {
+                                    Route::get('/', [CourseController::class, 'lessonNotes'])->name('index');
+                                    Route::post('/', [CourseController::class, 'storeLessonNote'])->name('store');
+                                    Route::put('/{note}', [CourseController::class, 'updateLessonNote'])->name('update');
+                                    Route::delete('/{note}', [CourseController::class, 'destroyLessonNote'])->name('destroy');
+                                });
+                                Route::post('score-quiz-answer', [CourseController::class, 'storeScoreQuizAnswer'])->name('score-quiz-answer.store');
                                 Route::post('progress', [CourseController::class, 'storeLessonProgress'])->name('progress');
                                 Route::post('likes', [CourseController::class, 'storeLikeLesson'])->name('likes');
                                 Route::post('appointments', [CourseController::class, 'storeAppointmentLesson'])->name('appointments');
