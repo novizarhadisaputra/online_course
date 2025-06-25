@@ -27,7 +27,7 @@ class TransactionResource extends JsonResource
             'total_paid' => $this->total_price + $this->service_fee + $this->tax_fee,
             'status' => $this->status,
             'category' => $this->category,
-            'address' => $this->address,
+            'address' => new AddressResource($this->address),
             'data' => $this->data,
             'details' => TransactionDetailResource::collection($this->details),
             'created_at' => $this->created_at,

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Enums\TransactionStatus;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NoteResource;
@@ -334,7 +335,10 @@ class CourseController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
             }
 
-            $transaction = $course->transactions()->where('user_id', $request->user()->id)->first();
+            $transaction = $course->transactions()
+                ->where('status', TransactionStatus::SUCCESS)
+                ->where('user_id', $request->user()->id)
+                ->first();
 
             if (!$transaction) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
