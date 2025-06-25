@@ -83,14 +83,14 @@
                             @endif
 
                             <div style="text-align: center; margin-top: 30px;">
-                                <a href="{{ env('APP_URL_WEBSITE') . $transaction->id) }}" class="button"
+                                <a href="{{ env('APP_URL_WEBSITE') . "/transaction-history/$transaction->id" }}" class="button"
                                     style="background-color: #3182ce; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; display: inline-block;">
                                     View Transaction Details
                                 </a>
                             </div>
 
                             <p style="font-size: 14px; color: #718096; margin-top: 30px;">
-                                Have any questions? <a href="{{ url('/contact') }}" style="color: #3182ce;">Contact our
+                                Have any questions? <a href="{{ env('APP_URL_WEBSITE') . '/contactus' }}" style="color: #3182ce;">Contact our
                                     support</a>.
                             </p>
 
