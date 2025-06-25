@@ -216,7 +216,6 @@ class XenditService
                     if ($receive_data->data && $receive_data->data->status) {
                         if ($receive_data->data->status === 'SUCCEEDED') {
                             $this->transaction->status = 'success';
-                            $this->removeItemFromCart($this->transaction);
                         } else if ($receive_data->data->status === 'EXPIRED') {
                             $this->transaction->status = 'expire';
                         } else if ($receive_data->data->status === 'CANCELLED') {
@@ -242,13 +241,6 @@ class XenditService
             DB::commit();
         } catch (\Throwable $th) {
             throw $th;
-        }
-    }
-
-    private function removeItemFromCart(Transaction $transaction)
-    {
-        foreach ($transaction->details as $item) {
-            Cart::where(['model_id' => $item->model_id, 'model_type' => $item->model_type])->delete();
         }
     }
 }

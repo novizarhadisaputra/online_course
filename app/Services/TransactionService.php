@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Cart;
 use App\Models\Event;
 use App\Models\Course;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
+use App\Enums\TransactionStatus;
+use App\Models\TransactionDetail;
 
 class TransactionService
 {
@@ -45,7 +48,15 @@ class TransactionService
                         }
                     }
                 }
+                if ($transaction->status == TransactionStatus::SUCCESS->value) {
+                    self::removeItemFromCart($item);
+                }
             }
         }
+    }
+
+    public static function removeItemFromCart(TransactionDetail $item)
+    {
+        Cart::where(['model_id' => $item->model_id, 'model_type' => $item->model_type])->delete();
     }
 }
