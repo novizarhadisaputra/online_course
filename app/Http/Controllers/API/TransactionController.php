@@ -40,7 +40,9 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         try {
-            $transactions = Transaction::where('user_id', $request->user()->id)->paginate($request->input('limit', 10));
+            $transactions = Transaction::where('user_id', $request->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->input('limit', 10));
             return $this->success(data: TransactionResource::collection($transactions), paginate: $transactions);
         } catch (\Throwable $th) {
             throw $th;

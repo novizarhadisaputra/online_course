@@ -15,10 +15,7 @@ class SendVerificationEmailJob implements ShouldQueue
     use InteractsWithQueue, Queueable, SerializesModels;
 
     // Constructor to pass the User to the job
-    public function __construct(protected User $user)
-    {
-        $this->user = $user;
-    }
+    public function __construct(protected User $user) {}
 
     /**
      * Handle the job (send the email).

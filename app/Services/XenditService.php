@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\TransactionStatus;
+use App\Jobs\SendTransactionStatusEmailJob;
 use App\Models\ThirdPartyLog;
 use Xendit\Configuration;
 use Illuminate\Support\Str;
@@ -123,7 +124,9 @@ class XenditService
                     'channel_properties' => [
                         'customer_name' => $this->transaction->user->name,
                         'expires_at' => now()->addDay(),
-                        'success_return_url' => $this->transaction->payment_method->configs['success_return_url']
+                        'success_return_url' => $this->transaction->payment_method->configs['success_return_url'],
+                        'failure_return_url' => $this->transaction->payment_method->configs['failure_return_url'],
+                        'cancel_return_url' => $this->transaction->payment_method->configs['cancel_return_url']
                     ]
                 ];
             } else if ($payment_channel && Str::slug(Str::lower($payment_channel->name), '_') === 'qr_code') {
@@ -226,6 +229,9 @@ class XenditService
                             'total_price' => $this->transaction->total_price,
                             'status' => $this->transaction->status,
                         ]);
+
+                        SendTransactionStatusEmailJob::dispatch($this->transaction);
+
                         $this->transaction->save();
                     }
                 }
