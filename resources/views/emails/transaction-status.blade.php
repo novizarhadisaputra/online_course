@@ -73,7 +73,7 @@
                                     <tbody>
                                         @foreach ($transaction->details as $item)
                                             <tr style="border-bottom: 1px solid #edf2f7;">
-                                                <td>{{ $model->name }}</td>
+                                                <td>{{ $item->model->name }}</td>
                                                 <td align="center">{{ $item->qty }}</td>
                                                 <td align="right">${{ number_format($item->price, 2) }}</td>
                                             </tr>
