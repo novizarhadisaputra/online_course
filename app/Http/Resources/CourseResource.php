@@ -25,6 +25,7 @@ class CourseResource extends JsonResource
             ->exists();
         $progress = !$request->user() ? null : $request->user()->progressCourses()->where('courses.id', $id)->orderBy('created_at', 'desc')->first();
         $enrollment = !$request->user() ? [] : $this->enrollments()->where('user_id', $request->user()->id)->orderBy('created_at', 'desc')->first();
+        $review = !$request->user() ? null : $this->reviews()->where('user_id', $request->user()->id)->first();
 
         return [
             'id' => $id,
@@ -60,6 +61,7 @@ class CourseResource extends JsonResource
                 'avg' => $this->reviews()->select(['id', 'rating'])->active()->avg('rating') ?? 0,
                 'count' => $this->reviews()->select(['id'])->active()->count()
             ],
+            'review' => new ReviewResource($review),
             'certificate' => $enrollment ? $enrollment->certificate : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

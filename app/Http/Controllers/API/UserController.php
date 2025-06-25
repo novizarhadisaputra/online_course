@@ -18,6 +18,7 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Requests\User\UpdateAvatarRequest;
 use App\Http\Resources\AddressResource;
 use App\Http\Resources\CertificateResource;
+use App\Http\Resources\ReviewResource;
 
 class UserController extends Controller
 {
@@ -26,9 +27,28 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function addresses(Request $request)
+    public function reviews(Request $request, string $id)
     {
         try {
+            if ($id != $request->user()->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+            }
+            $reviews = $request->user()->reviews()->paginate($request->input('limit', 10));
+            return $this->success(data: ReviewResource::collection($reviews), paginate: $reviews);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function addresses(Request $request, string $id)
+    {
+        try {
+            if ($id != $request->user()->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+            }
             $addresses = $request->user()->addresses()->paginate($request->input('limit', 10));
             return $this->success(data: AddressResource::collection($addresses), paginate: $addresses);
         } catch (\Throwable $th) {

@@ -130,6 +130,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::prefix('users')->name('users.')->group(function () {
         Route::prefix('{user}')->group(function () {
             Route::put('/update-avatar', [UserController::class, 'updateAvatar'])->name('update.avatar');
+            Route::get('/reviews', [UserController::class, 'reviews'])->name('reviews');
             Route::get('/following', [UserController::class, 'following'])->name('following');
             Route::get('/certificates', [UserController::class, 'certificates'])->name('certificates');
             Route::get('/followers', [UserController::class, 'followers'])->name('followers');
@@ -153,11 +154,11 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::get('/announcements', [CourseController::class, 'announcements'])->name('announcements');
             Route::get('/lessons', [CourseController::class, 'searchLessons'])->name('lessons');
             Route::get('/likes', [CourseController::class, 'likes'])->name('likes');
-            Route::get('/reviews', [CourseController::class, 'reviews'])->name('reviews');
             Route::get('/coupons', [CourseController::class, 'coupons'])->name('coupons');
             Route::get('/comments', [CourseController::class, 'comments'])->name('comments');
             Route::middleware(['throttle:3,1'])->group(function () {
                 Route::prefix('reviews')->name('reviews.')->group(function () {
+                    Route::get('/', [CourseController::class, 'reviews'])->name('index');
                     Route::post('/', [CourseController::class, 'storeReview'])->name('store');
                     Route::put('/{review}', [CourseController::class, 'updateReview'])->name('update');
                 });
@@ -188,7 +189,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                                 });
                             });
                             Route::middleware(['throttle:3,1'])->group(function () {
-                                Route::post('answers', [CourseController::class, 'storeLessonAnswer'])->name('answers.notes');
+                                Route::post('answers', [CourseController::class, 'storeLessonAnswer'])->name('answers.store');
                                 Route::prefix('notes')->name('notes.')->group(function () {
                                     Route::get('/', [CourseController::class, 'lessonNotes'])->name('index');
                                     Route::post('/', [CourseController::class, 'storeLessonNote'])->name('store');
