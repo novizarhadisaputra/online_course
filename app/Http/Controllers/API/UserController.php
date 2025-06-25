@@ -159,9 +159,16 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function showEmail(Request $request, string $id)
     {
-        //
+        try {
+            if ($request->user()->id !== $id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
+            }
+            return $this->success(data: ['email' => $request->user()->email]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function showAddress(Request $request, string $id, string $address_id)

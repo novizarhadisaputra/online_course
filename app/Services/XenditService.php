@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Enums\TransactionStatus;
 use App\Jobs\SendTransactionStatusEmailJob;
-use App\Models\Cart;
 use App\Models\ThirdPartyLog;
-use App\Models\Transaction;
 use Xendit\Configuration;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;

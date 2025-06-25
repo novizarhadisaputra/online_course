@@ -18,7 +18,7 @@ return new class extends Migration
             $table->dateTime('date');
             $table->string('code')->unique()->nullable();
             $table->text('notes')->nullable();
-            $table->boolean('is_attended')->default(false);
+            $table->boolean('is_attended')->nullable();
 
             $table->timestamp('check_in_at')->nullable();
             $table->timestamp('check_out_at')->nullable();

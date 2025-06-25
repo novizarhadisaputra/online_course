@@ -131,6 +131,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
         Route::prefix('{user}')->group(function () {
             Route::put('/update-avatar', [UserController::class, 'updateAvatar'])->name('update.avatar');
             Route::get('/reviews', [UserController::class, 'reviews'])->name('reviews');
+            Route::get('/show-email', [UserController::class, 'showEmail'])->name('show.email');
             Route::get('/following', [UserController::class, 'following'])->name('following');
             Route::get('/certificates', [UserController::class, 'certificates'])->name('certificates');
             Route::get('/followers', [UserController::class, 'followers'])->name('followers');

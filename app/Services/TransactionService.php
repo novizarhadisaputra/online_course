@@ -40,6 +40,7 @@ class TransactionService
                         $appointment = $event->appointments()->where('transaction_detail_id', $item->id)->first();
                         if ($appointment) {
                             $appointment = $event->appointments()->create([
+                                'date' => $event->start_time,
                                 'code' => Str::upper(Str::random(10)),
                                 'transaction_detail_id' => $item->id,
                                 'user_id' => $transaction->user_id,
