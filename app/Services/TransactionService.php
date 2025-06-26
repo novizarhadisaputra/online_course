@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Str;
 use App\Enums\TransactionStatus;
 use App\Models\TransactionDetail;
+use App\Models\User;
 
 class TransactionService
 {
@@ -50,14 +51,14 @@ class TransactionService
                     }
                 }
                 if ($transaction->status == TransactionStatus::SUCCESS->value) {
-                    self::removeItemFromCart($item);
+                    self::removeItemFromCart($item, $transaction->user);
                 }
             }
         }
     }
 
-    public static function removeItemFromCart(TransactionDetail $item)
+    public static function removeItemFromCart(TransactionDetail $item, User $user)
     {
-        Cart::where(['model_id' => $item->model_id, 'model_type' => $item->model_type])->delete();
+        Cart::where(['model_id' => $item->model_id, 'model_type' => $item->model_type, 'user_id' => $user->id])->delete();
     }
 }

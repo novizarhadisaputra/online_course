@@ -605,6 +605,7 @@ class CourseController extends Controller
             $note = $lesson->notes()->create([
                 'name' => $request->name,
                 'description' => $request->description,
+                'user_id' => $request->user()->id
             ]);
 
             DB::commit();

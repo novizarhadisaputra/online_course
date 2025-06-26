@@ -3,10 +3,10 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\UserSimpleResource;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReviewResource extends JsonResource
+class UserSimpleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,10 +17,9 @@ class ReviewResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'rating' => $this->rating,
-            'description' => $this->description,
-            'user' => new UserSimpleResource($this->user),
-            'created_at' => $this->created_at,
+            'name' => $this->name,
+            'image' => $this->hasMedia('avatars') ? $this->getMedia('avatars')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+            'specialist' => $this->specialist,
         ];
     }
 }
