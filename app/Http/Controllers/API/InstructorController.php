@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CommentResource;
 use App\Http\Resources\InstructorResource;
 use Illuminate\Validation\ValidationException;
-use App\Http\Requests\Course\StoreCommentRequest;
 use App\Http\Resources\UserResource;
 
 class InstructorController extends Controller

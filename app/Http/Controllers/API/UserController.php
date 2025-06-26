@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use App\Services\AuthService;
 use App\Services\UserService;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
@@ -102,14 +101,6 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -315,14 +306,6 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 
     /**

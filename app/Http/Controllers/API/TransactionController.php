@@ -24,9 +24,6 @@ use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Requests\Transaction\CheckoutRequest;
-use App\Http\Requests\Transaction\StoreEnrollmentCourseRequest;
-use App\Http\Requests\Transaction\StoreEnrollmentEventRequest;
-use App\Models\Event;
 use App\Services\TransactionService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
@@ -47,14 +44,6 @@ class TransactionController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -125,6 +114,7 @@ class TransactionController extends Controller
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -190,6 +180,7 @@ class TransactionController extends Controller
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -222,29 +213,5 @@ class TransactionController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

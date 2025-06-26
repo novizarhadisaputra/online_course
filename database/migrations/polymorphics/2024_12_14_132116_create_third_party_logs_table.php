@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('third_party_logs', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
+
             $table->char('name');
             $table->string('event_name');
             $table->string('ip_address')->nullable();
             $table->json('data')->nullable();
+
             $table->timestamps();
         });
     }
