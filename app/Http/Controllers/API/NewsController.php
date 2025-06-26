@@ -89,8 +89,8 @@ class NewsController extends Controller
      */
     public function storeComment(StoreCommentRequest $request, string $slug)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $news = News::where('slug', $slug)->first();
             if (!$news) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
@@ -108,6 +108,7 @@ class NewsController extends Controller
             DB::commit();
             return $this->success(data: new CommentResource($comment), status: 201);
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -117,17 +118,17 @@ class NewsController extends Controller
      */
     public function storeLike(Request $request, string $slug)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $news = News::where('slug', $slug)->first();
             if (!$news) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'news id'])]);
             }
 
             $request->user()->likeNews()->toggle($news->id);
+            $news = News::where('slug', $slug)->first();
 
             DB::commit();
-            $news = News::where('slug', $slug)->first();
             return $this->success(data: new NewsResource($news), status: 200);
         } catch (\Throwable $th) {
             DB::rollBack();

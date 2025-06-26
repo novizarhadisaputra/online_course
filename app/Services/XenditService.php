@@ -32,7 +32,6 @@ class XenditService
     public function createTransaction(Request $request)
     {
         try {
-            DB::beginTransaction();
             if ($this->transaction->payment_method->payment_channel && $this->transaction->payment_method->payment_channel->payment_gateway) {
                 if ($this->transaction->payment_method->payment_channel->payment_gateway->configs) {
                     $configs = $this->transaction->payment_method->payment_channel->payment_gateway->configs;
@@ -194,8 +193,6 @@ class XenditService
             $this->transaction->total_price = $total_price;
             $this->transaction->save();
 
-            DB::commit();
-
             return $this->transaction;
         } catch (\Throwable $th) {
             throw $th;
@@ -205,8 +202,6 @@ class XenditService
     public function receiveFromHook(Request $request)
     {
         try {
-            DB::beginTransaction();
-
             $receive_data = json_decode(json_encode($request->input()));
 
             if ($receive_data->event && $this->transaction->status == TransactionStatus::WAITING_PAYMENT->value) {
@@ -236,7 +231,6 @@ class XenditService
                     }
                 }
             }
-            DB::commit();
         } catch (\Throwable $th) {
             throw $th;
         }

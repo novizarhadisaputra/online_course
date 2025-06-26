@@ -55,9 +55,8 @@ class CommentController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $comment = Comment::find($request->id);
             $comment = $comment->comments()->create([
                 'description' => $request->description,
@@ -90,9 +89,22 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreRequest $request, string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $comment = Comment::find($id);
+
+            $comment->description = $request->description;
+            $comment->user_id = $request->user()->id;
+            $comment->save();
+
+            DB::commit();
+            return $this->success(data: new CommentResource($comment), status: 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**

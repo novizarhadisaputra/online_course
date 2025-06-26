@@ -25,8 +25,8 @@ class EnrollmentController extends Controller
      */
     public function storeEnrollmentCourse(StoreEnrollmentCourseRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
 
             $course = Course::find($request->course_id);
             if (!$course) {
@@ -90,8 +90,8 @@ class EnrollmentController extends Controller
      */
     public function storeEnrollmentEvent(StoreEnrollmentEventRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
 
             $event = Event::find($request->event_id);
             if (!$event) {

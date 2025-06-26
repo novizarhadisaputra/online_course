@@ -45,9 +45,8 @@ class CartController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $model_type = Course::class;
             if ($request->category == 'events') {
                 $model_type = Event::class;
@@ -97,6 +96,7 @@ class CartController extends Controller
             DB::commit();
             return $this->success(data: new CartResource($cart));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -138,6 +138,7 @@ class CartController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
+        DB::beginTransaction();
         try {
             $cart = Cart::where(['user_id' => $request->user()->id, 'id' => $id])->first();
             if (!$cart) {
@@ -145,8 +146,10 @@ class CartController extends Controller
             }
             $cart->delete();
             $carts = Cart::where('user_id', $request->user()->id)->paginate($request->input('limit', 10));
+            DB::commit();
             return $this->success(data: CartResource::collection($carts), paginate: $carts);
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }

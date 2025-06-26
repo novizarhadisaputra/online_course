@@ -49,9 +49,8 @@ class RegisterTeam extends RegisterTenant
 
     protected function handleRegistration(array $data): Branch
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $data['code'] = Str::upper(Str::random(10));
             $branch_code = Branch::where('code', $data['code'])->select(['id', 'code'])->first();
             while ($branch_code) {

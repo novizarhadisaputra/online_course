@@ -18,11 +18,9 @@ class GetInTouchController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $get_in_touch = GetInTouch::create($request->validated());
-
             DB::commit();
             return $this->success(data: $get_in_touch, status: 201);
         } catch (\Throwable $th) {

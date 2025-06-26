@@ -30,9 +30,8 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $user = User::create([
                 'name' => $request->first_name . ($request->last_name ? ' ' . $request->last_name : ''),
                 'first_name' => $request->first_name,
@@ -55,7 +54,6 @@ class AuthController extends Controller
             ];
 
             DB::commit();
-
             return $this->success(data: $response, status: 201);
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -95,9 +93,8 @@ class AuthController extends Controller
     // Verify Email
     public function verifyEmail($id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $user = UserService::findUserById($id);
             if (AuthService::isEmailVerified($user)) {
                 throw  ValidationException::withMessages([
@@ -107,9 +104,7 @@ class AuthController extends Controller
 
             $user->email_verified_at = now();
             $user->save();
-
             DB::commit();
-
             return redirect()->away(env('APP_URL_WEBSITE', 'localhost:3000') . '/account/verified');
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -156,9 +151,8 @@ class AuthController extends Controller
     // Reset Password
     public function resetPassword(ResetPasswordRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             if ($request->user()) {
                 $request->user()->update([
                     'password' => Hash::make($request->password)

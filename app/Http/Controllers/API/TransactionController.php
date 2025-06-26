@@ -52,8 +52,8 @@ class TransactionController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
 
             $transaction_code = Str::upper(Str::random(10));
             $existCode = Transaction::where('code', $transaction_code)->exists();
@@ -125,8 +125,8 @@ class TransactionController extends Controller
      */
     public function payment(CheckoutRequest $request, string $id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
 
             $transaction = Transaction::find($id);
             if (!$transaction) {
@@ -239,7 +239,6 @@ class TransactionController extends Controller
     public function paymentChannelTutorials(Request $request, string $id, string $payment_channel_id, string $payment_method_id)
     {
         try {
-
             $transaction = Transaction::where('user_id', $request->user()->id)->where('id', $id)->first();
             if (!$transaction) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);

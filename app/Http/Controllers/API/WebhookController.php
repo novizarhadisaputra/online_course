@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Notifications\PaymentCallbackNotification;
 use App\Services\TransactionService;
+use Illuminate\Validation\ValidationException;
 
 class WebhookController extends Controller
 {
@@ -26,8 +27,8 @@ class WebhookController extends Controller
             'data' => $request->input(),
         ]);
 
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $input = json_decode(json_encode($request->input()));
             $transaction = null;
 
@@ -43,16 +44,18 @@ class WebhookController extends Controller
                     break;
             }
 
-            if ($transaction) {
-                TransactionService::enrollmentProcess($transaction);
-                $data = [
-                    'id' => $transaction->id,
-                    'status' => $transaction->status,
-                ];
-                $transaction->user->notify((new PaymentCallbackNotification($data))->afterCommit());
-                DB::commit();
-                return $this->success(data: new TransactionResource($transaction));
+            if (!$transaction) {
+                throw ValidationException::withMessages(['transaction' => trans('validation.exists', ['attribute' => 'transaction'])]);
             }
+
+            TransactionService::enrollmentProcess($transaction);
+            $data = [
+                'id' => $transaction->id,
+                'status' => $transaction->status,
+            ];
+            $transaction->user->notify((new PaymentCallbackNotification($data))->afterCommit());
+            DB::commit();
+            return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;

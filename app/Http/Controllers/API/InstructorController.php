@@ -65,15 +65,13 @@ class InstructorController extends Controller
      */
     public function storeFollower(Request $request, string $id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $instructor = User::find($id);
             if (!$instructor) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'instructor id'])]);
             }
-
             $request->user()->following()->toggle($instructor->id);
-
             DB::commit();
             $instructor = User::find($id);
             return $this->success(data: new InstructorResource($instructor), status: 200);

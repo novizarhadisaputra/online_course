@@ -293,8 +293,8 @@ class CourseController extends Controller
      */
     public function lessonNotes(Request $request, string $slug, string $section_id, string $lesson_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -328,8 +328,8 @@ class CourseController extends Controller
      */
     public function storeReview(StoreReviewRequest $request, string $slug)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -363,8 +363,8 @@ class CourseController extends Controller
      */
     public function storeComment(StoreCommentRequest $request, string $slug)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -392,8 +392,8 @@ class CourseController extends Controller
      */
     public function storeLike(Request $request, string $slug)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -417,9 +417,8 @@ class CourseController extends Controller
      */
     public function storeCertificate(Request $request, string $slug)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course'])]);
@@ -465,6 +464,7 @@ class CourseController extends Controller
      */
     public function storeLikeLesson(Request $request, string $slug, string $section_id, string $lesson_id)
     {
+        DB::beginTransaction();
         try {
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
@@ -480,9 +480,11 @@ class CourseController extends Controller
             }
 
             $request->user()->likeLessons()->toggle($lesson->id);
+            DB::commit();
 
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -493,8 +495,8 @@ class CourseController extends Controller
      */
     public function storeAppointmentLesson(StoreAppointmentLessonRequest $request, string $slug, string $section_id, string $lesson_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -541,8 +543,8 @@ class CourseController extends Controller
      */
     public function storeLessonProgress(StoreLessonProgressRequest $request, string $slug, string $section_id, string $lesson_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -588,8 +590,8 @@ class CourseController extends Controller
      */
     public function storeLessonNote(StoreLessonNoteRequest $request, string $slug, string $section_id, string $lesson_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -618,8 +620,8 @@ class CourseController extends Controller
 
     public function storeLessonAnswer(StoreLessonAnswerRequest $request, string $slug, string $section_id, string $lesson_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -659,8 +661,8 @@ class CourseController extends Controller
 
     public function storeScoreQuizAnswer(Request $request, string $slug, string $section_id, string $lesson_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -711,8 +713,8 @@ class CourseController extends Controller
 
     public function storeQuizAnswer(StoreQuizAnswerRequest $request, string $slug, string $section_id, string $lesson_id, string $quiz_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -857,8 +859,8 @@ class CourseController extends Controller
      */
     public function updateReview(UpdateReviewRequest $request, string $slug, string $review_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
 
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
@@ -887,8 +889,8 @@ class CourseController extends Controller
 
     public function updateLessonNote(StoreLessonNoteRequest $request, string $slug, string $section_id, string $lesson_id, string $note_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);
@@ -921,8 +923,8 @@ class CourseController extends Controller
 
     public function destroyLessonNote(Request $request, string $slug, string $section_id, string $lesson_id, string $note_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $course = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->where('slug', $slug)->first();
             if (!$course) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'course id'])]);

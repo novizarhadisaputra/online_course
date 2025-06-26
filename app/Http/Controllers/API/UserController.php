@@ -165,7 +165,6 @@ class UserController extends Controller
     public function showAddress(Request $request, string $id, string $address_id)
     {
         try {
-            DB::beginTransaction();
             if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
@@ -177,7 +176,6 @@ class UserController extends Controller
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
             }
 
-            DB::commit();
             return $this->success(data: new AddressResource($address));
         } catch (\Throwable $th) {
             throw $th;
@@ -197,8 +195,8 @@ class UserController extends Controller
      */
     public function update(UpdateRequest $request, string $id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             if ($request->user()->id !== $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
@@ -221,6 +219,7 @@ class UserController extends Controller
             DB::commit();
             return $this->success(data: new UserResource($user));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -230,8 +229,8 @@ class UserController extends Controller
      */
     public function updateAvatar(UpdateAvatarRequest $request, string $id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
@@ -248,6 +247,7 @@ class UserController extends Controller
             DB::commit();
             return $this->success(data: new UserResource($user));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -257,8 +257,8 @@ class UserController extends Controller
      */
     public function updateAddress(UpdateAddressRequest $request, string $id, string $address_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             if ($request->user()->id != $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
@@ -304,6 +304,7 @@ class UserController extends Controller
             DB::commit();
             return $this->success(data: new AddressResource($address));
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
@@ -313,8 +314,8 @@ class UserController extends Controller
      */
     public function destroyAddress(Request $request, string $id, string $address_id)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
@@ -331,6 +332,7 @@ class UserController extends Controller
             DB::commit();
             return $this->success(data: null);
         } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }
