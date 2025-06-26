@@ -19,12 +19,13 @@ use App\Enums\TransactionStatus;
 use App\Enums\TransactionCategory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Services\TransactionService;
+use App\Http\Resources\TutorialResource;
 use App\Http\Resources\TransactionResource;
 use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Requests\Transaction\CheckoutRequest;
-use App\Services\TransactionService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TransactionController extends Controller
@@ -204,12 +205,56 @@ class TransactionController extends Controller
     public function paymentChannels(Request $request, string $id)
     {
         try {
-            $transaction = Transaction::find($id);
+            $transaction = Transaction::where('user_id', $request->user()->id)->where('id', $id)->first();
             if (!$transaction) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
             }
             $paymentChannels = PaymentChannel::active()->paginate($request->input('limit', 10));
             return $this->success(data: PaymentChannelResource::collection($paymentChannels), paginate: $paymentChannels);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function paymentChannelDetail(Request $request, string $id, string $payment_channel_id)
+    {
+        try {
+            $transaction = Transaction::where('user_id', $request->user()->id)->where('id', $id)->first();
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+            }
+            $payment_channel = PaymentChannel::active()->where('id', $payment_channel_id)->first();
+            if (!$payment_channel) {
+                throw ValidationException::withMessages(['payment_channel_id' => trans('validation.exists', ['attribute' => 'payment channel id'])]);
+            }
+            return $this->success(data: new PaymentChannelResource($payment_channel));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function paymentChannelTutorials(Request $request, string $id, string $payment_channel_id, string $payment_method_id)
+    {
+        try {
+
+            $transaction = Transaction::where('user_id', $request->user()->id)->where('id', $id)->first();
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+            }
+            $payment_channel = PaymentChannel::active()->where('id', $payment_channel_id)->first();
+            if (!$payment_channel) {
+                throw ValidationException::withMessages(['payment_channel_id' => trans('validation.exists', ['attribute' => 'payment channel id'])]);
+            }
+            $payment_method = $payment_channel->payment_methods()->where('id', $payment_method_id)->first();
+            if (!$payment_method) {
+                throw ValidationException::withMessages(['payment_method_id' => trans('validation.exists', ['attribute' => 'payment method id'])]);
+            }
+            $tutorials = $payment_method->tutorials()->paginate($request->input('limit', 10));
+
+            return $this->success(data: TutorialResource::collection($tutorials), paginate: $tutorials);
         } catch (\Throwable $th) {
             throw $th;
         }

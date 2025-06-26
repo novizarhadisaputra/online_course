@@ -261,7 +261,17 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::prefix('{transaction}')->group(function () {
             Route::post('/payment', [TransactionController::class, 'payment'])->name('payment');
-            Route::get('/payment-channels', [TransactionController::class, 'paymentChannels'])->name('payment-channels');
+            Route::prefix('payment-channels')->name('payment-channels.')->group(function () {
+                Route::get('/', [TransactionController::class, 'paymentChannels'])->name('index');
+                Route::prefix('{payment_channel}')->group(function () {
+                    Route::get('/', [TransactionController::class, 'paymentChannelDetail'])->name('show');
+                    Route::prefix('payment-methods')->name('payment-methods.')->group(function () {
+                        Route::prefix('{payment_method}')->group(function () {
+                            Route::get('/tutorials', [TransactionController::class, 'paymentChannelTutorials'])->name('tutorials.index');
+                        });
+                    });
+                });
+            });
         });
     });
 
