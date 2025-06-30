@@ -11,9 +11,13 @@ use App\Filament\Resources\EventResource;
 use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
+use Guava\FilamentNestedResources\Concerns\NestedPage;
+use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
 class EventsRelationManager extends RelationManager
 {
+    use NestedRelationManager;
+
     protected static string $relationship = 'events';
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool

@@ -140,6 +140,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::get('/following', [UserController::class, 'following'])->name('following');
             Route::get('/certificates', [UserController::class, 'certificates'])->name('certificates');
             Route::get('/followers', [UserController::class, 'followers'])->name('followers');
+            Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications');
             Route::prefix('addresses')->name('addresses.')->group(function () {
                 Route::get('/', [UserController::class, 'addresses'])->name('index');
                 Route::post('/', [UserController::class, 'storeAddress'])->name('store');

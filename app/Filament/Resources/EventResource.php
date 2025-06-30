@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use Filament\Tables;
 use App\Models\Event;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use App\Enums\MeetingType;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -18,16 +21,16 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use App\Filament\Widgets\CalendarWidget;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\EventResource\Pages;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\EventResource\Widgets\StatsOverview;
 use App\Filament\Resources\EventResource\RelationManagers\TagsRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\PricesRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\ReviewsRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\CommentsRelationManager;
-use Filament\Forms\Components\RichEditor;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class EventResource extends Resource
 {
@@ -52,18 +55,30 @@ class EventResource extends Resource
                         ->visibility('private')
                         ->disk('s3')
                         ->collection('images')
+                        ->columnSpanFull()
                         ->required(),
                     TextInput::make('name')
                         ->required()
                         ->unique(ignoreRecord: true)
-                        ->maxLength(255),
-                    TextInput::make('short_description')
                         ->maxLength(255)
-                        ->default(null),
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                            if (($get('slug') ?? '') !== Str::slug($old)) {
+                                return;
+                            }
+
+                            $set('slug', Str::slug($state));
+                        }),
+                    TextInput::make('slug')
+                        ->required()
+                        ->unique(ignoreRecord: true)
+                        ->readOnly()
+                        ->maxLength(255),
                     RichEditor::make('description')
                         ->fileAttachmentsDisk('s3')
                         ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private'),
+                        ->fileAttachmentsVisibility('private')
+                        ->columnSpanFull(),
                     Textarea::make('url')
                         ->columnSpanFull(),
                     Select::make('meeting_type')
@@ -71,22 +86,18 @@ class EventResource extends Resource
                     Select::make('category_id')
                         ->searchable()
                         ->relationship(titleAttribute: 'name', name: 'category'),
-                    Grid::make()->schema([
-                        DateTimePicker::make('start_time')
-                            ->seconds(false),
-                        DateTimePicker::make('end_time')
-                            ->seconds(false),
-                    ]),
+                    DateTimePicker::make('start_time')
+                        ->seconds(false),
+                    DateTimePicker::make('end_time')
+                        ->seconds(false),
                     KeyValue::make('meta')
                         ->default([
                             'title' => '',
                             'description' => ''
-                        ]),
-                    Grid::make()->schema([
-                        Toggle::make('is_paid'),
-                        Toggle::make('status'),
-                    ]),
-                ]),
+                        ])->columnSpanFull(),
+                    Toggle::make('is_paid'),
+                    Toggle::make('status'),
+                ])->columns(2),
             ]);
     }
 

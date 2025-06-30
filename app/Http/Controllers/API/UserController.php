@@ -7,17 +7,18 @@ use App\Services\UserService;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\StoreAddressRequest;
-use App\Http\Requests\User\UpdateAddressRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\ReviewResource;
+use App\Http\Resources\AddressResource;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\InstructorResource;
-use Illuminate\Validation\ValidationException;
-use App\Http\Requests\User\UpdateAvatarRequest;
-use App\Http\Resources\AddressResource;
 use App\Http\Resources\CertificateResource;
-use App\Http\Resources\ReviewResource;
+use App\Http\Resources\NotificationResource;
+use Illuminate\Validation\ValidationException;
+use App\Http\Requests\User\StoreAddressRequest;
+use App\Http\Requests\User\UpdateAvatarRequest;
+use App\Http\Requests\User\UpdateAddressRequest;
 
 class UserController extends Controller
 {
@@ -98,6 +99,22 @@ class UserController extends Controller
             }
             $followers = $request->user()->followers()->paginate($request->input('limit', 10));
             return $this->success(data: InstructorResource::collection($followers), paginate: $followers);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function notifications(Request $request, string $id)
+    {
+        try {
+            if ($id != $request->user()->id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+            }
+            $notifications = $request->user()->notifications()->paginate($request->input('limit', 10));
+            return $this->success(data: NotificationResource::collection($notifications), paginate: $notifications);
         } catch (\Throwable $th) {
             throw $th;
         }
