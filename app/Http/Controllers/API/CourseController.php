@@ -771,7 +771,7 @@ class CourseController extends Controller
                     ->whereDate('created_at', Carbon::today())
                     ->where('user_id', $request->user()->id)
                     ->first();
-                if ($viewer) {
+                if (!$viewer) {
                     $course->viewers()->create([
                         'user_id' => $request->user()->id
                     ]);
