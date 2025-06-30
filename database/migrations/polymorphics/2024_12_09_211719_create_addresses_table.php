@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuidMorphs('model');
 
+            $table->uuidMorphs('model');
             $table->char('label')->nullable();
             $table->char('first_name')->nullable();
             $table->char('last_name')->nullable();

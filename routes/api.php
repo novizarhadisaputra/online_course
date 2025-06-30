@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\API\AppointmentController;
-use App\Http\Controllers\API\AreaController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AdsController;
 use App\Http\Controllers\API\TagController;
+use App\Http\Controllers\API\AreaController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\BundleController;
 use App\Http\Controllers\API\CouponController;
 use App\Http\Controllers\API\CourseController;
@@ -17,13 +18,14 @@ use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\WebhookController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\EnrollmentController;
-use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\GetInTouchController;
 use App\Http\Controllers\API\GoogleAuthController;
 use App\Http\Controllers\API\InstructorController;
+use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
+use App\Http\Controllers\API\SearchHistoryController;
 
 Route::prefix('check')->name('check.')->group(function () {
     Route::name('env')->get('/', function () {
@@ -108,6 +110,9 @@ Route::prefix('tags')->name('tags.')->group(function () {
         Route::get('/courses', [TagController::class, 'courses'])->name('courses');
     });
 });
+
+Route::apiResource('ads', AdsController::class)->only(['index', 'show']);
+Route::apiResource('search-histories', SearchHistoryController::class)->only(['index', 'destroy']);
 
 Route::apiResource('comments', CommentController::class)->only(['index', 'show']);
 Route::prefix('comments')->group(function () {
@@ -279,4 +284,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::apiResource('coupons', CouponController::class)->only(['index', 'show']);
     Route::apiResource('appointments', AppointmentController::class)->only(['index', 'show']);
     Route::apiResource('events', EventController::class)->only(['index', 'show']);
+
+    Route::apiResource('ads', AdsController::class)->only(['index', 'show']);
+    Route::apiResource('search-histories', SearchHistoryController::class)->only(['index', 'destroy']);
 });

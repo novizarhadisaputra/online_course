@@ -33,6 +33,7 @@ use App\Http\Requests\Course\StoreQuizAnswerRequest;
 use App\Http\Requests\Course\StoreLessonAnswerRequest;
 use App\Http\Requests\Course\StoreLessonProgressRequest;
 use App\Http\Requests\Course\StoreAppointmentLessonRequest;
+use App\Models\SearchHistory;
 
 class CourseController extends Controller
 {
@@ -775,6 +776,13 @@ class CourseController extends Controller
                         'user_id' => $request->user()->id
                     ]);
                 }
+            }
+            if ($request->search && $request->client_token) {
+                SearchHistory::create([
+                    'value' => $request->search,
+                    'client_token' => $request->client_token,
+                    'user_id' => $request->user() ? $request->user()->id : null,
+                ]);
             }
             return $this->success(data: new CourseResource($course));
         } catch (\Throwable $th) {

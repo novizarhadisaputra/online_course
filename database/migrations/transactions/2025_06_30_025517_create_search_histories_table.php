@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('returns', function (Blueprint $table) {
+        Schema::create('search_histories', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
 
-            $table->enum('transaction_type', ['return_in', 'return_out']);
-            $table->text('notes');
-
-            $table->foreignUuid('branch_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('user_id')->comment('cashier')->constrained()->cascadeOnDelete();
-
+            $table->string('value');
+            $table->string('client_token');
+            $table->foreignUuid('user_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('returns');
+        Schema::dropIfExists('search_histories');
     }
 };

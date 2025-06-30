@@ -10,6 +10,7 @@ use App\Models\Province;
 use App\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -18,6 +19,11 @@ class Address extends Model
     use HasUuids, ModelTrait;
 
     protected $guarded = [];
+
+    public function model(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
     /**
      * Get all of the address's note.

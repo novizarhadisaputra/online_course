@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Announcement extends Model implements HasMedia
+class Ads extends Model
 {
-    use HasUuids, InteractsWithMedia;
+    use HasUuids;
 
     protected $guarded = [];
 
