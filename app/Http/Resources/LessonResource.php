@@ -37,6 +37,9 @@ class LessonResource extends JsonResource
             'is_like' => $is_like,
             "quiz_count" => $quiz_count,
             "score" => $score,
+            'title_assignment' => $this->title_assignment,
+            'description_assignment' => $this->description_assignment,
+            'due_date' => $this->due_date,
         ];
     }
 }
