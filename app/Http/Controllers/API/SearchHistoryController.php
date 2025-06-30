@@ -22,7 +22,11 @@ class SearchHistoryController extends Controller
     public function index(ListRequest $request)
     {
         try {
-            $search_histories = SearchHistory::where('client_token', $request->client_token)->paginate($request->input('limit', 10));
+            $search_histories = SearchHistory::where('client_token', $request->client_token);
+            if ($request->user()) {
+                $search_histories = $search_histories->orWhere('user_id', $request->user()->id);
+            }
+            $search_histories = $search_histories->paginate($request->input('limit', 10));
             return $this->success(data: SearchHistoryResource::collection($search_histories), paginate: $search_histories);
         } catch (\Throwable $th) {
             throw $th;
@@ -36,7 +40,11 @@ class SearchHistoryController extends Controller
     {
         DB::beginTransaction();
         try {
-            $search_history = SearchHistory::where('client_token', $request->client_token)->where('id', $id)->first();
+            $search_histories = SearchHistory::where('client_token', $request->client_token);
+            if ($request->user()) {
+                $search_histories = $search_histories->orWhere('user_id', $request->user()->id);
+            }
+            $search_history = $search_histories->where('id', $id)->first();
             if (!$search_history) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
             }
