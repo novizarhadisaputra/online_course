@@ -21,13 +21,17 @@ class GoogleAuthController extends Controller
             $googleUser = Socialite::driver('google')->stateless()->userFromToken($request->access_token);
             $user = User::where('email', $googleUser->getEmail())->first();
             if (!$user) {
+                $name =  explode(' ', $googleUser->getName());
                 $user = User::create([
                     'email' => $googleUser->getEmail(),
                     'name' => $googleUser->getName(),
-                    'avatar' => $googleUser->getAvatar(),
+                    'first_name' => $name[0] ?? null,
+                    'last_name' => $name[0] ?? null,
                     'password' => Hash::make(Str::random(16)),
                 ]);
 
+                $user->addMediaFromUrl($googleUser->getAvatar())->toMediaCollection('images');
+                $user->assignRole(['customer']);
                 $user->markEmailAsVerified();
             }
             $user->google_id = $googleUser->getId();
