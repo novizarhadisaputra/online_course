@@ -221,8 +221,7 @@ class CourseController extends Controller
             if (!$lesson) {
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
-            $quizzes = $lesson->quizzes()->with(['answer', 'user', 'options'])->paginate($request->input('limit', 10));
-
+            $quizzes = $lesson->quizzes()->with(['answer', 'options'])->paginate($request->input('limit', 10));
             return $this->success(data: QuizResource::collection($quizzes), paginate: $quizzes);
         } catch (\Throwable $th) {
             throw $th;
@@ -247,7 +246,7 @@ class CourseController extends Controller
             if (!$lesson) {
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
-            $quiz = $lesson->quizzes()->with(['answer', 'user', 'options'])->where('id', $quiz_id)->first();
+            $quiz = $lesson->quizzes()->with(['answer', 'options'])->where('id', $quiz_id)->first();
             if (!$quiz) {
                 throw ValidationException::withMessages(['quiz_id' => trans('validation.exists', ['attribute' => 'quiz id'])]);
             }

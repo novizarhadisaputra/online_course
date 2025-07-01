@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Quiz extends Model
+class Quiz extends Model implements HasMedia
 {
-    use HasUuids, ModelTrait;
+    use HasUuids, ModelTrait, InteractsWithMedia;
 
     protected $guarded = [];
 
