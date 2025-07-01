@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Bundle;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BundleResource;
 use App\Http\Resources\CourseResource;
@@ -30,10 +31,10 @@ class BundleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function courses(Request $request, string $id)
+    public function courses(Request $request, string $slug)
     {
         try {
-            $bundling = Bundle::find($id);
+            $bundling = Bundle::where('slug', $slug)->first();
             if (!$bundling) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'bundling id'])]);
             }
@@ -63,12 +64,23 @@ class BundleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $slug)
     {
         try {
-            $bundling = Bundle::find($id);
+            $bundling = Bundle::where('slug', $slug)->first();
             if (!$bundling) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'bundling id'])]);
+            }
+            if ($request->user()) {
+                $viewer = $bundling->viewers()
+                    ->whereDate('created_at', Carbon::today())
+                    ->where('user_id', $request->user()->id)
+                    ->first();
+                if (!$viewer) {
+                    $bundling->viewers()->create([
+                        'user_id' => $request->user()->id
+                    ]);
+                }
             }
             return $this->success(data: new BundleResource($bundling));
         } catch (\Throwable $th) {
