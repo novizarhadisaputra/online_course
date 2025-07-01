@@ -54,10 +54,13 @@ class CourseController extends Controller
             }
             if ($request->filter) {
                 if (isset($request->filter['prices'])) {
-                    if (Str::contains(implode(' ', $request->filter['prices']), ['paid', 'free'])) {
+                    if (count($request->filter['prices']) > 1) {
                         $courses = $courses->where('is_paid', '<>', null);
                     } else {
                         $is_paid = Str::contains(implode(' ', $request->filter['prices']), ['paid']);
+                        if (!$is_paid) {
+                            $is_paid = false;
+                        }
                         $courses = $courses->where('is_paid', $is_paid);
                     }
                 }
@@ -644,10 +647,12 @@ class CourseController extends Controller
             }
             if (!$answer) {
                 $lesson->answer()->create([
+                    'data' => $request->data ?? null,
                     'text' => $request->text,
                     'user_id' => $request->user()->id,
                 ]);
             } else {
+                $answer->data = $request->data ?? null;
                 $answer->text = $request->text;
                 $answer->user_id = $request->user()->id;
                 $answer->save();
@@ -739,10 +744,12 @@ class CourseController extends Controller
             $answer = $quiz->answer()->where('user_id', $request->user()->id)->first();
             if (!$answer) {
                 $quiz->answer()->create([
+                    'data' => $request->data ?? null,
                     'option_id' => $request->option_id,
                     'user_id' => $request->user()->id,
                 ]);
             } else {
+                $answer->data = $request->data;
                 $answer->option_id = $request->option_id;
                 $answer->user_id = $request->user()->id;
                 $answer->save();

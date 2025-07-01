@@ -18,6 +18,7 @@ class AnswerResource extends JsonResource
         return [
             'id' => $this->id,
             'text' => $this->text,
+            'data' => $this->data,
             'type' => $this->model_type,
             'option' => new OptionResource($this->option),
         ];
