@@ -51,6 +51,11 @@ class TransactionService
                     }
                 }
                 if ($transaction->status == TransactionStatus::SUCCESS->value) {
+                    NotificationService::broadcast(
+                        user: $transaction->user,
+                        title: "Transaksi $transaction->status",
+                        description: "Terima kasih " . $transaction->user->name . ", pembayaran Anda untuk transaksi " . $transaction->code . " telah berhasil dikonfirmasi. Anda kini dapat langsung mengakses produk atau layanan Anda melalui <a href='" . env('APP_URL_WEBSITE', 'localhost:3000') . "/transaction-history/$transaction->id" . "'>halaman akun Anda</a>. Selamat menikmati!"
+                    );
                     self::removeItemFromCart($item, $transaction->user);
                 }
             }

@@ -5,22 +5,24 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\AuthService;
+use App\Services\UserService;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
+use App\Services\NotificationService;
 use App\Jobs\SendVerificationEmailJob;
+use App\Jobs\SendResetPasswordEmailJob;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\Auth\RegisterRequest;
+use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\ResendVerifyEmailRequest;
-use App\Services\AuthService;
-use App\Services\UserService;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -47,6 +49,13 @@ class AuthController extends Controller
 
             // Send verification email
             SendVerificationEmailJob::dispatch($user);
+
+            $description = "Selamat datang di " . env('APP_NAME') . " Akun Anda berhasil dibuat. Yuk mulai eksplorasi kursus dan tingkatkan skill-mu hari ini.";
+            NotificationService::broadcast(
+                user: $user,
+                title: "Welcome $user->name",
+                description: $description,
+            );
 
             $response = (object) [
                 'token' => $token,
@@ -174,6 +183,7 @@ class AuthController extends Controller
                 $status = Password::reset(
                     $credentials,
                     function ($user, $password) {
+                        SendResetPasswordEmailJob::dispatch($user);
                         $user->forceFill([
                             'password' => Hash::make($password),
                             'remember_token' => Str::random(60),
@@ -181,6 +191,7 @@ class AuthController extends Controller
                         event(new PasswordReset($user));
                     }
                 );
+
                 DB::commit();
                 return $status === Password::PASSWORD_RESET
                     ? $this->success(status: 200, message: 'Password reset successfully')
