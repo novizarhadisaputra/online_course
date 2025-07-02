@@ -15,6 +15,10 @@ class Answer extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'data' => 'array'
+    ];
+
     /**
      * Get the parent model (anything).
      */

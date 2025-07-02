@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->uuidMorphs('model');
             $table->text('text')->nullable();
+            $table->json('data')->nullable();
 
             $table->foreignUuid('option_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();

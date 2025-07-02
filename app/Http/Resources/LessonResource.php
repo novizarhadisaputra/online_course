@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
 use App\Models\Answer;
+use App\Models\Quiz;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -29,12 +30,13 @@ class LessonResource extends JsonResource
         $quiz_count = $this->quizzes()->select(['id'])->count();
         $time_left = 0;
         if ($quiz_count && $user) {
-            $answer = Answer::where('user_id', $user->id)->whereHas('model', function (Builder $quiz) use ($id) {
-                $quiz->whereHas('model', function (Builder $lesson) use ($id) {
-                    $lesson->where('id', $id);
-                });
-            });
-            if ($answer && $answer->data && $answer->data['time_left']) {
+            $ids = Quiz::with(['model', 'answers'])->whereHas('model', function (Builder $model) use ($id) {
+                $model->where('id', $id);
+            })->select(['id'])->groupBy('id')->orderBy('created_at', 'desc')->select(['id'])->pluck('id')->toArray();
+            $answer = Answer::whereIn('model_id', $ids)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            if ($answer && isset($answer->data) && isset($answer->data['time_left'])) {
                 $time_left = $answer->data['time_left'];
             }
         }

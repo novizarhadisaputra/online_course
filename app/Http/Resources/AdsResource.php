@@ -19,6 +19,7 @@ class AdsResource extends JsonResource
             'id' => $this->id,
             'image' => $this->model->hasMedia('images') ? $this->model->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
             'name' => $this->model->name,
+            'type' => $this->model_type,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'status' => $this->status,
