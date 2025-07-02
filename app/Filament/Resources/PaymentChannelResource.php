@@ -30,6 +30,11 @@ class PaymentChannelResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getBreadcrumbRecordLabel(Model $record)
+    {
+        return $record->name;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

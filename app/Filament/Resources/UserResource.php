@@ -39,10 +39,10 @@ class UserResource extends Resource
                         ->required(),
                     Grid::make()->schema([
                         TextInput::make('first_name')
-                            ->maxLength(255)
+                            ->maxLength(25)
                             ->required(),
                         TextInput::make('last_name')
-                            ->maxLength(255)
+                            ->maxLength(25)
                             ->required(),
                     ]),
                     TextInput::make('description')
