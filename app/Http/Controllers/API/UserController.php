@@ -126,7 +126,7 @@ class UserController extends Controller
     public function storeAddress(StoreAddressRequest $request, string $id)
     {
         try {
-            if ($request->user()->id !== $id) {
+            if ($request->user()->id != $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
             $address = $request->user()->addresses()->create([
@@ -144,6 +144,12 @@ class UserController extends Controller
                 "village_id" => $request->village_id,
                 "postal_code" => $request->postal_code,
             ]);
+
+            if ($address->status) {
+                $request->user()->addresses()->where('id', '<>', $address->id)->update([
+                    'status' => false,
+                ]);
+            }
 
             $note = $address->note()->where('user_id', $request->user()->id)->first();
             if (!$note) {
@@ -170,7 +176,7 @@ class UserController extends Controller
     public function showEmail(Request $request, string $id)
     {
         try {
-            if ($request->user()->id !== $id) {
+            if ($request->user()->id != $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
             return $this->success(data: ['email' => $request->user()->email]);
@@ -182,7 +188,7 @@ class UserController extends Controller
     public function showAddress(Request $request, string $id, string $address_id)
     {
         try {
-            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+            if ($request->user()->id != $id || $request->user()->id != $request->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
 
@@ -248,7 +254,7 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+            if ($request->user()->id != $id || $request->user()->id != $request->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
             $user = UserService::findUserById($id);
@@ -289,6 +295,12 @@ class UserController extends Controller
 
             $address->label = $request->label ?? $address->label;
             $address->status = $request->status;
+
+            if ($address->status) {
+                $user->addresses()->where('id', '<>', $address_id)->update([
+                    'status' => false,
+                ]);
+            }
             $address->first_name = $request->first_name ?? $address->first_name;
             $address->last_name = $request->last_name ?? $address->last_name;
             $address->email = $request->user()->email;
@@ -333,7 +345,7 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-            if ($request->user()->id !== $id || $request->user()->id !== $request->id) {
+            if ($request->user()->id != $id || $request->user()->id != $request->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
 
