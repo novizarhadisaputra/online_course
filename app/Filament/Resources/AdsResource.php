@@ -17,6 +17,7 @@ use Filament\Forms\Components\MorphToSelect;
 use App\Filament\Resources\AdsResource\Pages;
 use Filament\Forms\Components\MorphToSelect\Type;
 use App\Models\Event;
+use Illuminate\Support\Carbon;
 
 class AdsResource extends Resource
 {
@@ -44,19 +45,20 @@ class AdsResource extends Resource
                                 ->titleAttribute('name'),
                         ])
                         ->required()
-                        ->searchable(),
+                        ->searchable()
+                        ->columnSpanFull(),
                     DatePicker::make('start_date')
                         ->native(false)
                         ->helperText(text: 'Timezone Asia/Jakarta')
                         ->timezone('Asia/Jakarta')
-                        ->minDate(now()->tz('Asia/Jakarta'))
+                        ->minDate(Carbon::today())
                         ->required(),
                     DatePicker::make('end_date')
                         ->native(false)
                         ->helperText(text: 'Timezone Asia/Jakarta')
                         ->timezone('Asia/Jakarta')
                         ->after('start_time')
-                        ->minDate(now()->tz('Asia/Jakarta'))
+                        ->minDate(Carbon::today())
                         ->required(),
                     Toggle::make('status')
                         ->required(),
