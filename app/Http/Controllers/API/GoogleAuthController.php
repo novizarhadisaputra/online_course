@@ -31,7 +31,7 @@ class GoogleAuthController extends Controller
                 ]);
 
                 $user->addMediaFromUrl($googleUser->getAvatar())->toMediaCollection('images');
-                $user->assignRole(['customer']);
+                $user->assignRole('customer');
                 $user->markEmailAsVerified();
             }
             $user->google_id = $googleUser->getId();

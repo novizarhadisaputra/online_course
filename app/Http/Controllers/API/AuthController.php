@@ -43,7 +43,7 @@ class AuthController extends Controller
                 'phone' => $request->phone,
             ]);
 
-            $user->assignRole(['customer']);
+            $user->assignRole('customer');
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
