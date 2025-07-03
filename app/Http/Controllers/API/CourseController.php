@@ -70,18 +70,10 @@ class CourseController extends Controller
                 if (isset($request->filter['categories'])) {
                     $courses = $courses->whereHas('category', fn(Builder $q) => $q->whereIn('name', $request->filter['categories']));
                 }
-                // if (isset($request->filter['ratings'])) {
-                //     $courses = $courses->withAvg('reviews', 'rating');
-                //     $courses = $courses->having(function ($q) use ($request) {
-                //         foreach ($request->filter['ratings'] as $i => $value) {
-                //             if ($i === 0) {
-                //                 $q->where('reviews_avg_rating', '=', $value);
-                //             } else {
-                //                 $q->orWhere('reviews_avg_rating', '=', $value);
-                //             }
-                //         }
-                //     });
-                // }
+                if (isset($request->filter['ratings'])) {
+                    $courses = $courses->withAvg('reviews', 'rating');
+                    $courses = $courses->having('reviews_avg_rate', '>=', $request->filter['ratings']);
+                }
             }
 
             $courses = $courses

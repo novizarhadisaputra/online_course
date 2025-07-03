@@ -345,12 +345,11 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-            if ($request->user()->id != $id || $request->user()->id != $request->id) {
+            if ($request->user()->id != $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
 
             $user = UserService::findUserById($id);
-
             $address = $user->addresses()->where('id', $address_id)->first();
             if (!$address) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'address id'])]);
