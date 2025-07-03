@@ -40,6 +40,12 @@ class LessonResource extends JsonResource
                 $time_left = $answer->data['time_left'];
             }
         }
+        $has_assignment_submit = false;
+        if ($user) {
+            if ($this->answer) {
+                $has_assignment_submit = true;
+            }
+        }
 
         return [
             "id" => $id,
@@ -58,6 +64,8 @@ class LessonResource extends JsonResource
             'description_assignment' => $this->description_assignment,
             'due_date' => $this->due_date,
             'time_left' => $time_left,
+            'is_assignment' => $this->has_assignment,
+            'has_assignment_submit' => $has_assignment_submit,
         ];
     }
 }
