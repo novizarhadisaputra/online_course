@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
+
             $table->uuidMorphs('reviewable');
             $table->integer('rating')->default(1);
             $table->string('description');

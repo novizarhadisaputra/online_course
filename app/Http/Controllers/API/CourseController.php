@@ -45,7 +45,9 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         try {
-            $courses = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])->active();
+            $courses = Course::with(['sections.lessons', 'reviews', 'enrollments', 'viewers'])
+                ->where('courses.status', true)
+                ->whereHas('lessons', fn(Builder $q) => $q->where('lessons.status', true));
             if ($request->user() && $request->input('mine')) {
                 $courses = $courses->whereHas('transactions', fn(Builder $q) => $q->where('user_id', $request->user()->id));
             }
@@ -71,14 +73,17 @@ class CourseController extends Controller
                     $courses = $courses->whereHas('category', fn(Builder $q) => $q->whereIn('name', $request->filter['categories']));
                 }
                 if (isset($request->filter['ratings'])) {
-                    $courses = $courses->withAvg('reviews', 'rating');
-                    $courses = $courses->having('reviews_avg_rate', '>=', $request->filter['ratings']);
+                    $courses = $courses->havingRaw('
+                    (select avg("reviews"."rating")
+                    from "reviews"
+                    where "courses"."id" = "reviews"."reviewable_id"
+                    and "reviews"."reviewable_type" = ?
+                    ) >= ?', [Course::class, $request->filter['ratings']])
+                        ->groupBy('courses.id');
                 }
             }
 
-            $courses = $courses
-                ->whereHas('lessons', fn(Builder $q) => $q->where('lessons.status', true))
-                ->paginate($request->input('limit', 10));
+            $courses = $courses->paginate($request->input('limit', 10));
             return $this->success(data: CourseResource::collection($courses), paginate: $courses);
         } catch (\Throwable $th) {
             throw $th;
