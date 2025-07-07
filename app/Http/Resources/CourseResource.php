@@ -26,6 +26,10 @@ class CourseResource extends JsonResource
         $progress = !$request->user() ? null : $request->user()->progressCourses()->where('courses.id', $id)->orderBy('created_at', 'desc')->first();
         $enrollment = !$request->user() ? [] : $this->enrollments()->where('user_id', $request->user()->id)->orderBy('created_at', 'desc')->first();
         $review = !$request->user() ? null : $this->reviews()->where('user_id', $request->user()->id)->first();
+        $students = $this->transactions()
+            ->select(['id', 'status'])
+            ->where('status', TransactionStatus::SUCCESS)
+            ->count();
 
         return [
             'id' => $id,
@@ -49,7 +53,7 @@ class CourseResource extends JsonResource
             'is_buy' => $is_buy,
             'category' => new CategoryResource($this->category),
             'tags' => TagResource::collection($this->tags),
-            'students' => $this->transactions()->select(['id'])->count(),
+            'students' => $students,
             'sections' => $this->sections()->select(['id'])->where('sections.status', true)->count(),
             'lessons' => $this->lessons()->select(['id'])->where('lessons.status', true)->count(),
             'total_quiz' => $this->lessons()->select(['id'])->where('lessons.status', true)->where('is_quiz', true)->count(),

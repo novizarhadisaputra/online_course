@@ -188,7 +188,7 @@ class UserController extends Controller
     public function showAddress(Request $request, string $id, string $address_id)
     {
         try {
-            if ($request->user()->id != $id || $request->user()->id != $request->id) {
+            if ($request->user()->id != $id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
             }
 
