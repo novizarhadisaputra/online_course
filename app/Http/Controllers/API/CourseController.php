@@ -557,25 +557,28 @@ class CourseController extends Controller
             if (!$lesson) {
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
-
-            if (!$lesson->progress) {
+            $progress = $lesson->progress()
+                ->where('user_id', $request->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            if (!$progress) {
                 $lesson->progress->create([
                     'data' => [
-                        'seconds' => $request->seconds,
-                        'page' => $request->page,
+                        'seconds' => $request->seconds ?? 0,
+                        'page' => $request->page ?? 0,
                     ],
                     'status' => $request->status,
                     'user_id' => $request->user()->id,
                 ]);
-            } else {
-                $progress = $lesson->progress;
-                $progress->data =  [
-                    'seconds' => $request->seconds,
-                    'page' => $request->page,
-                ];
-                $progress->status = $request->status;
-                $progress->save();
             }
+            $progress = $lesson->progress;
+            $progress->data =  [
+                'seconds' => $request->seconds ?? 0,
+                'page' => $request->page ?? 0,
+            ];
+            $progress->status = $request->status;
+            $progress->save();
+
             $this->updateProgressCourse($request->user()->id, $course);
             DB::commit();
             return $this->success(data: new LessonResource($lesson));
@@ -653,6 +656,27 @@ class CourseController extends Controller
                 $answer->user_id = $request->user()->id;
                 $answer->save();
             }
+            $progress = $lesson->progress()
+                ->where('user_id', $request->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            if (!$progress) {
+                $lesson->progress->create([
+                    'data' => [
+                        'seconds' => $request->seconds ?? 0,
+                        'page' => $request->page ?? 0,
+                    ],
+                    'status' => $request->status,
+                    'user_id' => $request->user()->id,
+                ]);
+            }
+            $progress = $lesson->progress;
+            $progress->data =  [
+                'seconds' => $request->seconds ?? 0,
+                'page' => $request->page ?? 0,
+            ];
+            $progress->status = true;
+            $progress->save();
             DB::commit();
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
@@ -705,6 +729,28 @@ class CourseController extends Controller
                     'is_graduated' => $is_graduated
                 ]);
             }
+            $progress = $lesson->progress()
+                ->where('user_id', $request->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            if (!$progress) {
+                $lesson->progress->create([
+                    'data' => [
+                        'seconds' => $request->seconds ?? 0,
+                        'page' => $request->page ?? 0,
+                    ],
+                    'status' => $request->status,
+                    'user_id' => $request->user()->id,
+                ]);
+            }
+            $progress = $lesson->progress;
+            $progress->data =  [
+                'seconds' => $request->seconds ?? 0,
+                'page' => $request->page ?? 0,
+            ];
+            $progress->status = $request->status;
+            $progress->save();
+
             DB::commit();
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
