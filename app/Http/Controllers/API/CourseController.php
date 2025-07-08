@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Course;
+use App\Models\Lesson;
+use App\Models\Progress;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\SearchHistory;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -33,7 +36,6 @@ use App\Http\Requests\Course\StoreQuizAnswerRequest;
 use App\Http\Requests\Course\StoreLessonAnswerRequest;
 use App\Http\Requests\Course\StoreLessonProgressRequest;
 use App\Http\Requests\Course\StoreAppointmentLessonRequest;
-use App\Models\SearchHistory;
 
 class CourseController extends Controller
 {
@@ -428,8 +430,8 @@ class CourseController extends Controller
             if (!$enrollment) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'enrollment'])]);
             }
-
-            if ($this->hasGraduated($request->user()->id, $course)) {
+            $checkProgress = $this->checkProgress($request->user()->id, $course);
+            if ($checkProgress['status']) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'graduated'])]);
             }
 
@@ -562,7 +564,7 @@ class CourseController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
             if (!$progress) {
-                $lesson->progress->create([
+                $progress = $lesson->progress()->create([
                     'data' => [
                         'seconds' => $request->seconds ?? 0,
                         'page' => $request->page ?? 0,
@@ -571,7 +573,6 @@ class CourseController extends Controller
                     'user_id' => $request->user()->id,
                 ]);
             }
-            $progress = $lesson->progress;
             $progress->data =  [
                 'seconds' => $request->seconds ?? 0,
                 'page' => $request->page ?? 0,
@@ -581,6 +582,9 @@ class CourseController extends Controller
 
             $this->updateProgressCourse($request->user()->id, $course);
             DB::commit();
+
+            $lesson = $section->lessons()->where('id', $lesson_id)->first();
+
             return $this->success(data: new LessonResource($lesson));
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -661,7 +665,7 @@ class CourseController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
             if (!$progress) {
-                $lesson->progress->create([
+                $progress = $lesson->progress()->create([
                     'data' => [
                         'seconds' => $request->seconds ?? 0,
                         'page' => $request->page ?? 0,
@@ -670,12 +674,11 @@ class CourseController extends Controller
                     'user_id' => $request->user()->id,
                 ]);
             }
-            $progress = $lesson->progress;
             $progress->data =  [
                 'seconds' => $request->seconds ?? 0,
                 'page' => $request->page ?? 0,
             ];
-            $progress->status = true;
+            $progress->status = $request->status ?? true;
             $progress->save();
             DB::commit();
             return $this->success(data: new LessonResource($lesson));
@@ -734,7 +737,7 @@ class CourseController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
             if (!$progress) {
-                $lesson->progress->create([
+                $progress = $lesson->progress()->create([
                     'data' => [
                         'seconds' => $request->seconds ?? 0,
                         'page' => $request->page ?? 0,
@@ -743,7 +746,6 @@ class CourseController extends Controller
                     'user_id' => $request->user()->id,
                 ]);
             }
-            $progress = $lesson->progress;
             $progress->data =  [
                 'seconds' => $request->seconds ?? 0,
                 'page' => $request->page ?? 0,
@@ -1008,30 +1010,21 @@ class CourseController extends Controller
         }
     }
 
-    private function hasGraduated(string $user_id, Course $course): bool
-    {
-        $progress = $this->checkProgress($user_id, $course);
-        $total_lessons = $progress['total_lessons'];
-        $completed_lessons = $progress['completed_lessons'];
-
-        return $total_lessons > 0 && $total_lessons == $completed_lessons;
-    }
-
     private function updateProgressCourse(string $user_id, Course $course)
     {
-        $progress = $this->checkProgress($user_id, $course);
+        $checkProgress = $this->checkProgress($user_id, $course);
         $data = (object) [
-            'percentage' => $progress['completed_lessons'] / $progress['completed_lessons'] * 100
+            'percentage' => $checkProgress['completed_lessons'] / $checkProgress['completed_lessons'] * 100
         ];
-        $status = $this->hasGraduated($user_id, $course);
-        if (!$course->progress) {
-            $course->progress->create([
+        $status = $checkProgress['status'];
+        $progress = $course->progress()->where('user_id', $user_id)->first();
+        if (!$progress) {
+            $progress = $course->progress()->create([
                 'data' => $data,
                 'status' => $status,
                 'user_id' => $user_id,
             ]);
         } else {
-            $progress = $course->progress;
             $progress->data = $data;
             $progress->status = $status;
             $progress->save();
@@ -1040,13 +1033,16 @@ class CourseController extends Controller
 
     private function checkProgress(string $user_id, Course $course)
     {
-        $lessons = $course->lessons()->select(['lessons.id'])->active();
-        $total_lessons = $lessons->count();
-        $completed_lessons = $lessons
-            ->progress()
-            ->where(['user_id' => $user_id, 'status' => true])
-            ->count();
+        $lessons = $course->lessons()
+            ->select(['lessons.id'])
+            ->where('lessons.status', true)
+            ->pluck('id')->toArray();
+        $total_lessons = count($lessons);
+        $completed_lessons = Progress::whereIn('model_id', $lessons)
+            ->where('model_type', Lesson::class)
+            ->select(['id'])->count();
+        $status = $total_lessons > 0 && $total_lessons == $completed_lessons;
 
-        return compact('total_lessons', 'completed_lessons');
+        return compact('total_lessons', 'completed_lessons', 'status');
     }
 }

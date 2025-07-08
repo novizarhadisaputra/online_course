@@ -23,7 +23,7 @@ class LessonResource extends JsonResource
         $id = $this->id;
         $is_buy = !$user ? false : $this->section->course->transactions()
             ->where('user_id', $user->id)
-            ->where('status', TransactionStatus::SUCCESS)
+            ->where('transactions.status', TransactionStatus::SUCCESS)
             ->exists();
         $is_like = !$user ? false : $this->likes()->where('user_id', $user->id)->exists();
         $score = !$user ? null : $this->score()->where('user_id', $user->id)->first();
@@ -47,6 +47,8 @@ class LessonResource extends JsonResource
                 $has_assignment_submit = true;
             }
         }
+        $progress = !$user ? null : $this->progress()->where('user_id', $user->id)->first();
+
 
         return [
             "id" => $id,
@@ -67,6 +69,7 @@ class LessonResource extends JsonResource
             'time_left' => $time_left,
             'is_assignment' => $this->has_assignment,
             'has_assignment_submit' => $has_assignment_submit,
+            'progress' => $progress,
         ];
     }
 }

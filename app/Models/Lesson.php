@@ -75,7 +75,7 @@ class Lesson extends Model implements HasMedia
      */
     public function progress(): MorphOne
     {
-        return $this->morphOne(Progress::class, 'model');
+        return $this->morphOne(Progress::class, 'model')->orderBy('created_at', 'desc');
     }
 
     /**

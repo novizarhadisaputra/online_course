@@ -214,7 +214,7 @@ class Course extends Model implements HasMedia
      */
     public function progress(): MorphOne
     {
-        return $this->morphOne(Progress::class, 'model')->latestOfMany();
+        return $this->morphOne(Progress::class, 'model')->orderBy('created_at', 'desc');
     }
 
     /**
