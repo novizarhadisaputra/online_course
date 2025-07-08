@@ -32,7 +32,6 @@ class UserResource extends Resource
                     SpatieMediaLibraryFileUpload::make('avatar')
                         ->collection('avatars')
                         ->avatar()
-                        ->visibility('private')
                         ->disk('s3')
                         ->image()
                         ->circleCropper()
@@ -80,7 +79,6 @@ class UserResource extends Resource
                 SpatieMediaLibraryImageColumn::make('avatar')
                     ->collection('avatars')
                     ->disk('s3')
-                    ->visibility('private')
                     ->circular(),
                 TextColumn::make('name')
                     ->searchable(),

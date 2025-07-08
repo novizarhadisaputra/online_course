@@ -18,7 +18,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getFullUrl() : null,
             'short_description' => $this->short_description,
             'description' => $this->description,
             'courses_count' => $this->courses ? $this->courses()->active()->count() : 0,

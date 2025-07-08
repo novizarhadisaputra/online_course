@@ -38,7 +38,7 @@ class BundleResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->visibility('private')
+                        // ->visibility('private')
                         ->disk('s3')
                         ->image()
                         ->previewable()
@@ -73,7 +73,7 @@ class BundleResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private')
+                    // ->visibility('private')
                     ->disk('s3'),
                 TextColumn::make('name')
                     ->limit(50)

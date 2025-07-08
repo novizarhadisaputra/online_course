@@ -33,9 +33,9 @@ class CourseResource extends JsonResource
 
         return [
             'id' => $id,
-            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
-            'thumbnail' => $this->hasMedia('thumbnails') ? $this->getMedia('thumbnails')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
-            'preview' => $this->hasMedia('previews') ? $this->getMedia('previews')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getFullUrl() : null,
+            'thumbnail' => $this->hasMedia('thumbnails') ? $this->getMedia('thumbnails')->first()->getFullUrl() : null,
+            'preview' => $this->hasMedia('previews') ? $this->getMedia('previews')->first()->getFullUrl() : null,
             'name' => $this->name,
             'slug' => $this->slug,
             'short_description' => $this->short_description,

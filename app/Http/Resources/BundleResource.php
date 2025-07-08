@@ -23,7 +23,7 @@ class BundleResource extends JsonResource
             ->transform(fn(Course $item, int $index) => (object) [
                 'id' => $item->id,
                 'name' => $item->name,
-                'image' => $item->hasMedia('images') ? $item->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+                'image' => $item->hasMedia('images') ? $item->getMedia('images')->first()->getFullUrl() : null,
                 'description' => $item->description
             ])
             ->toArray();
@@ -33,7 +33,7 @@ class BundleResource extends JsonResource
             ->transform(fn(Product $item, int $index) => (object) [
                 'id' => $item->id,
                 'name' => $item->name,
-                'image' => $item->hasMedia('images') ? $item->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+                'image' => $item->hasMedia('images') ? $item->getMedia('images')->first()->getFullUrl() : null,
                 'description' => $item->description
             ])
             ->toArray();
@@ -43,7 +43,7 @@ class BundleResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getFullUrl() : null,
             'short_description' => $this->short_description,
             'description' => $this->description,
             'items' => $items,

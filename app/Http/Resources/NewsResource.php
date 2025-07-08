@@ -17,7 +17,7 @@ class NewsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+            'image' => $this->hasMedia('images') ? $this->getMedia('images')->first()->getFullUrl() : null,
             'name' => $this->name,
             'slug' => $this->slug,
             'short_description' => $this->short_description,

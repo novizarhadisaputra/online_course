@@ -52,7 +52,7 @@ class EventResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->multiple()
-                        ->visibility('private')
+                        // ->visibility('private')
                         ->disk('s3')
                         ->collection('images')
                         ->columnSpanFull()
@@ -107,7 +107,7 @@ class EventResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private')
+                    // ->visibility('private')
                     ->disk('s3'),
                 TextColumn::make('name')
                     ->searchable(),

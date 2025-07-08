@@ -5,19 +5,21 @@ namespace App\Filament\Resources;
 use App\Models\Ads;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Event;
 use App\Models\Course;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\MorphToSelect;
 use App\Filament\Resources\AdsResource\Pages;
 use Filament\Forms\Components\MorphToSelect\Type;
-use App\Models\Event;
-use Illuminate\Support\Carbon;
 
 class AdsResource extends Resource
 {
@@ -72,24 +74,22 @@ class AdsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID'),
-                Tables\Columns\TextColumn::make('model_type')
+                TextColumn::make('model_type')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('model_id'),
-                Tables\Columns\TextColumn::make('start_date')
+                TextColumn::make('model.name'),
+                TextColumn::make('start_date')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('end_date')
+                TextColumn::make('end_date')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\IconColumn::make('status')
+                IconColumn::make('status')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

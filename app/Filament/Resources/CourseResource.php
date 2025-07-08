@@ -88,7 +88,7 @@ class CourseResource extends Resource
             ->createOptionForm([
                 SpatieMediaLibraryFileUpload::make('image')
                     ->collection('images')
-                    ->visibility('private')
+                    // ->visibility('private')
                     ->disk('s3'),
                 Grid::make()->schema([
                     TextInput::make('name')
@@ -183,21 +183,21 @@ class CourseResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->visibility('private')
+                        // ->visibility('private')
                         ->disk('s3')
                         ->image()
                         ->previewable()
                         ->required(),
                     SpatieMediaLibraryFileUpload::make('thumbnail')
                         ->collection('thumbnails')
-                        ->visibility('private')
+                        // ->visibility('private')
                         ->disk('s3')
                         ->image()
                         ->previewable()
                         ->required(),
                     SpatieMediaLibraryFileUpload::make('preview')
                         ->collection('previews')
-                        ->visibility('private')
+                        // ->visibility('private')
                         ->disk('s3')
                         ->acceptedFileTypes(['video/*'])
                         ->required(),
@@ -302,7 +302,7 @@ class CourseResource extends Resource
             ->actions([
                 MediaAction::make('preview')
                     ->icon(icon: 'heroicon-s-video-camera')
-                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getMedia('previews')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null)
+                    ->media(fn($record) => $record->hasMedia('previews') ? $record->getMedia('previews')->first()->getFullUrl() : null)
                     ->visible(fn($record) => $record->hasMedia('previews')),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
