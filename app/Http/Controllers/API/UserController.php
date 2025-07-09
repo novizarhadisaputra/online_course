@@ -263,7 +263,7 @@ class UserController extends Controller
                 $user->clearMediaCollection('avatars');
                 $user->addMediaFromRequest('avatar')
                     ->usingFileName($request->user()->id . '.png')
-                    ->toMediaCollection('avatars', 's3');
+                    ->toMediaCollection('avatars', 's3_public');
             }
             $user->save();
 
