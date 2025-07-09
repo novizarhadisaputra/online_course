@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             "first_name" => $this->first_name,
             "last_name" => $this->last_name,
             "description" => $this->description,
+            "profession" => $this->profession,
             "email" => $this->email ? Str::mask($this->email, '*', 3) : null,
             "phone" => $this->phone ? Str::mask($this->phone, '*', 3) : null,
             "gender" => $this->gender,
