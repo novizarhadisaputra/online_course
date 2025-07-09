@@ -37,9 +37,8 @@ class QuestionAndAnswerCategoryResource extends Resource
                         ->required()
                         ->maxLength(255),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
-                        ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private'),
+                        ->fileAttachmentsDisk('s3_public')
+                        ->fileAttachmentsDirectory('attachments'),
                     Toggle::make('status')
                         ->required(),
                 ]),

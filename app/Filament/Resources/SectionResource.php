@@ -48,9 +48,8 @@ class SectionResource extends Resource
                         ->maxLength(255)
                         ->default(null),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDisk('s3_public')
                         ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private')
                         ->required(),
                     Toggle::make('status')
                         ->required(),

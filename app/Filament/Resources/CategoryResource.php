@@ -33,15 +33,14 @@ class CategoryResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->disk('s3'),
+                        ->disk('s3_public'),
                     TextInput::make('name')
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
-                        ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private'),
+                        ->fileAttachmentsDisk('s3_public')
+                        ->fileAttachmentsDirectory('attachments'),
                     Toggle::make('status')
                         ->required(),
                 ])
@@ -54,7 +53,7 @@ class CategoryResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')

@@ -36,7 +36,7 @@ class JobVacancyResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->image()
                         ->previewable()
                         ->required(),
@@ -47,9 +47,8 @@ class JobVacancyResource extends Resource
                         ->maxLength(255)
                         ->default(null),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
-                        ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private'),
+                        ->fileAttachmentsDisk('s3_public')
+                        ->fileAttachmentsDirectory('attachments'),
                     Select::make('category_id')
                         ->relationship('category', 'name')
                         ->searchable()
@@ -66,7 +65,7 @@ class JobVacancyResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('status')

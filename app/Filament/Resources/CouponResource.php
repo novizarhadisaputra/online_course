@@ -41,8 +41,7 @@ class CouponResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        ->visibility('private')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->image()
                         ->previewable()
                         ->required(),
@@ -53,9 +52,8 @@ class CouponResource extends Resource
                         ->maxLength(255)
                         ->default(null),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
-                        ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private'),
+                        ->fileAttachmentsDisk('s3_public')
+                        ->fileAttachmentsDirectory('attachments'),
                     TextInput::make('code')
                         ->maxLength(255)
                         ->visibleOn('edit')
@@ -116,8 +114,7 @@ class CouponResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('short_description')

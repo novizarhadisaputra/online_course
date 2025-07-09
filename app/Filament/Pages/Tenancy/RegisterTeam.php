@@ -39,9 +39,8 @@ class RegisterTeam extends RegisterTenant
                 ->readOnly()
                 ->required(),
             RichEditor::make('description')
-                ->fileAttachmentsDisk('s3')
-                ->fileAttachmentsDirectory('attachments')
-                ->fileAttachmentsVisibility('private'),
+                ->fileAttachmentsDisk('s3_public')
+                ->fileAttachmentsDirectory('attachments'),
             Toggle::make('status')
                 ->required(),
         ]);
