@@ -203,9 +203,8 @@ class CourseResource extends Resource
                         ->maxLength(255)
                         ->default(null),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
-                        ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private'),
+                        ->fileAttachmentsDisk('s3_public')
+                        ->fileAttachmentsDirectory('attachments'),
                     Textarea::make('requirement')
                         ->columnSpanFull()
                         ->required(),
