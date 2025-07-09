@@ -16,6 +16,10 @@ class Progress extends Model implements HasMedia
 
     protected $guarded = [];
 
+    protected $casts = [
+        'data' => 'array'
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
