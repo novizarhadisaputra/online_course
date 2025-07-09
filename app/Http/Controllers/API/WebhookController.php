@@ -44,16 +44,15 @@ class WebhookController extends Controller
                     break;
             }
 
-            if (!$transaction) {
-                throw ValidationException::withMessages(['transaction' => trans('validation.exists', ['attribute' => 'transaction'])]);
+            if ($transaction) {
+                TransactionService::enrollmentProcess($transaction);
+                $data = [
+                    'id' => $transaction->id,
+                    'status' => $transaction->status,
+                ];
+                $transaction->user->notify((new PaymentCallbackNotification($data))->afterCommit());
             }
 
-            TransactionService::enrollmentProcess($transaction);
-            $data = [
-                'id' => $transaction->id,
-                'status' => $transaction->status,
-            ];
-            $transaction->user->notify((new PaymentCallbackNotification($data))->afterCommit());
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));
         } catch (\Throwable $th) {
