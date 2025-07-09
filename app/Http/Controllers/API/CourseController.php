@@ -1040,6 +1040,8 @@ class CourseController extends Controller
         $total_lessons = count($lessons);
         $completed_lessons = Progress::whereIn('model_id', $lessons)
             ->where('model_type', Lesson::class)
+            ->where('user_id', $user_id)
+            ->groupBy('model_id')
             ->select(['id'])->count();
         $status = $total_lessons > 0 && $total_lessons == $completed_lessons;
 
