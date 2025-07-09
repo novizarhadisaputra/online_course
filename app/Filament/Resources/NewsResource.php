@@ -39,8 +39,7 @@ class NewsResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        // ->visibility('private')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->image()
                         ->previewable()
                         ->required(),
@@ -52,9 +51,8 @@ class NewsResource extends Resource
                         ->maxLength(255)
                         ->default(null),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDisk('s3_public')
                         ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private')
                         ->required(),
                     Toggle::make('status')
                         ->required(),
@@ -69,8 +67,7 @@ class NewsResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    // ->visibility('private')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 TextColumn::make('name')
                     ->limit(50)
                     ->tooltip(function (TextColumn $column): ?string {

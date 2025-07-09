@@ -38,8 +38,7 @@ class BundleResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        // ->visibility('private')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->image()
                         ->previewable()
                         ->required(),
@@ -51,8 +50,7 @@ class BundleResource extends Resource
                         ->maxLength(255),
                     RichEditor::make('description')
                         ->fileAttachmentsDisk('s3')
-                        ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private'),
+                        ->fileAttachmentsDirectory('attachments'),
                     Grid::make()->schema([
                         TextInput::make('duration')
                             ->numeric()
@@ -73,8 +71,7 @@ class BundleResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    // ->visibility('private')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 TextColumn::make('name')
                     ->limit(50)
                     ->tooltip(function (TextColumn $column): ?string {

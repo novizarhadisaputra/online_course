@@ -88,8 +88,7 @@ class CourseResource extends Resource
             ->createOptionForm([
                 SpatieMediaLibraryFileUpload::make('image')
                     ->collection('images')
-                    // ->visibility('private')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 Grid::make()->schema([
                     TextInput::make('name')
                         ->live(onBlur: true)
@@ -97,7 +96,6 @@ class CourseResource extends Resource
                             if (($get('slug') ?? '') !== Str::slug($old)) {
                                 return;
                             }
-
                             $set('slug', Str::slug($state));
                         }),
                     TextInput::make('slug')
@@ -105,9 +103,8 @@ class CourseResource extends Resource
                         ->required(),
                 ]),
                 RichEditor::make('description')
-                    ->fileAttachmentsDisk('s3')
-                    ->fileAttachmentsDirectory('attachments')
-                    ->fileAttachmentsVisibility('private'),
+                    ->fileAttachmentsDisk('s3_public')
+                    ->fileAttachmentsDirectory('attachments'),
                 Toggle::make('status')
                     ->default(true)
                     ->required(),
@@ -183,22 +180,19 @@ class CourseResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->collection('images')
-                        // ->visibility('private')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->image()
                         ->previewable()
                         ->required(),
                     SpatieMediaLibraryFileUpload::make('thumbnail')
                         ->collection('thumbnails')
-                        // ->visibility('private')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->image()
                         ->previewable()
                         ->required(),
                     SpatieMediaLibraryFileUpload::make('preview')
                         ->collection('previews')
-                        // ->visibility('private')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->acceptedFileTypes(['video/*'])
                         ->required(),
                     TextInput::make('name')
@@ -250,7 +244,6 @@ class CourseResource extends Resource
 
     public static function table(Table $table): Table
     {
-
         $query = Course::select('*');
         if (!auth()->user()->hasRole('super_admin')) {
             $query->where('user_id', auth()->id());
@@ -261,17 +254,14 @@ class CourseResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    ->visibility('private')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 TextColumn::make('name')
                     ->limit(50)
                     ->tooltip(function (TextColumn $column): ?string {
                         $state = $column->getState();
-
                         if (strlen($state) <= $column->getCharacterLimit()) {
                             return null;
                         }
-
                         return $state;
                     })
                     ->description(fn(Course $record): string | null => Str::limit($record->short_description, 50))

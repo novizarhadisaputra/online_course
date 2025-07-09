@@ -52,8 +52,7 @@ class EventResource extends Resource
                 Section::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->multiple()
-                        // ->visibility('private')
-                        ->disk('s3')
+                        ->disk('s3_public')
                         ->collection('images')
                         ->columnSpanFull()
                         ->required(),
@@ -75,9 +74,8 @@ class EventResource extends Resource
                         ->readOnly()
                         ->maxLength(255),
                     RichEditor::make('description')
-                        ->fileAttachmentsDisk('s3')
+                        ->fileAttachmentsDisk('s3_public')
                         ->fileAttachmentsDirectory('attachments')
-                        ->fileAttachmentsVisibility('private')
                         ->columnSpanFull(),
                     Textarea::make('url')
                         ->columnSpanFull(),
@@ -107,8 +105,7 @@ class EventResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
                     ->collection('images')
-                    // ->visibility('private')
-                    ->disk('s3'),
+                    ->disk('s3_public'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('short_description')
