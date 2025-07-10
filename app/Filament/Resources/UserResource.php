@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -62,8 +63,9 @@ class UserResource extends Resource
                     ]),
                     TextInput::make('password')
                         ->password()
-                        ->revealable()
-                        ->maxLength(255),
+                        ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                        ->dehydrated(fn($state) => filled($state))
+                        ->required(fn(string $context): bool => $context === 'create'),
                     CheckboxList::make('roles')
                         ->relationship('roles', 'name')
                         ->searchable()
