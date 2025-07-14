@@ -7,6 +7,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use App\Filament\Resources\PaymentGatewayResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Tables\Columns\ToggleColumn;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
@@ -30,8 +31,7 @@ class ManageGatewayChannels extends ManageRelatedRecords
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('payment_channels_count')->counts('payment_channels'),
-                TextColumn::make('payment_methods_count')->counts('payment_methods'),
+                ToggleColumn::make('status')
             ])
             ->filters([
                 //
