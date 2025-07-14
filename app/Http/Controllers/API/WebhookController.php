@@ -45,7 +45,7 @@ class WebhookController extends Controller
                     $transaction = Transaction::where('data->reference_id', $input->reference_id)->first();
                     if ($transaction) {
                         $ipaymu = new IpaymuService($transaction);
-                        $ipaymu->receiveFromHook($request, $transaction);
+                        $ipaymu->receiveFromHook($input, $transaction);
                     }
                     break;
                 default:
