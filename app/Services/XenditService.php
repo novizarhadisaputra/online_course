@@ -168,15 +168,12 @@ class XenditService
                     'virtual_account_number' => $result->payment_method->virtual_account->channel_properties->virtual_account_number,
                     'expires_at' => $result->payment_method->virtual_account->channel_properties->expires_at,
                 ];
-                $this->transaction->data = $data;
             } else if ($result->payment_method && $result->payment_method->qr_code && $result->payment_method->qr_code->channel_properties) {
                 $data = [
                     'id' => $result->payment_method->id,
                     'reference_id' => $result->payment_method->reference_id,
                     'qr_string' => $result->payment_method->qr_code->channel_properties->qr_string,
                 ];
-                $this->transaction->payment_link = $data['qr_string'];
-                $this->transaction->data = $data;
             } else if ($result->payment_method && $result->payment_method->ewallet && $result->payment_method->ewallet->channel_properties) {
                 $data = [
                     'id' => $result->payment_method->id,
@@ -185,9 +182,8 @@ class XenditService
                     'qr_string' => $result->actions[1]->qr_code
                 ];
                 $this->transaction->payment_link = $data['payment_link'];
-                $this->transaction->data = $data;
             }
-
+            $this->transaction->data = $data;
             $this->transaction->tax_fee = $tax_fee;
             $this->transaction->service_fee = $service_fee;
             $this->transaction->total_price = $total_price;

@@ -68,6 +68,9 @@ class CourseController extends Controller
                         $courses = $courses->where('is_paid', $is_paid);
                     }
                 }
+                if (isset($request->filter['instructor_id'])) {
+                    $courses = $courses->where('user_id', $request->filter['instructor_id']);
+                }
                 if (isset($request->filter['levels'])) {
                     $courses = $courses->where('level', $request->filter['levels']);
                 }

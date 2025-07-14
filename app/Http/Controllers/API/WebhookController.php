@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Notifications\PaymentCallbackNotification;
+use App\Services\IpaymuService;
 use App\Services\TransactionService;
 use Illuminate\Validation\ValidationException;
 
@@ -38,6 +39,13 @@ class WebhookController extends Controller
                     if ($transaction) {
                         $xendit = new XenditService($transaction);
                         $xendit->receiveFromHook($request);
+                    }
+                    break;
+                case 'ipaymu':
+                    $transaction = Transaction::where('data->reference_id', $input->reference_id)->first();
+                    if ($transaction) {
+                        $ipaymu = new IpaymuService($transaction);
+                        $ipaymu->receiveFromHook($request, $transaction);
                     }
                     break;
                 default:

@@ -26,6 +26,7 @@ use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 use App\Http\Controllers\API\SearchHistoryController;
+use App\Services\IpaymuService;
 
 Route::prefix('check')->name('check.')->group(function () {
     Route::name('env')->get('/', function () {

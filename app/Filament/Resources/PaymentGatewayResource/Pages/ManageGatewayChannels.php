@@ -19,7 +19,8 @@ class ManageGatewayChannels extends ManageRelatedRecords
 
     protected static string $relationship = 'payment_channels';
 
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         return $this->record->name . "'s " . ' channels';
     }
 
@@ -29,7 +30,8 @@ class ManageGatewayChannels extends ManageRelatedRecords
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('payment_methods_count')->default(0),
+                TextColumn::make('payment_channels_count')->counts('payment_channels'),
+                TextColumn::make('payment_methods_count')->counts('payment_methods'),
             ])
             ->filters([
                 //

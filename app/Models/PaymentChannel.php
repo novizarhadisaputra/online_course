@@ -16,7 +16,9 @@ class PaymentChannel extends Model implements HasMedia
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
+    protected $casts = [
+        'configs' => 'array'
+    ];
 
     /**
      * Get the payment_gateway that owns the PaymentChannel

@@ -35,11 +35,8 @@ class ManageChannelMethod extends ManageRelatedRecords
                     ->visibility('private')
                     ->disk('s3'),
                 TextColumn::make('name'),
-                TextColumn::make('payment_channel.name')->default(0),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
             ])

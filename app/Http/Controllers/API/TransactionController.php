@@ -26,6 +26,7 @@ use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Requests\Transaction\CheckoutRequest;
+use App\Services\IpaymuService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TransactionController extends Controller
@@ -175,6 +176,9 @@ class TransactionController extends Controller
                 if ($name === 'xendit') {
                     $xendit = new XenditService($transaction);
                     $xendit->createTransaction($request);
+                } else if ($name === 'ipaymu') {
+                    $ipaymu = new IpaymuService();
+                    $ipaymu->makePayment($request, $transaction);
                 }
             }
 
@@ -209,7 +213,7 @@ class TransactionController extends Controller
             if (!$transaction) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
             }
-            $paymentChannels = PaymentChannel::active()->paginate($request->input('limit', 10));
+            $paymentChannels = PaymentChannel::active()->whereRelation('payment_gateway', 'status', true)->paginate($request->input('limit', 10));
             return $this->success(data: PaymentChannelResource::collection($paymentChannels), paginate: $paymentChannels);
         } catch (\Throwable $th) {
             throw $th;
