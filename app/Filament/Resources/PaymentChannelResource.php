@@ -11,7 +11,7 @@ use App\Models\PaymentChannel;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\KeyValue;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +20,6 @@ use Filament\Forms\Components\RichEditor;
 use Guava\FilamentNestedResources\Ancestor;
 use App\Filament\Resources\PaymentChannelResource\Pages;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
-use App\Filament\Resources\PaymentChannelResource\RelationManagers\PaymentMethodsRelationManager;
 
 class PaymentChannelResource extends Resource
 {
@@ -50,6 +49,8 @@ class PaymentChannelResource extends Resource
                         ->fileAttachmentsDisk('s3')
                         ->fileAttachmentsDirectory('attachments')
                         ->fileAttachmentsVisibility('private'),
+                    KeyValue::make('configs')
+                        ->columnSpanFull(),
                     Toggle::make('status')
                         ->required(),
                 ])

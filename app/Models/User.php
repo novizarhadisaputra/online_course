@@ -18,7 +18,7 @@ use App\Models\Couponable;
 use App\Models\Certificate;
 use App\Models\Transaction;
 use App\Models\ModelHasBranch;
-use Illuminate\Support\Carbon;
+use App\Observers\UserObserver;
 use App\Models\TransactionDetail;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
@@ -34,12 +34,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar, HasTenants, RenewPasswordContract
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
