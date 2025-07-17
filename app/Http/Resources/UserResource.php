@@ -24,12 +24,10 @@ class UserResource extends JsonResource
             "last_name" => $this->last_name,
             "description" => $this->description,
             "profession" => $this->profession,
-            "email" => $this->email ? Str::mask($this->email, '*', 3) : null,
+            "email" => $this->email,
             "phone" => $this->phone ? Str::mask($this->phone, '*', 3) : null,
             "gender" => $this->gender,
             "email_verified_at" => $this->email_verified_at,
-            'followers_count' => $this->followers()->select(['id'])->count(),
-            'following_count' => $this->following()->select(['id'])->count(),
             'addresses_count' => $this->addresses()->select(['id'])->count(),
         ];
     }
