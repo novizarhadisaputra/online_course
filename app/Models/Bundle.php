@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Price;
 use App\Models\Course;
 use App\Models\Product;
+use App\Models\Metadata;
 use App\Models\BundleItem;
 use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
@@ -20,43 +21,31 @@ class Bundle extends Model implements HasMedia
 {
     use ModelTrait, HasUuids, InteractsWithMedia;
 
-    /**
-     * Get all of the items for the Bundle
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function items(): HasMany
     {
         return $this->hasMany(BundleItem::class, 'bundle_id', 'id');
     }
 
-    /**
-     * Get all of the courses that are assigned this coupon.
-     */
     public function courses(): MorphToMany
     {
         return $this->morphedByMany(Course::class, 'model', BundleItem::class);
     }
 
-    /**
-     * Get all of the products that are assigned this coupon.
-     */
     public function products(): MorphToMany
     {
         return $this->morphedByMany(Product::class, 'model', BundleItem::class);
     }
 
-    /**
-     * Get all of the bundle's price.
-     */
     public function price(): MorphOne
     {
         return $this->morphOne(Price::class, 'priceable');
     }
 
-    /**
-     * Get all of the enrollments for the course.
-     */
+    public function metadata(): MorphOne
+    {
+        return $this->morphOne(Metadata::class, 'model');
+    }
+
     public function enrollments(): MorphToMany
     {
         return $this->morphToMany(User::class, 'model', Enrollment::class);

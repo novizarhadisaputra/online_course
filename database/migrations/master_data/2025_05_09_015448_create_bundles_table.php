@@ -18,9 +18,10 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('short_description')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('status')->default(false);
             $table->bigInteger('duration')->default(0);
             $table->char('duration_units')->default('minutes');
+            $table->boolean('status')->default(false);
+            $table->boolean('is_paid')->default(false);
 
             $table->timestamps();
         });

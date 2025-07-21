@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -41,6 +42,7 @@ use App\Filament\Resources\CourseResource\RelationManagers\CommentsRelationManag
 use App\Filament\Resources\CourseResource\RelationManagers\TransactionsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\AnnouncementsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\LearningMethodsRelationManager;
+use App\Forms\Components\PriceForm;
 
 class CourseResource extends Resource
 {
@@ -233,10 +235,12 @@ class CourseResource extends Resource
                         ]),
                     Grid::make()->schema([
                         Toggle::make('is_paid')
+                            ->live(debounce: 500, onBlur: true)
                             ->required(),
                         Toggle::make('status')
                             ->required(),
-                    ])
+                    ]),
+                    PriceForm::make(),
                 ]),
             ]);
     }
@@ -307,7 +311,6 @@ class CourseResource extends Resource
     {
         return [
             LearningMethodsRelationManager::make(),
-            PricesRelationManager::make(),
             AnnouncementsRelationManager::make(),
             TransactionsRelationManager::make(['status' => TransactionStatus::SUCCESS]),
             ReviewsRelationManager::make(),

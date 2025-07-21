@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -35,9 +36,9 @@ class PricesRelationManager extends RelationManager
                         ->maxLength(255),
                     TextInput::make('value')
                         ->prefix('IDR')
-                        ->required()
-                        ->numeric(),
-                    Textarea::make('description')
+                        ->numeric()
+                        ->required(),
+                    RichEditor::make('description')
                         ->required(),
                 ])->columns(1),
             ]);
