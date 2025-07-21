@@ -19,7 +19,9 @@ class UserObserver
      */
     public function updating(User $user): void
     {
-        $user->name = $user->first_name . ($user->last_name ? ' ' . $user->last_name : '');
+        $user->first_name = preg_replace('/\s+/', ' ', $user->first_name);
+        $user->last_name = preg_replace('/\s+/', ' ', $user->last_name);
+        $user->name = trim($user->first_name . ($user->last_name ? ' ' . $user->last_name : ''));
     }
 
     /**

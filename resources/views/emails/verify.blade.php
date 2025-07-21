@@ -1,97 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful Email Template</title>
+    <meta charset="UTF-8" />
+    <title>Verifikasi Akun - {{ env('APP_NAME', 'InterStudi') }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f9fafb;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
+            line-height: 1.6;
         }
 
-        .email-container {
-            width: 100%;
+        .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            padding: 32px;
+            border: 1px solid #e5e7eb;
+            box-sizing: border-box;
         }
 
-        .email-header {
-            background-color: #1d72b8;
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
+        .logo {
+            width: 200px;
+            margin-bottom: 28px;
         }
 
-        .email-header h1 {
-            margin: 0;
-            font-size: 28px;
-        }
-
-        .email-body {
-            padding: 20px;
-            color: #555555;
-        }
-
-        .email-body h2 {
-            color: #333333;
-            font-size: 24px;
-            margin-top: 0;
-        }
-
-        .email-body p {
-            line-height: 1.6;
-            font-size: 16px;
-        }
-
-        .email-button {
+        .button {
+            padding: 12px 24px;
+            background-color: #00897b;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
             display: inline-block;
-            background-color: #1d72b8;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 16px;
             font-weight: bold;
-            margin-top: 20px;
         }
 
-        .email-footer {
-            background-color: #f7f7f7;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            color: #888888;
+        .footer {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 40px;
+            text-align: left;
         }
 
-        .email-footer a {
-            color: #1d72b8;
+        a {
+            color: #00897b;
             text-decoration: none;
+            word-break: break-word;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .logo {
+                width: 100px;
+            }
+
+            .button {
+                width: 100%;
+                font-size: 15px;
+                padding: 14px;
+                text-align: center;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="email-container">
-        <div class="email-header">
-            <h1>Welcome to Our Service!</h1>
-        </div>
-        <div class="email-body">
-            <h2>Hi {{ $user->name }},</h2>
-            <p>Thank you for signing up for our service! We're excited to have you onboard. To get started, click the
-                button below:</p>
-            <a href="{{ route('api.auth.verify', ['id' => $user->id]) }}" class="email-button">Get Started</a>
-            <p>If you have any questions, feel free to reply to this email or visit our <a href="#">help
-                    center</a>.</p>
-        </div>
-        <div class="email-footer">
-            <p>&copy; 2025 Our Company. All rights reserved.</p>
+    <div class="container">
+        <img src="logo_interstudi.png" alt="InterStudi Logo" class="logo" />
+
+        <p style="font-weight: bold;">Hi {{ $user->name }},</p>
+        <p>
+            Terima kasih telah mendaftar di platform pembelajaran InterStudi.
+            Untuk melanjutkan proses aktivasi akun Anda, silakan klik tombol
+            verifikasi di bawah ini.
+        </p>
+
+        <a href="#" class="button" target="_blank">Verifikasi Alamat Email</a>
+
+        <p>
+            Jika Anda mengalami kesulitan saat mengklik tombol "Verifikasi Alamat
+            Email", salin dan tempel URL di bawah ini ke peramban web Anda:
+        </p>
+
+        <a href="#" target="_blank">
+            {{ route('api.auth.verify', ['id' => $user->id]) }}
+        </a>
+
+        <p style="margin-top: 24px;">
+            Jika Anda tidak merasa melakukan pendaftaran atau tidak mengenali email
+            ini, silakan abaikan atau hubungi tim dukungan kami.
+        </p>
+
+        <p style="margin-top: 36px;">Salam hangat,</p>
+        <p style="color: #00897b; font-weight: 600;">Tim {{ env('APP_NAME', 'InterStudi') }}</p>
+
+        <div class="footer">
+            Delivered by {{ env('APP_NAME', 'InterStudi') }}, Jl. Bulungan I No. 6 Kebayoran Baru, Jakarta Selatan
         </div>
     </div>
 </body>
