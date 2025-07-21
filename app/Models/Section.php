@@ -13,8 +13,6 @@ class Section extends Model
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
-
     /**
      * Get all of the lessons for the Section
      *

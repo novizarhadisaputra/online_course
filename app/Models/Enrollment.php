@@ -13,8 +13,6 @@ class Enrollment extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get the parent model (anything).
      */

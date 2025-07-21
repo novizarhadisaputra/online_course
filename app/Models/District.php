@@ -12,8 +12,6 @@ class District extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get all of the villages for the District
      *

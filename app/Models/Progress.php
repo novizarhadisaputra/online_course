@@ -14,8 +14,6 @@ class Progress extends Model implements HasMedia
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
-
     protected $casts = [
         'data' => 'array'
     ];

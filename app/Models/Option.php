@@ -11,8 +11,6 @@ class Option extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get the parent model (anything).
      */

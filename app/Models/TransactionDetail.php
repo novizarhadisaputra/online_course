@@ -14,8 +14,6 @@ class TransactionDetail extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get the parent detail model (course or other).
      */

@@ -9,6 +9,4 @@ use Illuminate\Database\Eloquent\Model;
 class ReturnItem extends Model
 {
     use HasUuids, ModelTrait;
-
-    protected $guarded = [];
 }

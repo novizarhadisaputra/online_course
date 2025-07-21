@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class Assignment extends Model
 {
     use HasUuids;
-
-    protected $guarded = [];
 }

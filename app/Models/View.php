@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class View extends Model
 {
     use HasUuids;
-
-    protected $guarded = [];
 }

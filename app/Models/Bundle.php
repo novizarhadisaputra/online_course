@@ -20,8 +20,6 @@ class Bundle extends Model implements HasMedia
 {
     use ModelTrait, HasUuids, InteractsWithMedia;
 
-    protected $guarded = [];
-
     /**
      * Get all of the items for the Bundle
      *

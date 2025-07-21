@@ -9,6 +9,4 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class Price extends Model
 {
     use HasUuids, ModelTrait;
-
-    protected $guarded = [];
 }

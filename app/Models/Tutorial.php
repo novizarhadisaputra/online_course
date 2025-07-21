@@ -12,8 +12,6 @@ class Tutorial extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia;
 
-    protected $guarded = [];
-
     /**
      * Get the parent model .
      */

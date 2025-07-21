@@ -14,15 +14,13 @@ class Category extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia, ModelTrait;
 
-    protected $guarded = [];
-
-   /**
-    * Get all of the courses for the Category
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasMany
-    */
-   public function courses(): HasMany
-   {
-       return $this->hasMany(Course::class);
-   }
+    /**
+     * Get all of the courses for the Category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class);
+    }
 }

@@ -11,6 +11,4 @@ use Spatie\MediaLibrary\HasMedia;
 class ProductCategory extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia, ModelTrait;
-
-    protected $guarded = [];
 }

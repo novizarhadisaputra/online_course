@@ -9,6 +9,4 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class GetInTouch extends Model
 {
     use HasUuids, ModelTrait;
-
-    protected $guarded = [];
 }

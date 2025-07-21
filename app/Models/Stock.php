@@ -12,8 +12,6 @@ class Stock extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get the product that owns the Stock
      *

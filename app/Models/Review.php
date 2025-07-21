@@ -12,8 +12,6 @@ class Review extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get the user that owns the Review
      *

@@ -16,8 +16,6 @@ class Coupon extends Model implements HasMedia
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
-
     /**
      * Get all of the courses that are assigned this coupon.
      */

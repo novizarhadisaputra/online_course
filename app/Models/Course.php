@@ -42,7 +42,6 @@ class Course extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia, ModelTrait;
 
-    protected $guarded = [];
 
     protected $casts = [
         'meta' => 'array',

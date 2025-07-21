@@ -26,8 +26,6 @@ class Lesson extends Model implements HasMedia
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
-
     /**
      * Get the section that owns the Lesson
      *

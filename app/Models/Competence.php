@@ -13,8 +13,6 @@ class Competence extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get all of the courses that are assigned this competence.
      */
@@ -31,7 +29,7 @@ class Competence extends Model
         return $this->morphedByMany(News::class, 'model', ModelHasCompetence::class);
     }
 
-     /**
+    /**
      * Get all of the events that are assigned this competence.
      */
     public function events(): MorphToMany

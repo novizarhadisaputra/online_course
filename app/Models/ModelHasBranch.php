@@ -4,7 +4,4 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ModelHasBranch extends Model
-{
-    protected $guarded = [];
-}
+class ModelHasBranch extends Model {}

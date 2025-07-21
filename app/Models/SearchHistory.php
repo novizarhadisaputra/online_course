@@ -9,6 +9,4 @@ use Illuminate\Database\Eloquent\Model;
 class SearchHistory extends Model
 {
     use HasUuids, ModelTrait;
-
-    protected $guarded = [];
 }

@@ -11,8 +11,6 @@ class Sale extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get all of the items for the Sale
      *

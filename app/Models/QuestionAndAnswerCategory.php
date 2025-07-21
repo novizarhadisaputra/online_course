@@ -11,8 +11,6 @@ class QuestionAndAnswerCategory extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get all of the question_answers for the QuestionAndAnswerCategory
      *

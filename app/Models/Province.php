@@ -12,8 +12,6 @@ class Province extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get all of the regencies for the Province
      *

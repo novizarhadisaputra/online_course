@@ -11,8 +11,6 @@ class Village extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get the district that owns the Village
      *

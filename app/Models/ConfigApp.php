@@ -9,6 +9,4 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class ConfigApp extends Model
 {
     use HasUuids, ModelTrait;
-
-    protected $guarded = [];
 }

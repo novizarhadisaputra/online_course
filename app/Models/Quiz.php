@@ -15,8 +15,6 @@ class Quiz extends Model implements HasMedia
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
-
     /**
      * Get all of the quiz's options.
      */

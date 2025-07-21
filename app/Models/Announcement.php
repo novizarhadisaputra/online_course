@@ -12,8 +12,6 @@ class Announcement extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia;
 
-    protected $guarded = [];
-
     public function model(): MorphTo
     {
         return $this->morphTo();

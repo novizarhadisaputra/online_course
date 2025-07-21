@@ -13,8 +13,6 @@ class Comment extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get the parent model (anything).
      */

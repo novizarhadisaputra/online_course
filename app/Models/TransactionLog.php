@@ -11,8 +11,6 @@ class TransactionLog extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get the transaction that owns the TransactionLog
      *

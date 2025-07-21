@@ -12,8 +12,6 @@ class Purchase extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get the branch that owns the Purchase
      *

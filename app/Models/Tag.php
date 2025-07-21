@@ -10,8 +10,6 @@ class Tag extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get all of the courses that are assigned this tag.
      */

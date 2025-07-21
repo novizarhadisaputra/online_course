@@ -11,8 +11,6 @@ class Taggable extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get the user that owns the Taggable
      *

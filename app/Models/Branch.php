@@ -20,8 +20,6 @@ class Branch extends Model implements HasAvatar, HasMedia
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
-
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->hasMedia('images') ? $this->getMedia('images')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null;

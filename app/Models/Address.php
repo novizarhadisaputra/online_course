@@ -18,8 +18,6 @@ class Address extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     public function model(): MorphTo
     {
         return $this->morphTo();

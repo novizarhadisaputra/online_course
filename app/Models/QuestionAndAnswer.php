@@ -12,8 +12,6 @@ class QuestionAndAnswer extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get the category that owns the QuestionAndAnswer
      *

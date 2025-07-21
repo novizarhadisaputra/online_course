@@ -13,8 +13,6 @@ class Answer extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     protected $casts = [
         'data' => 'array'
     ];

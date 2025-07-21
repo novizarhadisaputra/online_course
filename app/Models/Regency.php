@@ -13,8 +13,6 @@ class Regency extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
-
     /**
      * Get all of the districts for the Regency
      *

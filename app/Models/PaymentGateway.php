@@ -16,7 +16,6 @@ class PaymentGateway extends Model implements HasMedia
 {
     use HasUuids, ModelTrait, InteractsWithMedia;
 
-    protected $guarded = [];
 
     protected $casts = [
         'configs' => 'array',

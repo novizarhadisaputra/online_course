@@ -11,8 +11,6 @@ class BundleItem extends Model
 {
     use HasUuids, ModelTrait;
 
-    protected $guarded = [];
-
     /**
      * Get the parent model (course or etc).
      */
