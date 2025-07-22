@@ -27,7 +27,7 @@ class PaymentChannelResource extends Resource
 
     protected static ?string $model = PaymentChannel::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = '';
 
     public static function getBreadcrumbRecordLabel(Model $record)
     {

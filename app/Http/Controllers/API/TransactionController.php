@@ -84,7 +84,8 @@ class TransactionController extends Controller
                     $total_price += $price->value;
                 }
                 $total_qty += $cart->qty;
-                $detail = $transaction->details()
+                $detail = $transaction
+                    ->details()
                     ->where(['model_id' => $cart->model_id, 'model_type' =>  $cart->model_type])->first();
                 if ($detail) {
                     $detail->qty = $cart->qty;
@@ -92,13 +93,25 @@ class TransactionController extends Controller
                     $detail->price = $price ? $price->value : 0;
                     $detail->save();
                 } else {
-                    $transaction->details()->create([
-                        'model_id' => $cart->model_id,
-                        'model_type' =>  $cart->model_type,
-                        'qty' => $cart->qty,
-                        'units' => $price ? $price->units : 'courses',
-                        'price' => $price ? $price->value : 0,
-                    ]);
+                    if ($cart && $cart->model && $cart->model->items) {
+                        foreach ($cart->model->items as $item) {
+                            $transaction->details()->create([
+                                'model_id' => $item->model_id,
+                                'model_type' =>  $item->model_type,
+                                'qty' => $cart->qty,
+                                'units' => $item->model->price ? $item->model->price->units : 'courses',
+                                'price' => $item->model->price ? $item->model->price->value : 0,
+                            ]);
+                        }
+                    } else {
+                        $transaction->details()->create([
+                            'model_id' => $cart->model_id,
+                            'model_type' =>  $cart->model_type,
+                            'qty' => $cart->qty,
+                            'units' => $price ? $price->units : 'courses',
+                            'price' => $price ? $price->value : 0,
+                        ]);
+                    }
                 }
             }
 
@@ -167,7 +180,6 @@ class TransactionController extends Controller
             $transaction->address_id = $request->address_id ?? null;
             $transaction->payment_method_id = $request->payment_method_id;
             $transaction->save();
-
 
             $transaction->logs()->create($log_data);
 

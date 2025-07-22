@@ -20,7 +20,7 @@ class GetInTouchResource extends Resource
 {
     protected static ?string $model = GetInTouch::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-inbox-arrow-down';
+    protected static ?string $navigationIcon = '';
 
     protected static ?string $navigationGroup = 'Master Data';
 

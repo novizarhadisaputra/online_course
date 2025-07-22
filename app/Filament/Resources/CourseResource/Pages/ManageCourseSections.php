@@ -21,7 +21,7 @@ class ManageCourseSections extends ManageRelatedRecords
 
     protected static string $relationship = 'sections';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = '';
 
     public static function getNavigationLabel(): string
     {

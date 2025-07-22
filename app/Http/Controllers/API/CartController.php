@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\StoreRequest;
 use App\Http\Resources\CartResource;
+use App\Models\Bundle;
 use App\Models\Cart;
 use App\Models\ConfigApp;
 use App\Models\Course;
@@ -48,23 +49,33 @@ class CartController extends Controller
         DB::beginTransaction();
         try {
             $model_type = Course::class;
-            if ($request->category == 'events') {
-                $model_type = Event::class;
-                $events = Event::find($request->id);
-                if (!$events) {
-                    throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
-                }
-            } else if ($model_type == 'news') {
-                $model_type = News::class;
-                $news = News::find($request->id);
-                if (!$news) {
-                    throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
-                }
-            } else {
-                $course = Course::find($request->id);
-                if (!$course) {
-                    throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
-                }
+            switch ($request->category) {
+                case 'events':
+                    $model_type = Event::class;
+                    $events = Event::find($request->id);
+                    if (!$events) {
+                        throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+                    }
+                    break;
+                case 'news':
+                    $model_type = News::class;
+                    $news = News::find($request->id);
+                    if (!$news) {
+                        throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+                    }
+                    break;
+                case 'bundles':
+                    $bundle = Bundle::find($request->id);
+                    if (!$bundle) {
+                        throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+                    }
+                    break;
+                default:
+                    $course = Course::find($request->id);
+                    if (!$course) {
+                        throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+                    }
+                    break;
             }
 
             $config_app = ConfigApp::first();

@@ -23,7 +23,7 @@ class ManageQuizOption extends ManageRelatedRecords
 
     protected static string $relationship = 'options';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = '';
 
     public static function getNavigationLabel(): string
     {

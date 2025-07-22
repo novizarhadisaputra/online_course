@@ -7,6 +7,7 @@ use Filament\Widgets;
 use App\Models\Branch;
 use Filament\PanelProvider;
 use App\Filament\Pages\Dashboard;
+use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Rmsramos\Activitylog\ActivitylogPlugin;
 use App\Filament\Pages\Tenancy\RegisterTeam;
@@ -98,6 +99,21 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->sidebarCollapsibleOnDesktop()
-            ->theme(asset('css/filament/admin/theme.css'));
+            ->theme(asset('css/filament/admin/theme.css'))
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Master Data')
+                    ->icon('heroicon-o-rectangle-stack'),
+                NavigationGroup::make()
+                    ->label('Transactions')
+                    ->icon('heroicon-o-credit-card'),
+                NavigationGroup::make()
+                    ->label('User Management')
+                    ->icon('heroicon-o-shield-check'),
+                NavigationGroup::make()
+                    ->label('Settings')
+                    ->icon('heroicon-o-cog-6-tooth'),
+
+            ]);
     }
 }

@@ -17,7 +17,7 @@ class ThirdPartyLogResource extends Resource
 {
     protected static ?string $model = ThirdPartyLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = '';
 
     protected static ?string $navigationGroup = 'Settings';
 

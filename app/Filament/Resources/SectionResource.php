@@ -29,7 +29,7 @@ class SectionResource extends Resource
 
     protected static ?string $model = SectionModel::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = '';
 
     public static function getBreadcrumbRecordLabel(Model $record)
     {

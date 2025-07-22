@@ -23,7 +23,7 @@ class JobVacancyResource extends Resource
 {
     protected static ?string $model = JobVacancy::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
+    protected static ?string $navigationIcon = '';
 
     protected static ?string $navigationGroup = 'Master Data';
 

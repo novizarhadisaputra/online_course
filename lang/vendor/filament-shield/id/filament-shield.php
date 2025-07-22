@@ -23,7 +23,7 @@ return [
     'field.guard_name' => 'Nama Penjaga',
     'field.permissions' => 'Izin',
     'field.select_all.name' => 'Pilih Semua',
-    'field.select_all.message' => 'Aktifkan semua izin yang <span class="text-primary font-medium">Tersedia</span> untuk Peran ini.',
+    'field.select_all.message' => 'Aktifkan semua izin yang <span class="font-medium text-primary">Tersedia</span> untuk Peran ini.',
 
     /*
     |--------------------------------------------------------------------------
@@ -33,7 +33,7 @@ return [
 
     'nav.group' => 'Pelindung',
     'nav.role.label' => 'Peran',
-    'nav.role.icon' => 'heroicon-o-shield-check',
+    'nav.role.icon' => '',
     'resource.label.role' => 'Peran',
     'resource.label.roles' => 'Peran',
 

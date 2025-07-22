@@ -33,7 +33,7 @@ class LessonResource extends Resource
 
     protected static ?string $model = Lesson::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = '';
 
     public static function getBreadcrumbRecordLabel(Model $record)
     {

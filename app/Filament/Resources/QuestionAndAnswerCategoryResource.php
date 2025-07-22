@@ -8,7 +8,6 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -20,13 +19,11 @@ class QuestionAndAnswerCategoryResource extends Resource
 {
     protected static ?string $model = QuestionAndAnswerCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = '';
 
     protected static ?string $navigationGroup = 'Master Data';
 
     protected static ?string $label = 'Categories';
-
-    protected static ?string $navigationParentItem = 'Question And Answers';
 
     public static function form(Form $form): Form
     {

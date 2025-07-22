@@ -19,7 +19,7 @@ class ConfigAppResource extends Resource
 {
     protected static ?string $model = ConfigApp::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+    protected static ?string $navigationIcon = '';
 
     protected static ?string $navigationGroup = 'Settings';
 

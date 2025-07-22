@@ -20,7 +20,7 @@ class QuestionAndAnswerResource extends Resource
 {
     protected static ?string $model = QuestionAndAnswer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
+    protected static ?string $navigationIcon = '';
 
     protected static ?string $navigationGroup = 'Master Data';
 
