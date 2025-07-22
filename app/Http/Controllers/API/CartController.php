@@ -65,6 +65,7 @@ class CartController extends Controller
                     }
                     break;
                 case 'bundles':
+                    $model_type = Bundle::class;
                     $bundle = Bundle::find($request->id);
                     if (!$bundle) {
                         throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
