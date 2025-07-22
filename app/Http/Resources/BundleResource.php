@@ -48,7 +48,7 @@ class BundleResource extends JsonResource
             'description' => $this->description,
             'items' => $items,
             'metadata' => $this->metadata ? $this->metadata->data : null,
-            'price' => $this->price,
+            'price' => $this->is_paid ? $this->price : null,
         ];
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "84836d0cfb641551a3b86ddbccbfa0fd",
+    "content-hash": "d737fedea385153a46e86e783b36f904",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6197,16 +6197,16 @@
         },
         {
             "name": "nuxtifyts/dash-stack-theme",
-            "version": "v1.2.1",
+            "version": "v1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Fa-BRAIK/dash-stack-theme.git",
-                "reference": "a6c054d4bb328dd23465a4a9f3f9479cabf71d90"
+                "reference": "9e2698fee6e484dbcabb76b4e47fa3005a043d4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Fa-BRAIK/dash-stack-theme/zipball/a6c054d4bb328dd23465a4a9f3f9479cabf71d90",
-                "reference": "a6c054d4bb328dd23465a4a9f3f9479cabf71d90",
+                "url": "https://api.github.com/repos/Fa-BRAIK/dash-stack-theme/zipball/9e2698fee6e484dbcabb76b4e47fa3005a043d4e",
+                "reference": "9e2698fee6e484dbcabb76b4e47fa3005a043d4e",
                 "shasum": ""
             },
             "require": {
@@ -6254,7 +6254,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Fa-BRAIK/dash-stack-theme/issues",
-                "source": "https://github.com/Fa-BRAIK/dash-stack-theme/tree/v1.2.1"
+                "source": "https://github.com/Fa-BRAIK/dash-stack-theme/tree/v1.3"
             },
             "funding": [
                 {
@@ -6262,7 +6262,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-16T13:54:33+00:00"
+            "time": "2025-07-19T20:42:46+00:00"
         },
         {
             "name": "openspout/openspout",
