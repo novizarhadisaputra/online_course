@@ -52,15 +52,17 @@ class XenditService
             $service_fee = 0;
             $items = [];
             foreach ($this->transaction->details as $i => $item) {
-                $items[$i] = [
-                    'reference_id' => $item->model_id,
-                    'name' => $item->model->name,
-                    'type' => $item->model_type,
-                    'category' => $item->model_type,
-                    'currency' => 'IDR',
-                    'quantity' => $item->qty,
-                    'price' => $item->price,
-                ];
+                if ($item->price) {
+                    $items[$i] = [
+                        'reference_id' => $item->model_id,
+                        'name' => $item->model->name,
+                        'type' => $item->model_type,
+                        'category' => $item->model_type,
+                        'currency' => 'IDR',
+                        'quantity' => $item->qty,
+                        'price' => $item->price,
+                    ];
+                }
             }
             if ($this->transaction->payment_method->configs && $this->transaction->payment_method->configs['service_fee']) {
                 $service_fee = $this->transaction->payment_method->configs['service_fee'];
@@ -77,6 +79,7 @@ class XenditService
                     'price' => $service_fee,
                 ]);
             }
+
             if ($this->transaction->payment_method->configs && $this->transaction->payment_method->configs['tax_fee']) {
                 $tax_fee = $this->transaction->payment_method->configs['tax_fee'];
                 if ($this->transaction->payment_method->configs['tax_fee_type'] === 'percent') {
