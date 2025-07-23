@@ -81,7 +81,7 @@ class TransactionController extends Controller
             }
             foreach ($carts as $cart) {
                 if ($cart->price) {
-                    $total_price += $cart->value;
+                    $total_price += $cart->price->value;
                 }
                 $total_qty += $cart->qty;
                 $detail = $transaction
