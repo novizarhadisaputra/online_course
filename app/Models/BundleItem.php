@@ -11,9 +11,6 @@ class BundleItem extends Model
 {
     use HasUuids, ModelTrait;
 
-    /**
-     * Get the parent model (course or etc).
-     */
     public function model(): MorphTo
     {
         return $this->morphTo();

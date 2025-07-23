@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('model');
             $table->integer('qty')->default(1);
-            $table->char('units');
+            $table->string('units');
             $table->bigInteger('price')->default(0);
 
             $table->foreignUuid('transaction_id')->constrained()->cascadeOnDelete();

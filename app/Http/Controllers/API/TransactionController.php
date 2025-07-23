@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\Event;
 use App\Models\Price;
 use App\Models\Coupon;
 use App\Models\Course;
@@ -14,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use App\Models\PaymentChannel;
+use App\Services\IpaymuService;
 use App\Services\XenditService;
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionCategory;
@@ -26,7 +28,6 @@ use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Requests\Transaction\CheckoutRequest;
-use App\Services\IpaymuService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TransactionController extends Controller
@@ -79,9 +80,8 @@ class TransactionController extends Controller
                 throw ValidationException::withMessages(['cart_ids' => trans('validation.exists', ['attribute' => 'cart id'])]);
             }
             foreach ($carts as $cart) {
-                $price = Price::find($cart->price_id);
-                if ($price) {
-                    $total_price += $price->value;
+                if ($cart->price) {
+                    $total_price += $cart->value;
                 }
                 $total_qty += $cart->qty;
                 $detail = $transaction
@@ -89,28 +89,37 @@ class TransactionController extends Controller
                     ->where(['model_id' => $cart->model_id, 'model_type' =>  $cart->model_type])->first();
                 if ($detail) {
                     $detail->qty = $cart->qty;
-                    $detail->units = $price ? $price->units : 'courses';
-                    $detail->price = $price ? $price->value : 0;
+                    $detail->units = $cart->price ? $cart->price->units : 'courses';
+                    $detail->price = $cart->price ? $cart->price->value : 0;
                     $detail->save();
                 } else {
+                    $transaction->details()->create([
+                        'model_id' => $cart->model_id,
+                        'model_type' =>  $cart->model_type,
+                        'qty' => $cart->qty,
+                        'units' => $cart->price ? $cart->price->units : 'courses',
+                        'price' => $cart->price ? $cart->price->value : 0,
+                    ]);
                     if ($cart && $cart->model && $cart->model->items) {
                         foreach ($cart->model->items as $item) {
-                            $transaction->details()->create([
-                                'model_id' => $item->model_id,
-                                'model_type' =>  $item->model_type,
-                                'qty' => $cart->qty,
-                                'units' => $item->model->price ? $item->model->price->units : 'courses',
-                                'price' => $item->model->price ? $item->model->price->value : 0,
-                            ]);
+                            $units = 'courses';
+                            switch ($item->model_type) {
+                                case Event::class:
+                                    $units = 'events';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if ($item->model) {
+                                $detail = $transaction->details()->create([
+                                    'model_id' => $item->model_id,
+                                    'model_type' =>  $item->model_type,
+                                    'qty' => 1,
+                                    'units' => $units,
+                                    'price' => 0,
+                                ]);
+                            }
                         }
-                    } else {
-                        $transaction->details()->create([
-                            'model_id' => $cart->model_id,
-                            'model_type' =>  $cart->model_type,
-                            'qty' => $cart->qty,
-                            'units' => $price ? $price->units : 'courses',
-                            'price' => $price ? $price->value : 0,
-                        ]);
                     }
                 }
             }

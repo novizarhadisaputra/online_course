@@ -18,21 +18,23 @@ class BundleResource extends JsonResource
     public function toArray(Request $request): array
     {
         $courses = $this->courses()
-            ->select(['id', 'name', 'description'])
+            ->select(['id', 'name', 'slug', 'description'])
             ->get()
             ->transform(fn(Course $item, int $index) => (object) [
                 'id' => $item->id,
                 'name' => $item->name,
+                'slug' => $item->slug,
                 'image' => $item->hasMedia('images') ? $item->getMedia('images')->first()->getFullUrl() : null,
                 'description' => $item->description
             ])
             ->toArray();
         $products = $this->products()
-            ->select(['id', 'name', 'description'])
+            ->select(['id', 'name', 'slug', 'description'])
             ->get()
             ->transform(fn(Product $item, int $index) => (object) [
                 'id' => $item->id,
                 'name' => $item->name,
+                'slug' => $item->slug,
                 'image' => $item->hasMedia('images') ? $item->getMedia('images')->first()->getFullUrl() : null,
                 'description' => $item->description
             ])
