@@ -1,59 +1,54 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\LessonResource\Pages;
 
+use Filament\Forms;
 use Filament\Tables;
-use App\Models\Event;
+use Filament\Actions;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use App\Enums\MeetingType;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use App\Filament\Widgets\CalendarWidget;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
-use Guava\FilamentNestedResources\Ancestor;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\LessonResource;
 use Filament\Forms\Components\DateTimePicker;
-use App\Filament\Resources\EventResource\Pages;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Guava\FilamentNestedResources\Concerns\NestedResource;
+use Filament\Resources\Pages\ManageRelatedRecords;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Filament\Resources\EventResource\Widgets\StatsOverview;
-use App\Filament\Resources\EventResource\RelationManagers\TagsRelationManager;
-use App\Filament\Resources\EventResource\RelationManagers\PricesRelationManager;
-use App\Filament\Resources\EventResource\RelationManagers\ReviewsRelationManager;
-use App\Filament\Resources\EventResource\RelationManagers\CommentsRelationManager;
 
-class EventResource extends Resource
+class ManageLessonEvent extends ManageRelatedRecords
 {
-    use NestedResource;
+    protected static string $resource = LessonResource::class;
 
-    protected static ?string $model = Event::class;
+    protected static string $relationship = 'events';
 
-    protected static ?string $navigationIcon = '';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Master Data';
-
-    public static function getGloballySearchableAttributes(): array
+    public static function getNavigationLabel(): string
     {
-        return ['name'];
+        return 'Manage Events';
     }
 
-    public static function form(Form $form): Form
+    public static function canAccess(array $parameters = []): bool
+    {
+        return $parameters['record']['has_appointment'];
+    }
+
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make()->schema([
+                Grid::make()->schema([
                     SpatieMediaLibraryFileUpload::make('image')
                         ->multiple()
                         ->disk('s3_public')
@@ -103,72 +98,29 @@ class EventResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('name')
             ->columns([
-                SpatieMediaLibraryImageColumn::make('image')
-                    ->collection('images')
-                    ->disk('s3_public'),
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('short_description')
-                    ->searchable(),
-                IconColumn::make('status')
-                    ->boolean(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('name'),
             ])
-            ->filters([
-                //
+            ->filters([])
+            ->headerActions([
+                Tables\Actions\CreateAction::make()->slideOver(),
+                Tables\Actions\AttachAction::make()
+                    ->recordSelectOptionsQuery(fn(Builder $query) => $query->where('user_id', auth()->user()->id)),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DetachBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            PricesRelationManager::class,
-            TagsRelationManager::class,
-            ReviewsRelationManager::class,
-            CommentsRelationManager::class,
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListEvents::route('/'),
-            'create' => Pages\CreateEvent::route('/create'),
-            'view' => Pages\ViewEvent::route('/{record}'),
-            'edit' => Pages\EditEvent::route('/{record}/edit'),
-        ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            StatsOverview::class,
-            CalendarWidget::class,
-        ];
-    }
-
-    public static function getAncestor(): ?Ancestor
-    {
-        return null;
     }
 }
