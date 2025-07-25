@@ -13,6 +13,7 @@ class EventObserver
     public function creating(Event $event): void
     {
         $event->slug = Str::slug($event->name);
+        $event->user_id = auth()->id();
     }
 
     /**
