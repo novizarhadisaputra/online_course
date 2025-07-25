@@ -14,7 +14,6 @@ class CreateEvent extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->id();
-        $data['slug'] = Str::slug($data['name']);
 
         return $data;
     }

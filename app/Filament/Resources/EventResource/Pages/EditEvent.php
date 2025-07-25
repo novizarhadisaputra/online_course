@@ -18,11 +18,4 @@ class EditEvent extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        $data['slug'] = Str::slug($data['name']);
-
-        return $data;
-    }
 }

@@ -18,6 +18,8 @@ use App\Models\PaymentLink;
 use App\Models\Transaction;
 use App\Models\ModelHasEvent;
 use App\Models\TransactionDetail;
+use App\Observers\EventObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -27,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
+#[ObservedBy([EventObserver::class])]
 class Event extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia, ModelTrait;
