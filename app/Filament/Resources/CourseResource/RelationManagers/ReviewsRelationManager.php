@@ -32,21 +32,23 @@ class ReviewsRelationManager extends RelationManager
             ->recordTitleAttribute('rating')
             ->columns([
                 TextColumn::make('rating'),
-                TextColumn::make('description'),
+                TextColumn::make('user.name'),
+                TextColumn::make('description')
+                    ->limit(50),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->visible(auth()->user()->hasRole(['Developer'])),
+                Tables\Actions\CreateAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->visible(auth()->user()->hasRole(['Developer'])),
-                Tables\Actions\DeleteAction::make()->visible(auth()->user()->hasRole(['Developer'])),
+                Tables\Actions\EditAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
+                Tables\Actions\DeleteAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->visible(auth()->user()->hasRole(['Developer'])),
+                    Tables\Actions\DeleteBulkAction::make()->visible(auth()->user()->hasRole(['super_admin'])),
                 ]),
             ]);
     }

@@ -43,7 +43,6 @@ class Course extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia, ModelTrait;
 
-
     protected $casts = [
         'meta' => 'array',
     ];
@@ -65,7 +64,7 @@ class Course extends Model implements HasMedia
 
     public function learningMethods(): MorphMany
     {
-        return $this->morphMany(Review::class, 'reviewable');
+        return $this->morphMany(LearningMethod::class, 'model');
     }
 
     public function coupons(): MorphToMany

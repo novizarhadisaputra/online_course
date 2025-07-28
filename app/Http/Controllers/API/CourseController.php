@@ -753,8 +753,10 @@ class CourseController extends Controller
                 'seconds' => $request->seconds ?? 0,
                 'page' => $request->page ?? 0,
             ];
-            $progress->status = $request->status;
+            $progress->status = $request->input('status', true);
             $progress->save();
+
+            $this->updateProgressCourse($request->user()->id, $course);
 
             DB::commit();
             return $this->success(data: new LessonResource($lesson));
@@ -1017,7 +1019,7 @@ class CourseController extends Controller
     {
         $checkProgress = $this->checkProgress($user_id, $course);
         $data = (object) [
-            'percentage' => $checkProgress['completed_lessons'] / $checkProgress['completed_lessons'] * 100
+            'percentage' => $checkProgress['completed_lessons'] / $checkProgress['total_lessons'] * 100
         ];
         $status = $checkProgress['status'];
         $progress = $course->progress()->where('user_id', $user_id)->first();
@@ -1047,7 +1049,6 @@ class CourseController extends Controller
             ->groupBy('model_id')
             ->select(['id'])->count();
         $status = $total_lessons > 0 && $total_lessons == $completed_lessons;
-
         return compact('total_lessons', 'completed_lessons', 'status');
     }
 }

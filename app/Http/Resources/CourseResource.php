@@ -6,6 +6,7 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
+use App\Models\Progress;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CourseResource extends JsonResource
@@ -23,7 +24,10 @@ class CourseResource extends JsonResource
             ->where('user_id', $request->user()->id)
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
-        $progress = !$request->user() ? null : $request->user()->progressCourses()->where('courses.id', $id)->orderBy('created_at', 'desc')->first();
+        $progress = !$request->user() ? null : Progress::where('user_id', $request->user()->id)
+            ->where('model_type', Course::class)
+            ->orderBy('created_at', 'desc')
+            ->first();
         $enrollment = !$request->user() ? [] : $this->enrollments()->where('user_id', $request->user()->id)->orderBy('created_at', 'desc')->first();
         $review = !$request->user() ? null : $this->reviews()->where('user_id', $request->user()->id)->first();
         $students = $this->transactions()

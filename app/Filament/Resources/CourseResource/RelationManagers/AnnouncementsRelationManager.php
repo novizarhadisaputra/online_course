@@ -19,10 +19,12 @@ class AnnouncementsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                TextInput::make('title')
+                TextInput::make('name')
+                    ->label('Title')
                     ->required()
-                    ->maxLength(255),
-                RichEditor::make('description'),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                RichEditor::make('description')->columnSpanFull(),
             ]);
     }
 
