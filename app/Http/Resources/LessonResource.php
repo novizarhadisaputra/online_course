@@ -49,7 +49,6 @@ class LessonResource extends JsonResource
         }
         $progress = !$user ? null : $this->progress()->where('user_id', $user->id)->first();
 
-
         return [
             "id" => $id,
             "name" => $this->name,
