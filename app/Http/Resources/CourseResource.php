@@ -25,6 +25,7 @@ class CourseResource extends JsonResource
             ->where('status', TransactionStatus::SUCCESS)
             ->exists();
         $progress = !$request->user() ? null : Progress::where('user_id', $request->user()->id)
+            ->where('model_id', $id)
             ->where('model_type', Course::class)
             ->orderBy('created_at', 'desc')
             ->first();

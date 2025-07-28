@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Event;
+use App\Models\Bundle;
+use App\Models\Course;
+use App\Models\Progress;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use App\Traits\ResponseTrait;
@@ -65,7 +69,13 @@ class UserController extends Controller
             if ($id != $request->user()->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
             }
-            $certificates = $request->user()->certificates()->paginate($request->input('limit', 10));
+            $certificates = Progress::whereIn(
+                'model_type',
+                [Course::class, Bundle::class, Event::class]
+            )
+                ->where('data->percentage', 100)
+                ->where('user_id', $request->user()->id)
+                ->paginate($request->input('limit', 10));
             return $this->success(data: CertificateResource::collection($certificates), paginate: $certificates);
         } catch (\Throwable $th) {
             throw $th;
