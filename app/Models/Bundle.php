@@ -8,7 +8,9 @@ use App\Models\Course;
 use App\Models\Product;
 use App\Models\Metadata;
 use App\Models\BundleItem;
+use App\Observers\BundleObserver;
 use App\Traits\ModelTrait;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
+#[ObservedBy([BundleObserver::class])]
 class Bundle extends Model implements HasMedia
 {
     use ModelTrait, HasUuids, InteractsWithMedia;

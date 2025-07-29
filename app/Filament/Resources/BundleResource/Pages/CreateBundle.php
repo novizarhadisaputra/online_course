@@ -12,8 +12,6 @@ class CreateBundle extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['slug'] = Str::slug($data['name']);
-
         return $data;
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Observers\JobVacancyObserver;
 use App\Traits\ModelTrait;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
+#[ObservedBy([JobVacancyObserver::class])]
 class JobVacancy extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia, ModelTrait;

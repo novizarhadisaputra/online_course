@@ -21,8 +21,6 @@ class EditNews extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['slug'] = Str::slug($data['name']);
-
         return $data;
     }
 }
