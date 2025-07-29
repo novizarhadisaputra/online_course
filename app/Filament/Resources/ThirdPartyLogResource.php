@@ -7,11 +7,11 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\ThirdPartyLog;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use ValentinMorice\FilamentJsonColumn\JsonColumn;
 use App\Filament\Resources\ThirdPartyLogResource\Pages;
-use Filament\Forms\Components\KeyValue;
-use Filament\Forms\Components\Section;
 
 class ThirdPartyLogResource extends Resource
 {
@@ -41,7 +41,7 @@ class ThirdPartyLogResource extends Resource
                     TextInput::make('ip_address')
                         ->maxLength(255)
                         ->default(null),
-                    KeyValue::make('data'),
+                    JsonColumn::make('example'),
                 ]),
             ]);
     }
