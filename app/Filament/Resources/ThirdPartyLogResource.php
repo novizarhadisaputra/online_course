@@ -41,7 +41,7 @@ class ThirdPartyLogResource extends Resource
                     TextInput::make('ip_address')
                         ->maxLength(255)
                         ->default(null),
-                    JsonColumn::make('example'),
+                    JsonColumn::make('data'),
                 ]),
             ]);
     }
