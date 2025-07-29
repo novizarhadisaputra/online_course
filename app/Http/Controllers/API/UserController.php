@@ -6,15 +6,18 @@ use App\Models\Event;
 use App\Models\Bundle;
 use App\Models\Course;
 use App\Models\Progress;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use App\Traits\ResponseTrait;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\AddressResource;
+use App\Http\Resources\ProgressResource;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\CertificateResource;
@@ -69,14 +72,14 @@ class UserController extends Controller
             if ($id != $request->user()->id) {
                 throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
             }
-            $certificates = Progress::whereIn(
+            $progress = Progress::whereIn(
                 'model_type',
                 [Course::class, Bundle::class, Event::class]
             )
                 ->where('data->percentage', 100)
                 ->where('user_id', $request->user()->id)
                 ->paginate($request->input('limit', 10));
-            return $this->success(data: CertificateResource::collection($certificates), paginate: $certificates);
+            return $this->success(data: ProgressResource::collection($progress), paginate: $progress);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -211,6 +214,85 @@ class UserController extends Controller
 
             return $this->success(data: new AddressResource($address));
         } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function downloadCertificate(Request $request, string $id, string $progress_id)
+    {
+        DB::beginTransaction();
+        try {
+            $user_id = $request->user()->id;
+            if ($user_id != $id) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'user id'])]);
+            }
+
+            $progress = Progress::where('user_id', $user_id)->where('id', $progress_id)->first();
+            if (!$progress) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'id'])]);
+            }
+
+            if ($progress->data && isset($progress->data['percentage'])) {
+                if ($progress->data['percentage'] != 100) {
+                    throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'percentage'])]);
+                }
+            }
+
+            $certificate = null;
+
+            switch ($progress->model_type) {
+                case Course::class:
+                    $enrollment = $progress->model->enrollments()->where('user_id', $request->user()->id)->orderBy('created_at', 'desc')->first();
+                    if (!$enrollment) {
+                        throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'enrollment'])]);
+                    }
+                    $certificate = $enrollment->certificate()->orderBy('created_at', 'desc')->first();
+                    if (!$certificate) {
+                        $certificate = $enrollment->certificate()->create([
+                            'certificate_number' => Str::upper(Str::slug(env('APP_NAME', "Online Course") . "-" . Str::upper(Str::random(4)) . "-" . date('dMY'))),
+                            'issue_date' => $progress->created_at,
+                            'user_id' => $request->user()->id,
+                        ]);
+                    }
+                    $certificate->save();
+
+                    if (!$certificate->hasMedia('certificates')) {
+                        // Generate PDF using blade
+                        $pdf = Pdf::loadView('pdf.certificate', compact('certificate'))
+                            ->setPaper('a4', 'landscape')->setWarnings(false)->output();
+                        $certificate
+                            ->addMediaFromString($pdf)
+                            ->usingFileName(Str::slug($progress->model->name . '_' . $request->user()->id . '_' . $certificate->certificate_number, '_') . '.pdf')
+                            ->toMediaCollection('certificates', 's3');
+                    }
+                    $certificate = $enrollment->certificate()->orderBy('created_at', 'desc')->first();
+                    break;
+                case Event::class:
+                    $certificate = $progress->model->certificate()->orderBy('created_at', 'desc')->first();
+                    if (!$certificate) {
+                        $certificate = $progress->model->certificate()->create([
+                            'certificate_number' => Str::upper(Str::slug(env('APP_NAME', "Online Course") . "-" . Str::upper(Str::random(4)) . "-" . date('dMY'))),
+                            'issue_date' => $progress->created_at,
+                            'user_id' => $request->user()->id,
+                        ]);
+                    }
+                    if (!$certificate->hasMedia('certificates')) {
+                        // Generate PDF using blade
+                        $pdf = Pdf::loadView('pdf.certificate', compact('certificate'))
+                            ->setPaper('a4', 'landscape')->setWarnings(false)->output();
+                        $certificate
+                            ->addMediaFromString($pdf)
+                            ->usingFileName(Str::slug($progress->model->name . '_' . $request->user()->id . '_' . $certificate->certificate_number, '_') . '.pdf')
+                            ->toMediaCollection('certificates', 's3');
+                    }
+                    $certificate = $progress->model->certificate()->orderBy('created_at', 'desc')->first();
+                default:
+                    break;
+            }
+            DB::commit();
+            return $this->success(data: new CertificateResource($certificate));
+        } catch (\Throwable $th) {
+            DB::rollBack();
             throw $th;
         }
     }

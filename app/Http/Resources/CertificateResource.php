@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CertificateResource extends JsonResource
@@ -16,10 +17,11 @@ class CertificateResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'type' => $this->model_type,
-            'slug' => $this->model->slug,
-            'name' => $this->model->name,
-            'data' => $this->model->data,
+            'certificate' => $this->hasMedia('certificates') ? $this->getMedia('certificates')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null,
+            'certificate_number' => $this->certificate_number,
+            'item_name' => $this->model->model ? $this->model->model->name : $this->model->name,
+            'item_type' => $this->model->model ? $this->model->model_type : $this->model_type,
+            'date' => $this->created_at,
         ];
     }
 }

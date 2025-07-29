@@ -138,7 +138,12 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
             Route::get('/reviews', [UserController::class, 'reviews'])->name('reviews');
             Route::get('/show-email', [UserController::class, 'showEmail'])->name('show.email');
             Route::get('/following', [UserController::class, 'following'])->name('following');
-            Route::get('/certificates', [UserController::class, 'certificates'])->name('certificates');
+            Route::prefix('certificates')->name('certificates.')->group(function () {
+                Route::get('/', [UserController::class, 'certificates'])->name('index');
+                Route::prefix('{certificates}')->group(function () {
+                    Route::post('/download', [UserController::class, 'downloadCertificate'])->name('download');
+                });
+            });
             Route::get('/followers', [UserController::class, 'followers'])->name('followers');
             Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications');
             Route::prefix('addresses')->name('addresses.')->group(function () {

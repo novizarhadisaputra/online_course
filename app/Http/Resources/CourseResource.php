@@ -3,10 +3,18 @@
 namespace App\Http\Resources;
 
 use App\Models\Course;
+use App\Models\Progress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Enums\TransactionStatus;
-use App\Models\Progress;
+use App\Http\Resources\TagResource;
+use App\Http\Resources\PriceResource;
+use App\Http\Resources\ReviewResource;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProgressResource;
+use App\Http\Resources\CompetenceResource;
+use App\Http\Resources\InstructorResource;
+use App\Http\Resources\LearningMethodResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CourseResource extends JsonResource
@@ -64,7 +72,7 @@ class CourseResource extends JsonResource
             'total_quiz' => $this->lessons()->select(['id'])->where('lessons.status', true)->where('is_quiz', true)->count(),
             'price' => $this->is_paid ? new PriceResource($this->price) : null,
             'is_paid' => $this->is_paid,
-            'progress' => $progress,
+            'progress' => new ProgressResource($progress),
             'competences' => CompetenceResource::collection($this->competences),
             'learning_methods' => LearningMethodResource::collection($this->learningMethods),
             'rating' => (object) [
