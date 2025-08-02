@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Services\CertificateService;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\AddressResource;
@@ -254,17 +255,9 @@ class UserController extends Controller
                             'user_id' => $request->user()->id,
                         ]);
                     }
-                    $certificate->save();
 
-                    if (!$certificate->hasMedia('certificates')) {
-                        // Generate PDF using blade
-                        $pdf = Pdf::loadView('pdf.certificate', compact('certificate'))
-                            ->setPaper('a4', 'landscape')->setWarnings(false)->output();
-                        $certificate
-                            ->addMediaFromString($pdf)
-                            ->usingFileName(Str::slug($progress->model->name . '_' . $request->user()->id . '_' . $certificate->certificate_number, '_') . '.pdf')
-                            ->toMediaCollection('certificates', 's3');
-                    }
+                    CertificateService::create($certificate, $progress, $request);
+
                     $certificate = $enrollment->certificate()->orderBy('created_at', 'desc')->first();
                     break;
                 case Event::class:
@@ -276,15 +269,9 @@ class UserController extends Controller
                             'user_id' => $request->user()->id,
                         ]);
                     }
-                    if (!$certificate->hasMedia('certificates')) {
-                        // Generate PDF using blade
-                        $pdf = Pdf::loadView('pdf.certificate', compact('certificate'))
-                            ->setPaper('a4', 'landscape')->setWarnings(false)->output();
-                        $certificate
-                            ->addMediaFromString($pdf)
-                            ->usingFileName(Str::slug($progress->model->name . '_' . $request->user()->id . '_' . $certificate->certificate_number, '_') . '.pdf')
-                            ->toMediaCollection('certificates', 's3');
-                    }
+
+                    CertificateService::create($certificate, $progress, $request);
+
                     $certificate = $progress->model->certificate()->orderBy('created_at', 'desc')->first();
                 default:
                     break;

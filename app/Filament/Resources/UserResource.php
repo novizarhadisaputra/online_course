@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\CheckboxList;
 use App\Filament\Resources\UserResource\Pages;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
@@ -46,9 +47,12 @@ class UserResource extends Resource
                             ->maxLength(50)
                             ->required(),
                     ]),
-                    TextInput::make('description')
-                        ->maxLength(255)
-                        ->default(null),
+                    SpatieMediaLibraryFileUpload::make('signature')
+                        ->collection('signatures')
+                        ->disk('s3_public')
+                        ->image()
+                        ->required(),
+                    RichEditor::make('description'),
                     Grid::make()->schema([
                         TextInput::make('email')
                             ->email()
@@ -71,6 +75,11 @@ class UserResource extends Resource
                             'sm' => 2,
                             'md' => 3,
                         ]),
+                    SpatieMediaLibraryFileUpload::make('signature')
+                        ->collection('signatures')
+                        ->disk('s3_public')
+                        ->image()
+                        ->conversion('thumb')
                 ]),
             ]);
     }
