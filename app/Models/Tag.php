@@ -13,17 +13,16 @@ class Tag extends Model
 {
     use HasUuids;
 
-    /**
-     * Get all of the courses that are assigned this tag.
-     */
     public function courses(): MorphToMany
     {
         return $this->morphedByMany(Course::class, 'taggable', Taggable::class);
     }
 
-    /**
-     * Get all of the news that are assigned this tag.
-     */
+    public function events(): MorphToMany
+    {
+        return $this->morphedByMany(Event::class, 'taggable', Taggable::class);
+    }
+
     public function news(): MorphToMany
     {
         return $this->morphedByMany(News::class, 'taggable', Taggable::class);
