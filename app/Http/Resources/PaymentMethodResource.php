@@ -16,7 +16,7 @@ class PaymentMethodResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data = null;
-        if ($this->configs && $this->configs['account_name']) {
+        if ($this->configs && isset($this->configs['account_name'])) {
             $data = (object) [
                 'account_name' => $this->configs['account_name'],
                 'account_number' => $this->configs['account_number'],

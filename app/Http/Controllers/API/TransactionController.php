@@ -28,6 +28,8 @@ use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Requests\Transaction\CheckoutRequest;
+use App\Http\Requests\Transaction\ConfirmPaymentRequest;
+use App\Models\UserWallet;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TransactionController extends Controller
@@ -56,7 +58,6 @@ class TransactionController extends Controller
     {
         DB::beginTransaction();
         try {
-
             $transaction_code = Str::upper(Str::random(10));
             $existCode = Transaction::where('code', $transaction_code)->exists();
             while ($existCode) {
@@ -202,6 +203,59 @@ class TransactionController extends Controller
                     $ipaymu->makePayment($request, $transaction);
                 }
             }
+
+            DB::commit();
+            return $this->success(data: new TransactionResource($transaction));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function confirmPayment(ConfirmPaymentRequest $request, string $id)
+    {
+        DB::beginTransaction();
+        try {
+            $transaction = Transaction::find($id);
+            if (!$transaction) {
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+            }
+            $transaction->status = 'pending';
+            $transaction->save();
+
+            if ($request->hasFile('transfer_proof')) {
+                if ($transaction->hasMedia('proofs')) {
+                    $transaction->clearMediaCollection('proofs', 's3');
+                }
+                $transaction
+                    ->addMediaFromRequest('transfer_proof')
+                    ->usingFileName(Str::uuid() . '.png')
+                    ->toMediaCollection('proofs', 's3');
+            }
+
+            $log_data = [
+                'payment_method_id' => $transaction->payment_method_id,
+                'total_qty' => $transaction->total_qty,
+                'total_price' => $transaction->total_price,
+                'status' => $transaction->status,
+            ];
+
+            $user_wallet = $request->user()->wallets()->where('account_number', $request->account_number)->first();
+            if (!$user_wallet) {
+                $user_wallet = $request->user()->wallets()->create([
+                    'account_provider' => $request->account_provider,
+                    'account_name' => $request->account_name,
+                    'account_number' => $request->account_number,
+                ]);
+            }
+
+            $transaction->logs()->create($log_data);
+            $pivot_data = [
+                'transfer_date' => $request->transfer_date,
+                'transfer_amount' => $request->transfer_amount,
+            ];
+
+            $transaction->accounts()->toggle([$user_wallet->id => $pivot_data]);
 
             DB::commit();
             return $this->success(data: new TransactionResource($transaction));

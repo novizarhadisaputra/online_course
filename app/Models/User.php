@@ -230,4 +230,9 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasAvatar,
     {
         return $this->morphedByMany(Course::class, 'model', Enrollment::class);
     }
+
+    public function wallets(): HasMany
+    {
+        return $this->hasMany(UserWallet::class);
+    }
 }

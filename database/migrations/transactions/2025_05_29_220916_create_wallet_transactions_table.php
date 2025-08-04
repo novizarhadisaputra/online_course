@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('wallet_transactions', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->comment('sales, returns')->nullableUuidMorphs('model');
-            $table->enum('transaction_type', ['top_up', 'payment', 'refund', 'adjustment']);
+            $table->uuidMorphs('model');
             $table->bigInteger('amount');
             $table->text('notes')->nullable();
 

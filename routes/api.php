@@ -283,6 +283,7 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
                     });
                 });
             });
+            Route::post('/confirm-payment', [TransactionController::class, 'confirmPayment'])->name('confirm_payment');
         });
     });
 

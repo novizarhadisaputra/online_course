@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Transaction extends Model
@@ -24,72 +25,44 @@ class Transaction extends Model
         'data' => 'array',
     ];
 
-    /**
-     * Get the user that owns the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    /**
-     * Get the address that owns the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
     }
 
-    /**
-     * Get all of the details for the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function details(): HasMany
     {
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
     }
 
-    /**
-     * Get all of the logs for the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function logs(): HasMany
     {
         return $this->hasMany(TransactionLog::class, 'transaction_id', 'id');
     }
 
-    /**
-     * Get all of the courses that are assigned this tag.
-     */
     public function courses(): MorphToMany
     {
         return $this->morphedByMany(Course::class, 'model', TransactionDetail::class)
             ->withPivot(['id', 'qty', 'units', 'price']);
     }
 
-    /**
-     * Get all of the reviews for the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
     public function reviews(): HasManyThrough
     {
         return $this->hasManyThrough(Review::class, TransactionDetail::class);
     }
 
-    /**
-     * Get the payment_channel that owns the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function payment_method(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function accounts(): BelongsToMany
+    {
+        return $this->belongsToMany(UserWallet::class, TransactionAccount::class, 'transaction_id', 'user_wallet_id');
     }
 }
