@@ -9,6 +9,7 @@ use App\Models\Price;
 use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\Couponable;
+use App\Models\UserWallet;
 use App\Models\CouponUsage;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
@@ -18,6 +19,7 @@ use App\Models\PaymentChannel;
 use App\Services\IpaymuService;
 use App\Services\XenditService;
 use App\Enums\TransactionStatus;
+use App\Services\MidtransService;
 use App\Enums\TransactionCategory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -28,9 +30,8 @@ use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Requests\Transaction\CheckoutRequest;
-use App\Http\Requests\Transaction\ConfirmPaymentRequest;
-use App\Models\UserWallet;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use App\Http\Requests\Transaction\ConfirmPaymentRequest;
 
 class TransactionController extends Controller
 {
@@ -201,6 +202,9 @@ class TransactionController extends Controller
                 } else if ($name === 'ipaymu') {
                     $ipaymu = new IpaymuService();
                     $ipaymu->makePayment($request, $transaction);
+                } else if ($name === 'midtrans') {
+                    $midtrans = new MidtransService();
+                    $midtrans->makePayment($request, $transaction);
                 }
             }
 

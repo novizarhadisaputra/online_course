@@ -29,7 +29,6 @@ class TransactionResource extends JsonResource
             'category' => $this->category,
             'address' => new AddressResource($this->address),
             'data' => $this->data,
-            'details' => TransactionDetailResource::collection($this->details),
             'created_at' => $this->created_at,
         ];
     }

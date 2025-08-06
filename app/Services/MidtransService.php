@@ -2,30 +2,24 @@
 
 namespace App\Services;
 
+use Exception;
+use Midtrans\CoreApi;
 use App\Models\Transaction;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ThirdPartyLog;
 use App\Models\PaymentGateway;
 use App\Enums\TransactionStatus;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use App\Jobs\SendTransactionStatusEmailJob;
-use Exception;
-use Midtrans\CoreApi;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class MidtransService
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct(
-        protected ?string $apiKey = "",
-    ) {
-        $this->getCredentials();
-    }
-
     public function initiate(): PaymentGateway
     {
-        $paymentGateway = PaymentGateway::where('name', 'ilike', 'ipaymu')->first();
+        $paymentGateway = PaymentGateway::where('name', 'ilike', 'midtrans')->first();
         if (!$paymentGateway) {
             throw new Exception(message: "credential doesn't exists");
         }
@@ -36,36 +30,75 @@ class MidtransService
      */
     public function makePayment(Request $request, Transaction $transaction): array|string
     {
+        $paymentGateway = $this->initiate();
+
         $items = [];
+        $total_price = $transaction->total_price;
 
         foreach ($transaction->details as $detail) {
-            $products[] = $detail->model->name;
+            $items[] = [
+                "id" => $detail->model->id,
+                "price" => $detail->price,
+                "quantity" => $detail->qty,
+                "name" => $detail->model->name,
+            ];
         }
 
         if ($transaction->service_fee) {
-            $products[] = 'Service Fee';
-            $qty[] = 1;
-            $price[] =  $transaction->service_fee;
+            $total_price += $transaction->service_fee;
+            $items[] = [
+                "id" => Str::uuid(),
+                "price" => $transaction->service_fee,
+                "quantity" => 1,
+                "name" => 'Service Fee',
+            ];
         }
 
         if ($transaction->tax_fee) {
-            $products[] = 'Tax Fee';
-            $qty[] = 1;
-            $price[] =  $transaction->tax_fee;
+            $total_price += $transaction->tax_fee;
+            $items[] = [
+                "id" => Str::uuid(),
+                "price" => $transaction->tax_fee,
+                "quantity" => 1,
+                "name" => 'Tax Fee',
+            ];
         }
 
+        $customer_details = [
+            "email" => $transaction->user->email,
+            "first_name" => $transaction->user->first_name,
+            "last_name" => $transaction->user->last_name,
+            "phone" => $transaction->user->phone,
+        ];
+
+        $transaction_details = [
+            "order_id" => $transaction->code,
+            "gross_amount" => $total_price
+        ];
+
+        $code = $transaction->payment_method->payment_channel->configs['code'];
+        $channel = $transaction->payment_method->configs['code'];
+
         $payload = [
-            'payment_type' => 'credit_card',
-            'credit_card'  => array(
-                'token_id'      => $token_id,
-                'authentication' => true,
-                //        'bank'          => 'bni', // optional to set acquiring bank
-                //        'save_token_id' => true   // optional for one/two clicks feature
-            ),
+            'payment_type' => $code,
             'transaction_details' => $transaction_details,
             'item_details'        => $items,
             'customer_details'    => $customer_details
         ];
+
+        switch ($code) {
+            case 'bank_transfer':
+                $payload[$code] = [
+                    'bank' => $channel,
+                ];
+                break;
+            case 'qris':
+                break;
+
+            default:
+                # code...
+                break;
+        }
 
         ThirdPartyLog::create([
             'name' => 'xendit',
@@ -74,19 +107,32 @@ class MidtransService
             'data' => $payload,
         ]);
 
-        $response = CoreApi::charge();
-        $encoded = json_encode($response->json());
-        $result = json_decode($encoded);
+        $url = $paymentGateway->configs['base_url'] . '/v2/charge';
+        $encoded = json_encode($payload);
+        $key = base64_encode($paymentGateway->configs['server_key'] . ":");
+        Log::info("request url: $url");
+        Log::info("request payload: $encoded");
+        Log::info("request Authorization: Basic $key");
+        $response = Http::withHeader(name: 'Authorization', value: "Basic $key")
+            ->acceptJson()
+            ->asJson()
+            ->throw()
+            ->post($paymentGateway->configs['base_url'] . '/v2/charge', $payload);
 
+        $encoded = json_encode($response->json());
+        Log::info("response payload: $encoded");
+
+        $result = json_decode($encoded);
         $data = null;
-        switch ($transaction->payment_method->payment_channel->configs['code']) {
-            case 'va':
+
+        switch ($result->payment_type) {
+            case 'bank_transfer':
                 $data = [
-                    'id' => $result->Data->TransactionId,
-                    'reference_id' => $result->Data->ReferenceId,
+                    'id' => $result->transaction_id,
+                    'reference_id' => $result->order_id,
                     'customer_name' => $transaction->user->name,
-                    'virtual_account_number' => $result->Data->PaymentNo,
-                    'expires_at' => $result->Data->Expired,
+                    'virtual_account_number' => $result->va_numbers[0]->va_number,
+                    'expires_at' => Carbon::parse($transaction->created_at)->addDay(),
                 ];
                 break;
             case 'qris':
@@ -97,15 +143,6 @@ class MidtransService
                     'qr_string' => $result->Data->PaymentNo,
                     'expires_at' => $result->Data->Expired,
                 ];
-                break;
-            case 'cc':
-                $data = [
-                    'id' => $result->Data->TransactionId,
-                    'reference_id' => $result->Data->ReferenceId,
-                    'customer_name' => $transaction->user->name,
-                    'expires_at' => $result->Data->Expired,
-                ];
-                $transaction->payment_link = $result->Data->Url;
                 break;
             default:
                 # code...
@@ -124,17 +161,37 @@ class MidtransService
         return $transaction;
     }
 
+    protected function handleBankTransfer(string $code, string $channel, mixed $payload)
+    {
+        $data = $payload;
+        switch ($channel) {
+            case 'bca':
+                $data[$code] = [
+                    'bank' => $channel,
+                ];
+                break;
+
+            default:
+                # code...
+                break;
+        }
+    }
+
     public function receiveFromHook(mixed $receive_data, Transaction $transaction)
     {
         try {
             if ($transaction->status == TransactionStatus::WAITING_PAYMENT->value) {
                 if ($receive_data && $receive_data->status) {
-                    if ($receive_data->status === 'berhasil') {
+                    if ($receive_data->status === 'capture' || $receive_data->status === 'settlement') {
                         $transaction->status = 'success';
-                    } else if ($receive_data->status === 'expired') {
+                    } else if ($receive_data->status === 'expire') {
                         $transaction->status = 'expire';
                     } else if ($receive_data->status === 'pending') {
                         $transaction->status = 'pending';
+                    } else if ($receive_data->status === 'cancel') {
+                        $transaction->status = 'cancel';
+                    } else if ($receive_data->status === 'failure') {
+                        $transaction->status = 'fail';
                     }
                     $transaction->logs()->create([
                         'payment_method_id' => $transaction->payment_method_id,

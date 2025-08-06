@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Notifications\PaymentCallbackNotification;
 use App\Services\IpaymuService;
+use App\Services\MidtransService;
 use App\Services\TransactionService;
 use Illuminate\Validation\ValidationException;
 
@@ -45,6 +46,13 @@ class WebhookController extends Controller
                     $transaction = Transaction::where('data->reference_id', $input->reference_id)->first();
                     if ($transaction) {
                         $ipaymu = new IpaymuService($transaction);
+                        $ipaymu->receiveFromHook($input, $transaction);
+                    }
+                    break;
+                case 'midtrans':
+                    $transaction = Transaction::where('data->reference_id', $input->reference_id)->first();
+                    if ($transaction) {
+                        $ipaymu = new MidtransService();
                         $ipaymu->receiveFromHook($input, $transaction);
                     }
                     break;
