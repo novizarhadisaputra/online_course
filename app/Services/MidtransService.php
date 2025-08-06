@@ -78,6 +78,7 @@ class MidtransService
 
         $code = $transaction->payment_method->payment_channel->configs['code'];
         $channel = $transaction->payment_method->configs['code'];
+        $callback_url = $transaction->payment_method->configs['callback_url'];
 
         $payload = [
             'payment_type' => $code,
@@ -92,7 +93,19 @@ class MidtransService
                     'bank' => $channel,
                 ];
                 break;
+            case 'ewallet':
+                $payload['payment_type'] = $channel;
+                $payload[$code] = [
+                    'enable_callback' => true,
+                    'enable_callback' => $callback_url
+                ];
+                break;
             case 'qris':
+                $payload['payment_type'] = $channel;
+                $payload[$code] = [
+                    'enable_callback' => true,
+                    'enable_callback' => $callback_url
+                ];
                 break;
 
             default:
@@ -116,16 +129,16 @@ class MidtransService
         $response = Http::withHeader(name: 'Authorization', value: "Basic $key")
             ->acceptJson()
             ->asJson()
-            ->throw()
             ->post($paymentGateway->configs['base_url'] . '/v2/charge', $payload);
-
         $encoded = json_encode($response->json());
         Log::info("response payload: $encoded");
-
         $result = json_decode($encoded);
+        if ($result->status_code != "201") {
+            throw new Exception($result->status_message);
+        }
         $data = null;
 
-        switch ($result->payment_type) {
+        switch ($code) {
             case 'bank_transfer':
                 $data = [
                     'id' => $result->transaction_id,
@@ -137,11 +150,20 @@ class MidtransService
                 break;
             case 'qris':
                 $data = [
-                    'id' => $result->Data->TransactionId,
-                    'reference_id' => $result->Data->ReferenceId,
+                    'id' => $result->transaction_id,
+                    'reference_id' => $result->order_id,
                     'customer_name' => $transaction->user->name,
-                    'qr_string' => $result->Data->PaymentNo,
-                    'expires_at' => $result->Data->Expired,
+                    'payment_link' => $result->actions[0],
+                    'expires_at' => Carbon::parse($transaction->created_at)->addDay(),
+                ];
+                break;
+            case 'ewallet':
+                $data = [
+                    'id' => $result->transaction_id,
+                    'reference_id' => $result->order_id,
+                    'customer_name' => $transaction->user->name,
+                    'payment_link' => $result->actions[1],
+                    'expires_at' => Carbon::parse($transaction->created_at)->addDay(),
                 ];
                 break;
             default:
@@ -159,22 +181,6 @@ class MidtransService
         ]);
 
         return $transaction;
-    }
-
-    protected function handleBankTransfer(string $code, string $channel, mixed $payload)
-    {
-        $data = $payload;
-        switch ($channel) {
-            case 'bca':
-                $data[$code] = [
-                    'bank' => $channel,
-                ];
-                break;
-
-            default:
-                # code...
-                break;
-        }
     }
 
     public function receiveFromHook(mixed $receive_data, Transaction $transaction)
