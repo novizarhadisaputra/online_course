@@ -28,6 +28,7 @@ use App\Http\Resources\TransactionResource;
 use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
+use App\Http\Resources\TransactionDetailResource;
 use App\Http\Requests\Transaction\CheckoutRequest;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use App\Http\Requests\Transaction\ConfirmPaymentRequest;
@@ -161,6 +162,13 @@ class TransactionController extends Controller
                 throw ValidationException::withMessages(['payment_method_id' => trans('validation.exists', ['attribute' => 'payment method'])]);
             }
 
+            $transaction_code = Str::upper(Str::random(10));
+            $existCode = Transaction::where('code', $transaction_code)->exists();
+            while ($existCode) {
+                $transaction_code = Str::upper(Str::random(10));
+                $existCode = Transaction::where('code', $transaction_code)->exists();
+            }
+
             $transaction->service_fee = $payment_method->configs['service_fee_type'] == 'percent' ? ($payment_method->configs['service_fee'] * $transaction->total_price) / 100 : $payment_method->configs['service_fee'];
             $transaction->tax_fee = $payment_method->configs['tax_fee_type'] == 'percent' ? ($payment_method->configs['tax_fee'] *  $transaction->total_price) / 100 : $payment_method->configs['tax_fee'];
             $transaction->address_id = $request->address_id ?? null;
@@ -282,6 +290,19 @@ class TransactionController extends Controller
         try {
             $transaction = Transaction::where(['user_id' => $request->user()->id, 'id' => $id])->first();
             return $this->success(data: new TransactionResource($transaction));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function items(Request $request, string $id)
+    {
+        try {
+            $transaction = Transaction::where(['user_id' => $request->user()->id, 'id' => $id])->first();
+            return $this->success(data: TransactionDetailResource::collection($transaction->details));
         } catch (\Throwable $th) {
             throw $th;
         }
