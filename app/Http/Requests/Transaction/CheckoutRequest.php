@@ -22,7 +22,7 @@ class CheckoutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_method_id' => ['required', 'exists:payment_methods,id'],
+            'payment_method_id' => ['required'],
             'address_id' => ['required', 'exists:addresses,id'],
             'coupon_code' => ['nullable', 'exists:coupons,code']
         ];

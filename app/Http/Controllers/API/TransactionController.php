@@ -5,15 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Event;
-use App\Models\Price;
 use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\Couponable;
-use App\Models\UserWallet;
 use App\Models\CouponUsage;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use App\Traits\ResponseTrait;
 use App\Models\PaymentChannel;
 use App\Services\IpaymuService;
@@ -152,16 +151,26 @@ class TransactionController extends Controller
     {
         DB::beginTransaction();
         try {
-
             $transaction = Transaction::find($id);
             if (!$transaction) {
-                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction id'])]);
+                throw ValidationException::withMessages(['id' => trans('validation.exists', ['attribute' => 'transaction'])]);
             }
+
+            $payment_method = PaymentMethod::where('id', $request->payment_method_id)->first();
+            if (!$payment_method) {
+                throw ValidationException::withMessages(['payment_method_id' => trans('validation.exists', ['attribute' => 'payment method'])]);
+            }
+
+            $transaction->service_fee = $payment_method->configs['service_fee_type'] == 'percent' ? ($payment_method->configs['service_fee'] *  $transaction->total_price) : $payment_method->configs['service_fee'];
+            $transaction->tax_fee = $payment_method->configs['tax_fee_type'] == 'percent' ? ($payment_method->configs['tax_fee'] *  $transaction->total_price) : $payment_method->configs['tax_fee'];
+            $transaction->address_id = $request->address_id ?? null;
+            $transaction->payment_method_id = $payment_method->id;
+            $transaction->save();
 
             $log_data = [
                 'payment_method_id' => $request->payment_method_id,
                 'total_qty' => $transaction->total_qty,
-                'total_price' => $transaction->total_price,
+                'total_price' => $transaction->total_price + $transaction->service_fee +  $transaction->tax_fee,
                 'status' => $transaction->status,
             ];
 
@@ -187,10 +196,6 @@ class TransactionController extends Controller
                     'status' => true
                 ]);
             }
-
-            $transaction->address_id = $request->address_id ?? null;
-            $transaction->payment_method_id = $request->payment_method_id;
-            $transaction->save();
 
             $transaction->logs()->create($log_data);
 

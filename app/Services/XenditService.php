@@ -65,10 +65,6 @@ class XenditService
                 }
             }
             if ($this->transaction->payment_method->configs && $this->transaction->payment_method->configs['service_fee']) {
-                $service_fee = $this->transaction->payment_method->configs['service_fee'];
-                if ($this->transaction->payment_method->configs['service_fee_type'] === 'percent') {
-                    $service_fee = ($this->transaction->payment_method->configs['service_fee'] * $total_price) / 100;
-                }
                 array_push($items, [
                     'reference_id' => $this->transaction->payment_method->id,
                     'name' => 'Service Fee',
@@ -76,15 +72,11 @@ class XenditService
                     'category' => 'Fee',
                     'currency' => 'IDR',
                     'quantity' => 1,
-                    'price' => $service_fee,
+                    'price' => $this->transaction->service_fee,
                 ]);
             }
 
             if ($this->transaction->payment_method->configs && $this->transaction->payment_method->configs['tax_fee']) {
-                $tax_fee = $this->transaction->payment_method->configs['tax_fee'];
-                if ($this->transaction->payment_method->configs['tax_fee_type'] === 'percent') {
-                    $tax_fee = ($this->transaction->payment_method->configs['tax_fee'] * $total_price) / 100;
-                }
                 array_push($items, [
                     'reference_id' => $this->transaction->payment_method->id,
                     'name' => 'Tax Fee',
@@ -92,7 +84,7 @@ class XenditService
                     'category' => 'Fee',
                     'currency' => 'IDR',
                     'quantity' => 1,
-                    'price' => $tax_fee,
+                    'price' => $this->transaction->tax_fee,
                 ]);
             }
 
