@@ -85,6 +85,8 @@ class EventResource extends Resource
                         ->columnSpanFull(),
                     Select::make('meeting_type')
                         ->options(MeetingType::class),
+                    TextInput::make('location')
+                        ->maxLength(255),
                     Select::make('category_id')
                         ->searchable()
                         ->relationship(titleAttribute: 'name', name: 'category'),
