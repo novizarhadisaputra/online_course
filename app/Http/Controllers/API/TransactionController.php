@@ -161,8 +161,8 @@ class TransactionController extends Controller
                 throw ValidationException::withMessages(['payment_method_id' => trans('validation.exists', ['attribute' => 'payment method'])]);
             }
 
-            $transaction->service_fee = $payment_method->configs['service_fee_type'] == 'percent' ? ($payment_method->configs['service_fee'] *  $transaction->total_price) : $payment_method->configs['service_fee'];
-            $transaction->tax_fee = $payment_method->configs['tax_fee_type'] == 'percent' ? ($payment_method->configs['tax_fee'] *  $transaction->total_price) : $payment_method->configs['tax_fee'];
+            $transaction->service_fee = $payment_method->configs['service_fee_type'] == 'percent' ? ($payment_method->configs['service_fee'] * $transaction->total_price) / 100 : $payment_method->configs['service_fee'];
+            $transaction->tax_fee = $payment_method->configs['tax_fee_type'] == 'percent' ? ($payment_method->configs['tax_fee'] *  $transaction->total_price) / 100 : $payment_method->configs['tax_fee'];
             $transaction->address_id = $request->address_id ?? null;
             $transaction->payment_method_id = $payment_method->id;
             $transaction->save();
