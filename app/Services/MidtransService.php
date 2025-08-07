@@ -186,7 +186,7 @@ class MidtransService
     public function receiveFromHook(mixed $receive_data, Transaction $transaction)
     {
         try {
-            if ($transaction->status == TransactionStatus::WAITING_PAYMENT->value) {
+            if ($transaction->status == 'waiting payment' || $transaction->status == 'pending') {
                 if ($receive_data && $receive_data->transaction_status) {
                     if ($receive_data->transaction_status === 'capture' || $receive_data->transaction_status === 'settlement') {
                         $transaction->status = 'success';
