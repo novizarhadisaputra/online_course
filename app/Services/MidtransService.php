@@ -187,16 +187,16 @@ class MidtransService
     {
         try {
             if ($transaction->status == TransactionStatus::WAITING_PAYMENT->value) {
-                if ($receive_data && $receive_data->status) {
-                    if ($receive_data->status === 'capture' || $receive_data->status === 'settlement') {
+                if ($receive_data && $receive_data->transaction_status) {
+                    if ($receive_data->transaction_status === 'capture' || $receive_data->transaction_status === 'settlement') {
                         $transaction->status = 'success';
-                    } else if ($receive_data->status === 'expire') {
+                    } else if ($receive_data->transaction_status === 'expire') {
                         $transaction->status = 'expire';
-                    } else if ($receive_data->status === 'pending') {
+                    } else if ($receive_data->transaction_status === 'pending') {
                         $transaction->status = 'pending';
-                    } else if ($receive_data->status === 'cancel') {
+                    } else if ($receive_data->transaction_status === 'cancel') {
                         $transaction->status = 'cancel';
-                    } else if ($receive_data->status === 'failure') {
+                    } else if ($receive_data->transaction_status === 'failure') {
                         $transaction->status = 'fail';
                     }
                     $transaction->logs()->create([
