@@ -50,7 +50,7 @@ class WebhookController extends Controller
                     }
                     break;
                 case 'midtrans':
-                    $transaction = Transaction::where('data->reference_id', $input->reference_id)->first();
+                    $transaction = Transaction::where('data->reference_id', $input->order_id)->first();
                     if ($transaction) {
                         $ipaymu = new MidtransService();
                         $ipaymu->receiveFromHook($input, $transaction);
