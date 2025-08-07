@@ -162,7 +162,7 @@ class MidtransService
                     'id' => $result->transaction_id,
                     'reference_id' => $result->order_id,
                     'customer_name' => $transaction->user->name,
-                    'payment_link' => $result->actions[1],
+                    'payment_link' => $result->actions[1]->url,
                     'expires_at' => Carbon::parse($transaction->created_at)->addDay(),
                 ];
                 break;
