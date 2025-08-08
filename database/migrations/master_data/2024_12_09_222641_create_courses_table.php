@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('language')->default('Bahasa Indonesia');
             $table->boolean('is_paid')->default(false);
             $table->boolean('status')->default(false);
-            $table->boolean('is_get_certificate')->default(false);
+            $table->boolean('is_get_certificate')->default(true);
             $table->json('meta')->nullable();
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();

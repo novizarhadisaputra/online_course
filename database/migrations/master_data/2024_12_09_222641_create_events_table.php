@@ -26,6 +26,7 @@ return new class extends Migration
             $table->json('meta')->nullable();
             $table->dateTime('start_time');
             $table->dateTime('end_time');
+            $table->boolean('is_get_certificate')->default(false);
 
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
