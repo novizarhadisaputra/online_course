@@ -7,11 +7,15 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Transaction;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
+use App\Services\TransactionService;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
 use App\Filament\Resources\TransactionResource\Pages;
-use Filament\Forms\Components\Section;
+use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
 
 class TransactionResource extends Resource
 {
@@ -82,8 +86,23 @@ class TransactionResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->visible(auth()->user()->can('update_transaction')),
+                ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make()->visible(auth()->user()->can('update_transaction')),
+                    MediaAction::make('proof')
+                        ->icon(icon: 'heroicon-o-document-text')
+                        ->media(fn($record) => $record->hasMedia('proofs') ? $record->getMedia('proofs')->first()->getFullUrl() : null)
+                        ->visible(fn($record) => $record->hasMedia('proofs')),
+                    Action::make('confirmation payment')
+                        ->icon(icon: 'heroicon-o-check-circle')
+                        ->action(function (Transaction $record) {
+                            $record->status = 'success';
+                            $record->save();
+                            TransactionService::enrollmentProcess($record);
+                        })
+                        ->requiresConfirmation()
+                        ->visible(fn(Transaction $record) => $record->status == 'pending' && $record->hasMedia('proofs'))
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
