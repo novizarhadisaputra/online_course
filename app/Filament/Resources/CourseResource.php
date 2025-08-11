@@ -108,9 +108,9 @@ class CourseResource extends Resource
                     ->fileAttachmentsDisk('s3_public')
                     ->fileAttachmentsDirectory('attachments'),
                 Toggle::make('status')
-                    ->default(true)
-                    ->required(),
-            ]);
+                    ->default(true),
+            ])
+            ->required();
     }
 
     public static function getSelectCompetences(): Select
@@ -211,13 +211,16 @@ class CourseResource extends Resource
                         ->columnSpanFull()
                         ->required(),
                     Select::make('level')
+                        ->required()
                         ->options(CourseLevel::class),
                     Grid::make()->schema([
                         TextInput::make('duration')
                             ->numeric()
+                            ->required()
                             ->minValue(1),
                         TextInput::make('duration_units')
                             ->default('minutes')
+                            ->required()
                             ->maxLength(255),
                     ]),
                     static::getSelectCategories(),
@@ -227,7 +230,7 @@ class CourseResource extends Resource
                         ->options([
                             'bahasa indonesia' => 'Bahasa Indonesia',
                             'english' => 'English',
-                        ]),
+                        ])->required(),
                     KeyValue::make('meta')
                         ->default([
                             'title' => '',
@@ -236,7 +239,7 @@ class CourseResource extends Resource
                     Grid::make()->schema([
                         Toggle::make('is_paid')
                             ->live(debounce: 500, onBlur: true)
-                            ->required(),
+                            ->default(false),
                         Toggle::make('status')
                             ->required(),
                     ]),
