@@ -25,7 +25,7 @@ class UserResource extends JsonResource
             "description" => $this->description,
             "profession" => $this->profession,
             "email" => $this->email,
-            "phone" => $this->phone ? Str::mask($this->phone, '*', 3) : null,
+            "phone" => $this->phone,
             "gender" => $this->gender,
             "email_verified_at" => $this->email_verified_at,
             'addresses_count' => $this->addresses()->select(['id'])->count(),

@@ -14,7 +14,6 @@ use App\Notifications\PaymentCallbackNotification;
 use App\Services\IpaymuService;
 use App\Services\MidtransService;
 use App\Services\TransactionService;
-use Illuminate\Validation\ValidationException;
 
 class WebhookController extends Controller
 {

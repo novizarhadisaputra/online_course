@@ -21,7 +21,7 @@ class TransactionResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'payment_method' => new PaymentMethodResource($this->payment_method),
-            'payment_channel' => new PaymentChannelResource($this->payment_method->payment_channel),
+            'payment_channel' => $this->payment_method ? new PaymentChannelResource($this->payment_method->payment_channel) : null,
             'payment_link' => $this->payment_link,
             'service_fee' => $this->service_fee,
             'tax_fee' => $this->tax_fee,
