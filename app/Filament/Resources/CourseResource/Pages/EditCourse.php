@@ -14,6 +14,8 @@ class EditCourse extends EditRecord
 
     protected static string $resource = CourseResource::class;
 
+    protected static ?string $navigationIcon = '';
+
     protected function getHeaderActions(): array
     {
         return [

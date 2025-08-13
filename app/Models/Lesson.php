@@ -77,21 +77,23 @@ class Lesson extends Model implements HasMedia
     }
 
     /**
-     * Get the lesson's most recent score.
-     */
-    public function score(): MorphOne
-    {
-        return $this->morphOne(Score::class, 'model');
-    }
-
-    /**
-     * Get the answer associated with the Quiz
+     * Get the score associated with the Lesson
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
-    public function answer(): MorphOne
+    public function score(): MorphOne
     {
-        return $this->morphOne(Answer::class, 'model');
+        return $this->morphOne(Score::class, 'model')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get the answers associated with the Quiz
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function answers(): MorphMany
+    {
+        return $this->morphMany(Answer::class, 'model');
     }
 
     /**

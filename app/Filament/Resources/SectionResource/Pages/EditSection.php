@@ -13,6 +13,8 @@ class EditSection extends EditRecord
 
     protected static string $resource = SectionResource::class;
 
+    protected static ?string $navigationIcon = '';
+
     protected function getHeaderActions(): array
     {
         return [

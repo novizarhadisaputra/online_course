@@ -16,6 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use App\Filament\Resources\TransactionResource\Pages;
 use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
+use Illuminate\Support\Number;
 
 class TransactionResource extends Resource
 {
@@ -69,7 +70,16 @@ class TransactionResource extends Resource
                     ->sortable(),
                 TextColumn::make('total_price')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->label('Total Paid')
+                    ->formatStateUsing(function ($state, Transaction $transaction) {
+                        return Number::currency(
+                            number: $transaction->total_price + $transaction->service_fee + $transaction->tax_fee,
+                            locale: 'id',
+                            precision: 2,
+                            in: 'IDR'
+                        );
+                    }),
                 TextColumn::make('user.name')
                     ->searchable(),
                 TextColumn::make('status'),

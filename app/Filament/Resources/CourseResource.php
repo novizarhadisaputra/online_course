@@ -195,8 +195,7 @@ class CourseResource extends Resource
                     SpatieMediaLibraryFileUpload::make('preview')
                         ->collection('previews')
                         ->disk('s3_public')
-                        ->acceptedFileTypes(['video/*'])
-                        ->required(),
+                        ->acceptedFileTypes(['video/*']),
                     TextInput::make('name')
                         ->required()
                         ->unique(ignoreRecord: true)
@@ -315,7 +314,6 @@ class CourseResource extends Resource
         return [
             LearningMethodsRelationManager::make(),
             AnnouncementsRelationManager::make(),
-            TransactionsRelationManager::make(['status' => TransactionStatus::SUCCESS]),
             ReviewsRelationManager::make(),
             CommentsRelationManager::make(),
         ];
@@ -328,9 +326,10 @@ class CourseResource extends Resource
             'create' => Pages\CreateCourse::route('/create'),
             'view' => Pages\ViewCourse::route('/{record}'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
-
             'sections' => ManageCourseSections::route('/{record}/sections'),
             'sections.create' => CreateCourseSection::route('/{record}/sections/create'),
+            'students' => Pages\ManageCourseStudents::route('/{record}/students'),
+
         ];
     }
 
@@ -340,6 +339,7 @@ class CourseResource extends Resource
             Pages\ViewCourse::class,
             Pages\EditCourse::class,
             Pages\ManageCourseSections::class,
+            Pages\ManageCourseStudents::class,
         ]);
     }
 

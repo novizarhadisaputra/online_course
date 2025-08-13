@@ -28,7 +28,7 @@ class Quiz extends Model implements HasMedia
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
-    public function answer(): MorphOne
+    public function answers(): MorphOne
     {
         return $this->morphOne(Answer::class, 'model');
     }

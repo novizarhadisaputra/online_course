@@ -23,7 +23,7 @@ class ManageLessonComment extends ManageRelatedRecords
 
     protected static string $relationship = 'comments';
 
-    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-ellipsis';
+    protected static ?string $navigationIcon = '';
 
     public static function getNavigationLabel(): string
     {

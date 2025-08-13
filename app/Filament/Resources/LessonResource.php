@@ -22,6 +22,7 @@ use App\Filament\Resources\LessonResource\Pages\CreateLessonComment;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\LessonResource\Pages\CreateLessonQuiz;
+use App\Filament\Resources\LessonResource\Pages\ManageLessonAnswers;
 use App\Filament\Resources\LessonResource\Pages\ManageLessonQuiz;
 use App\Filament\Resources\LessonResource\Pages\ManageLessonComment;
 use App\Filament\Resources\LessonResource\Pages\ManageLessonEvent;
@@ -149,6 +150,7 @@ class LessonResource extends Resource
             'edit' => Pages\EditLesson::route('/{record}/edit'),
             'quizzes' => ManageLessonQuiz::route('/{record}/quizzes'),
             'quizzes.create' => CreateLessonQuiz::route('/{record}/quizzes/create'),
+            'answers' => ManageLessonAnswers::route('/{record}/answers'),
             'comments' => ManageLessonComment::route('/{record}/comments'),
             'comments.create' => CreateLessonComment::route('/{record}/comments/create'),
             'events' => ManageLessonEvent::route('/{record}/events'),
@@ -161,6 +163,7 @@ class LessonResource extends Resource
             Pages\ViewLesson::class,
             Pages\EditLesson::class,
             Pages\ManageLessonQuiz::class,
+            Pages\ManageLessonAnswers::class,
             Pages\ManageLessonComment::class,
             Pages\ManageLessonEvent::class,
         ]);

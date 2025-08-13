@@ -32,10 +32,22 @@ class Enrollment extends Model
     }
 
     /**
-     * Get the enrollment's certificate.
+     * Get the certificate associated with the Enrollment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function certificate(): MorphOne
     {
         return $this->morphOne(Certificate::class, 'model');
+    }
+
+    /**
+     * Get the score associated with the Enrollment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function score(): MorphOne
+    {
+        return $this->morphOne(Score::class, 'model')->orderBy('created_at', 'desc');
     }
 }

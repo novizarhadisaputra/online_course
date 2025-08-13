@@ -42,7 +42,7 @@ class LessonResource extends JsonResource
         }
         $has_assignment_submit = false;
         if ($user) {
-            $answer = $this->answer()->where('user_id', $user->id)->first();
+            $answer = $this->answers()->where('user_id', $user->id)->first();
             if ($answer) {
                 $has_assignment_submit = true;
             }

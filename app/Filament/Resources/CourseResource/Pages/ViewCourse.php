@@ -13,6 +13,8 @@ class ViewCourse extends ViewRecord
 
     protected static string $resource = CourseResource::class;
 
+    protected static ?string $navigationIcon = '';
+
     protected function getHeaderActions(): array
     {
         return [

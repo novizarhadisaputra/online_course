@@ -13,6 +13,8 @@ class ViewLesson extends ViewRecord
 
     protected static string $resource = LessonResource::class;
 
+    protected static ?string $navigationIcon = '';
+
     protected function getHeaderActions(): array
     {
         return [

@@ -32,7 +32,7 @@ class ManageLessonEvent extends ManageRelatedRecords
 
     protected static string $relationship = 'events';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = '';
 
     public static function getNavigationLabel(): string
     {

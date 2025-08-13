@@ -13,6 +13,8 @@ class EditLesson extends EditRecord
 
     protected static string $resource = LessonResource::class;
 
+    protected static ?string $navigationIcon = '';
+
     protected function getHeaderActions(): array
     {
         return [

@@ -22,7 +22,7 @@ class ManageLessonQuiz extends ManageRelatedRecords
 
     protected static string $relationship = 'quizzes';
 
-    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
+    protected static ?string $navigationIcon = '';
 
     public static function canAccess(array $parameters = []): bool
     {

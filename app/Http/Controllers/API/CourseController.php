@@ -644,7 +644,7 @@ class CourseController extends Controller
             if (!$lesson) {
                 throw ValidationException::withMessages(['lesson_id' => trans('validation.exists', ['attribute' => 'lesson id'])]);
             }
-            $answer = $lesson->answer()->where('user_id', $request->user()->id)->first();
+            $answer = $lesson->answers()->where('user_id', $request->user()->id)->first();
             if ($request->hasFile('attachment')) {
                 $lesson->clearMediaCollection('attachments');
                 $lesson->addMediaFromRequest('attachment')
@@ -652,7 +652,7 @@ class CourseController extends Controller
                     ->toMediaCollection('attachments', 's3');
             }
             if (!$answer) {
-                $lesson->answer()->create([
+                $lesson->answers()->create([
                     'data' => $request->data ?? null,
                     'text' => $request->text,
                     'user_id' => $request->user()->id,
@@ -790,9 +790,9 @@ class CourseController extends Controller
             if (!$option) {
                 throw ValidationException::withMessages(['option_id' => trans('validation.exists', ['attribute' => 'option id'])]);
             }
-            $answer = $quiz->answer()->where('user_id', $request->user()->id)->first();
+            $answer = $quiz->answers()->where('user_id', $request->user()->id)->first();
             if (!$answer) {
-                $quiz->answer()->create([
+                $quiz->answers()->create([
                     'data' => $request->data ?? null,
                     'option_id' => $request->option_id,
                     'user_id' => $request->user()->id,

@@ -17,7 +17,7 @@ class QuizResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $answer = $this->answer()->where('user_id', $request->user()->id)->first();
+        $answer = $this->answers()->where('user_id', $request->user()->id)->first();
 
         return [
             "id" => $this->id,

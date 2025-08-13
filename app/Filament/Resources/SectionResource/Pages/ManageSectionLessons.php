@@ -19,6 +19,8 @@ class ManageSectionLessons extends ManageRelatedRecords
 
     protected static string $relationship = 'lessons';
 
+    protected static ?string $navigationIcon = '';
+
     protected static ?string $navigationLabel = 'Manage Lessons';
 
     public function table(Table $table): Table
