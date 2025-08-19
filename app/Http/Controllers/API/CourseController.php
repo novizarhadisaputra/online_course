@@ -51,42 +51,45 @@ class CourseController extends Controller
                 ->where('courses.status', true)
                 ->whereHas('lessons', fn(Builder $q) => $q->where('lessons.status', true));
             if ($request->user() && $request->input('mine')) {
-                $courses = $courses->whereHas('transactions', fn(Builder $q) => $q->where('user_id', $request->user()->id));
-            }
-            if ($request->search) {
-                $courses = $courses->where('name', 'ilike', "%$request->search%");
-            }
-            if ($request->filter) {
-                if (isset($request->filter['prices'])) {
-                    if (count($request->filter['prices']) > 1) {
-                        $courses = $courses->where('is_paid', '<>', null);
-                    } else {
-                        $is_paid = Str::contains(implode(' ', $request->filter['prices']), ['paid']);
-                        if (!$is_paid) {
-                            $is_paid = false;
+                $courses = $courses
+                    ->whereHas('transactions', fn(Builder $q) => $q->where('user_id', $request->user()->id)->where('status', 'success'));
+            } else {
+                if ($request->filter) {
+                    if (isset($request->filter['prices'])) {
+                        if (count($request->filter['prices']) > 1) {
+                            $courses = $courses->where('is_paid', '<>', null);
+                        } else {
+                            $is_paid = Str::contains(implode(' ', $request->filter['prices']), ['paid']);
+                            if (!$is_paid) {
+                                $is_paid = false;
+                            }
+                            $courses = $courses->where('is_paid', $is_paid);
                         }
-                        $courses = $courses->where('is_paid', $is_paid);
                     }
-                }
-                if (isset($request->filter['instructor_id'])) {
-                    $courses = $courses->where('user_id', $request->filter['instructor_id']);
-                }
-                if (isset($request->filter['levels'])) {
-                    $courses = $courses->where('level', $request->filter['levels']);
-                }
-                if (isset($request->filter['categories'])) {
-                    $courses = $courses->whereHas('category', fn(Builder $q) => $q->whereIn('name', $request->filter['categories']));
-                }
-                if (isset($request->filter['ratings'])) {
-                    $courses = $courses->havingRaw('
+                    if (isset($request->filter['instructor_id'])) {
+                        $courses = $courses->where('user_id', $request->filter['instructor_id']);
+                    }
+                    if (isset($request->filter['levels'])) {
+                        $courses = $courses->where('level', $request->filter['levels']);
+                    }
+                    if (isset($request->filter['categories'])) {
+                        $courses = $courses->whereHas('category', fn(Builder $q) => $q->whereIn('name', $request->filter['categories']));
+                    }
+                    if (isset($request->filter['ratings'])) {
+                        $courses = $courses->havingRaw('
                     (select avg("reviews"."rating")
                     from "reviews"
                     where "courses"."id" = "reviews"."reviewable_id"
                     and "reviews"."reviewable_type" = ?
                     ) >= ?', [Course::class, $request->filter['ratings']])
-                        ->groupBy('courses.id');
+                            ->groupBy('courses.id');
+                    }
                 }
             }
+            if ($request->search) {
+                $courses = $courses->where('name', 'ilike', "%$request->search%");
+            }
+
 
             $courses = $courses->paginate($request->input('limit', 10));
             return $this->success(data: CourseResource::collection($courses), paginate: $courses);
