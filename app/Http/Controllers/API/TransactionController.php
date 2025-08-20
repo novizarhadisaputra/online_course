@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Traits\ResponseTrait;
 use App\Models\PaymentChannel;
+use Illuminate\Support\Carbon;
 use App\Services\IpaymuService;
 use App\Services\XenditService;
 use App\Enums\TransactionStatus;
@@ -24,13 +25,13 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\TransactionService;
 use App\Http\Resources\TutorialResource;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Resources\TransactionResource;
 use App\Http\Resources\PaymentChannelResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Transaction\StoreRequest;
 use App\Http\Resources\TransactionDetailResource;
 use App\Http\Requests\Transaction\CheckoutRequest;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use App\Http\Requests\Transaction\ConfirmPaymentRequest;
 
 class TransactionController extends Controller
@@ -267,8 +268,12 @@ class TransactionController extends Controller
             }
 
             $transaction->logs()->create($log_data);
+
+            // Convert transfer_date from d-m-Y format to Y-m-d format for PostgreSQL
+            $transfer_date = Carbon::createFromFormat('d-m-Y', $request->transfer_date)->format('Y-m-d');
+
             $pivot_data = [
-                'transfer_date' => $request->transfer_date,
+                'transfer_date' => $transfer_date,
                 'transfer_amount' => $request->transfer_amount,
             ];
 

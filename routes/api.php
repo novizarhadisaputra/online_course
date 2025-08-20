@@ -159,6 +159,8 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     });
 
     Route::apiResource('bundles', BundleController::class)->only(['index', 'show']);
+    Route::get('bundles/active/with-courses', [BundleController::class, 'activeBundlesWithCourses'])->name('bundles.active.with-courses');
+    Route::get('bundles/{slug}/courses-report/pdf', [BundleController::class, 'generateCoursesReportPDF'])->name('bundles.courses-report.pdf');
 
     Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
     Route::prefix('courses')->name('courses.')->group(function () {

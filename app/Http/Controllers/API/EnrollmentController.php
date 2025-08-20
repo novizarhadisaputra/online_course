@@ -44,7 +44,7 @@ class EnrollmentController extends Controller
                 'code' => $transaction_code,
                 'service_fee' => 0,
                 'tax_percentage' => 0,
-                'status' => TransactionStatus::WAITING_PAYMENT,
+                'status' => $course->is_paid ? TransactionStatus::SUCCESS : TransactionStatus::WAITING_PAYMENT,
                 'category' => TransactionCategory::DEBIT,
                 'user_id' => $request->user()->id,
             ]);
