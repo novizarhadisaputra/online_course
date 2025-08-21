@@ -157,6 +157,7 @@ class UserController extends Controller
                 "district_id" => $request->district_id,
                 "village_id" => $request->village_id,
                 "postal_code" => $request->postal_code,
+                "status" => $request->status,
             ]);
 
             if ($address->status) {
