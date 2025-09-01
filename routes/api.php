@@ -13,6 +13,7 @@ use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\BundleController;
 use App\Http\Controllers\API\CouponController;
 use App\Http\Controllers\API\CourseController;
+use App\Http\Controllers\API\PrivateClassController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\WebhookController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\QuestionAndAnswerController;
 use App\Http\Controllers\API\QuestionAndAnswerCategoryController;
 use App\Http\Controllers\API\SearchHistoryController;
+use App\Http\Controllers\Api\TranscriptController;
 
 Route::prefix('check')->name('check.')->group(function () {
     Route::name('env')->get('/', function () {
@@ -162,6 +164,9 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
     Route::get('bundles/active/with-courses', [BundleController::class, 'activeBundlesWithCourses'])->name('bundles.active.with-courses');
     Route::get('bundles/{slug}/courses-report/pdf', [BundleController::class, 'generateCoursesReportPDF'])->name('bundles.courses-report.pdf');
 
+    Route::apiResource('private-classes', PrivateClassController::class)->only(['index', 'show']);
+    Route::post('private-classes/add-to-cart', [PrivateClassController::class, 'addToCart'])->name('private-classes.add-to-cart');
+
     Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
     Route::prefix('courses')->name('courses.')->group(function () {
         Route::prefix('{course}')->group(function () {
@@ -297,4 +302,11 @@ Route::prefix('protected')->middleware(['auth:sanctum'])->name('protected.')->gr
 
     Route::apiResource('ads', AdsController::class)->only(['index', 'show']);
     Route::apiResource('search-histories', SearchHistoryController::class)->only(['index', 'destroy']);
+
+    // Transcript API Routes
+    Route::prefix('transcripts')->name('transcripts.')->group(function () {
+        Route::get('/', [TranscriptController::class, 'index'])->name('index');
+        Route::get('/summary', [TranscriptController::class, 'summary'])->name('summary');
+        Route::get('/{studentId}', [TranscriptController::class, 'show'])->name('show');
+    });
 });

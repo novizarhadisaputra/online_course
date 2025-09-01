@@ -18,6 +18,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\ResetPassword;
 use App\Listeners\DeleteExpiredNotificationTokens;
 use Illuminate\Notifications\Events\NotificationFailed;
+use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -55,6 +56,23 @@ class AppServiceProvider extends ServiceProvider
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
             return env('APP_URL_WEBSITE', 'http://localhost:3000') . '/reset-password?token=' . $token . '&email=' . $user->email;
+        });
+
+        // Configure Language Switch
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['en', 'id']) // English and Indonesian
+                ->labels([
+                    'en' => 'English',
+                    'id' => 'Bahasa Indonesia',
+                ])
+                ->flags([
+                    'en' => asset('images/flags/us.svg'),
+                    'id' => asset('images/flags/id.svg'),
+                ])
+                ->flagsOnly()
+                ->circular()
+                ->visible(insidePanels: true, outsidePanels: false);
         });
     }
 }
