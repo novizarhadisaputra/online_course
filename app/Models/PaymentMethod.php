@@ -5,19 +5,31 @@ namespace App\Models;
 use App\Models\Tutorial;
 use App\Traits\ModelTrait;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Sluggable\HasSlug;
 
 class PaymentMethod extends Model implements HasMedia
 {
-    use HasUuids, ModelTrait, InteractsWithMedia;
+    use HasUuids, HasSlug, ModelTrait, InteractsWithMedia;
 
     protected $casts = [
         'configs' => 'array',
     ];
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
 
     /**
      * Get the payment_channel that owns the PaymentMethod
