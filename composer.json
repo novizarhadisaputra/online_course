@@ -32,6 +32,7 @@
         "owenvoke/blade-fontawesome": "^2.8",
         "rmsramos/activitylog": "^1.0",
         "saade/filament-fullcalendar": "^3.0",
+        "spatie/laravel-sluggable": "^3.7",
         "tightenco/ziggy": "^2.0",
         "valentin-morice/filament-json-column": "^2.0",
         "xendit/xendit-php": "^6.3",

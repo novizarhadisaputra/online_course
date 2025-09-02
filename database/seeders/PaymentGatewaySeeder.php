@@ -18,7 +18,6 @@ class PaymentGatewaySeeder extends Seeder
         foreach ($paymentGateways as $paymentGateway) {
             PaymentGateway::create([
                 'name' => $paymentGateway,
-                'slug' => Str::slug($paymentGateway),
                 'description' => "",
                 'status' => true
             ]);

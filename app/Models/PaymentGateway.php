@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\PaymentMethod;
-use App\Models\PaymentChannel;
 use App\Traits\ModelTrait;
+use App\Models\PaymentMethod;
+use Spatie\Sluggable\HasSlug;
+use App\Models\PaymentChannel;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -14,12 +16,21 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class PaymentGateway extends Model implements HasMedia
 {
-    use HasUuids, ModelTrait, InteractsWithMedia;
-
+    use HasUuids, HasSlug, ModelTrait, InteractsWithMedia;
 
     protected $casts = [
         'configs' => 'array',
     ];
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
 
     /**
      * Get all of the payment-channels for the PaymentGateway
