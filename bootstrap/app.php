@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('api.pos.')
                 ->group(base_path('routes/point_of_sales.php'));
             Route::prefix('api')
+                ->middleware('api')
                 ->name('api.')
                 ->group(base_path('routes/api.php'));
             Route::middleware('web')
