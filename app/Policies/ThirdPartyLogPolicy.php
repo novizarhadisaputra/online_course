@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\ThirdPartyLog;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\ThirdPartyLog;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ThirdPartyLogPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -19,7 +21,7 @@ class ThirdPartyLogPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ThirdPartyLog $third_party_log): bool
+    public function view(User $user, ThirdPartyLog $thirdPartyLog): bool
     {
         return $user->can('view_third::party::log');
     }
@@ -35,7 +37,7 @@ class ThirdPartyLogPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ThirdPartyLog $third_party_log): bool
+    public function update(User $user, ThirdPartyLog $thirdPartyLog): bool
     {
         return $user->can('update_third::party::log');
     }
@@ -43,7 +45,7 @@ class ThirdPartyLogPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ThirdPartyLog $third_party_log): bool
+    public function delete(User $user, ThirdPartyLog $thirdPartyLog): bool
     {
         return $user->can('delete_third::party::log');
     }
@@ -59,9 +61,9 @@ class ThirdPartyLogPolicy
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, ThirdPartyLog $third_party_log): bool
+    public function forceDelete(User $user, ThirdPartyLog $thirdPartyLog): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_third::party::log');
     }
 
     /**
@@ -69,15 +71,15 @@ class ThirdPartyLogPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_third::party::log');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, ThirdPartyLog $third_party_log): bool
+    public function restore(User $user, ThirdPartyLog $thirdPartyLog): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_third::party::log');
     }
 
     /**
@@ -85,15 +87,15 @@ class ThirdPartyLogPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_third::party::log');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, ThirdPartyLog $third_party_log): bool
+    public function replicate(User $user, ThirdPartyLog $thirdPartyLog): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_third::party::log');
     }
 
     /**
@@ -101,6 +103,6 @@ class ThirdPartyLogPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_third::party::log');
     }
 }

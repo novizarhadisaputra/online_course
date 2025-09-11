@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Branch;
+use App\Models\Option;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class BranchPolicy
+class OptionPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class BranchPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_branch');
+        return $user->can('view_any_option');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Branch $branch): bool
+    public function view(User $user, Option $option): bool
     {
-        return $user->can('view_branch');
+        return $user->can('view_option');
     }
 
     /**
@@ -31,23 +31,23 @@ class BranchPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_branch');
+        return $user->can('create_option');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Branch $branch): bool
+    public function update(User $user, Option $option): bool
     {
-        return $user->can('update_branch');
+        return $user->can('update_option');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Branch $branch): bool
+    public function delete(User $user, Option $option): bool
     {
-        return $user->can('delete_branch');
+        return $user->can('delete_option');
     }
 
     /**
@@ -55,15 +55,15 @@ class BranchPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_branch');
+        return $user->can('delete_any_option');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Branch $branch): bool
+    public function forceDelete(User $user, Option $option): bool
     {
-        return $user->can('force_delete_branch');
+        return $user->can('force_delete_option');
     }
 
     /**
@@ -71,15 +71,15 @@ class BranchPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_branch');
+        return $user->can('force_delete_any_option');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Branch $branch): bool
+    public function restore(User $user, Option $option): bool
     {
-        return $user->can('restore_branch');
+        return $user->can('restore_option');
     }
 
     /**
@@ -87,15 +87,15 @@ class BranchPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_branch');
+        return $user->can('restore_any_option');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Branch $branch): bool
+    public function replicate(User $user, Option $option): bool
     {
-        return $user->can('replicate_branch');
+        return $user->can('replicate_option');
     }
 
     /**
@@ -103,6 +103,6 @@ class BranchPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_branch');
+        return $user->can('reorder_option');
     }
 }

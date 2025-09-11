@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Course;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Course;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CoursePolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -61,7 +63,7 @@ class CoursePolicy
      */
     public function forceDelete(User $user, Course $course): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_course');
     }
 
     /**
@@ -69,7 +71,7 @@ class CoursePolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_course');
     }
 
     /**
@@ -77,7 +79,7 @@ class CoursePolicy
      */
     public function restore(User $user, Course $course): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_course');
     }
 
     /**
@@ -85,7 +87,7 @@ class CoursePolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_course');
     }
 
     /**
@@ -93,7 +95,7 @@ class CoursePolicy
      */
     public function replicate(User $user, Course $course): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_course');
     }
 
     /**
@@ -101,6 +103,6 @@ class CoursePolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_course');
     }
 }

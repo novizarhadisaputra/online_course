@@ -26,7 +26,7 @@ class Bundle extends Model implements HasMedia
 
     public function items(): HasMany
     {
-        return $this->hasMany(BundleItem::class, 'bundle_id', 'id');
+        return $this->hasMany(BundleItem::class);
     }
 
     public function courses(): MorphToMany

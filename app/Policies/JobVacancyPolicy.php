@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\JobVacancy;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\JobVacancy;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class JobVacancyPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -61,7 +63,7 @@ class JobVacancyPolicy
      */
     public function forceDelete(User $user, JobVacancy $jobVacancy): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_job::vacancy');
     }
 
     /**
@@ -69,7 +71,7 @@ class JobVacancyPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_job::vacancy');
     }
 
     /**
@@ -77,7 +79,7 @@ class JobVacancyPolicy
      */
     public function restore(User $user, JobVacancy $jobVacancy): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_job::vacancy');
     }
 
     /**
@@ -85,7 +87,7 @@ class JobVacancyPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_job::vacancy');
     }
 
     /**
@@ -93,7 +95,7 @@ class JobVacancyPolicy
      */
     public function replicate(User $user, JobVacancy $jobVacancy): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_job::vacancy');
     }
 
     /**
@@ -101,6 +103,6 @@ class JobVacancyPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_job::vacancy');
     }
 }

@@ -2,13 +2,15 @@
 
 namespace App\Policies;
 
-use App\Models\GetInTouch;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\GetInTouch;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class GetInTouchPolicy
 {
-   /**
+    use HandlesAuthorization;
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
@@ -19,7 +21,7 @@ class GetInTouchPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, GetInTouch $get_in_touch): bool
+    public function view(User $user, GetInTouch $getInTouch): bool
     {
         return $user->can('view_get::in::touch');
     }
@@ -35,7 +37,7 @@ class GetInTouchPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, GetInTouch $get_in_touch): bool
+    public function update(User $user, GetInTouch $getInTouch): bool
     {
         return $user->can('update_get::in::touch');
     }
@@ -43,7 +45,7 @@ class GetInTouchPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, GetInTouch $get_in_touch): bool
+    public function delete(User $user, GetInTouch $getInTouch): bool
     {
         return $user->can('delete_get::in::touch');
     }
@@ -59,9 +61,9 @@ class GetInTouchPolicy
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, GetInTouch $get_in_touch): bool
+    public function forceDelete(User $user, GetInTouch $getInTouch): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_get::in::touch');
     }
 
     /**
@@ -69,15 +71,15 @@ class GetInTouchPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_get::in::touch');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, GetInTouch $get_in_touch): bool
+    public function restore(User $user, GetInTouch $getInTouch): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_get::in::touch');
     }
 
     /**
@@ -85,15 +87,15 @@ class GetInTouchPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_get::in::touch');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, GetInTouch $get_in_touch): bool
+    public function replicate(User $user, GetInTouch $getInTouch): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_get::in::touch');
     }
 
     /**
@@ -101,6 +103,6 @@ class GetInTouchPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_get::in::touch');
     }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Transaction;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TransactionPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -61,7 +63,7 @@ class TransactionPolicy
      */
     public function forceDelete(User $user, Transaction $transaction): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_transaction');
     }
 
     /**
@@ -69,7 +71,7 @@ class TransactionPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_transaction');
     }
 
     /**
@@ -77,7 +79,7 @@ class TransactionPolicy
      */
     public function restore(User $user, Transaction $transaction): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_transaction');
     }
 
     /**
@@ -85,7 +87,7 @@ class TransactionPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_transaction');
     }
 
     /**
@@ -93,7 +95,7 @@ class TransactionPolicy
      */
     public function replicate(User $user, Transaction $transaction): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_transaction');
     }
 
     /**
@@ -101,6 +103,6 @@ class TransactionPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_transaction');
     }
 }

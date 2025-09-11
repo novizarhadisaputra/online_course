@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Coupon;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Coupon;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CouponPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -61,7 +63,7 @@ class CouponPolicy
      */
     public function forceDelete(User $user, Coupon $coupon): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_coupon');
     }
 
     /**
@@ -69,7 +71,7 @@ class CouponPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_coupon');
     }
 
     /**
@@ -77,7 +79,7 @@ class CouponPolicy
      */
     public function restore(User $user, Coupon $coupon): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_coupon');
     }
 
     /**
@@ -85,7 +87,7 @@ class CouponPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_coupon');
     }
 
     /**
@@ -93,7 +95,7 @@ class CouponPolicy
      */
     public function replicate(User $user, Coupon $coupon): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_coupon');
     }
 
     /**
@@ -101,6 +103,6 @@ class CouponPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_coupon');
     }
 }

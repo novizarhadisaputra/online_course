@@ -34,6 +34,16 @@ class Quiz extends Model implements HasMedia
     }
 
     /**
+     * Get the answer associated with the Quiz
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function answer(): MorphOne
+    {
+        return $this->morphOne(Answer::class, 'model');
+    }
+
+    /**
      * Get the parent model (anything).
      */
     public function model(): MorphTo

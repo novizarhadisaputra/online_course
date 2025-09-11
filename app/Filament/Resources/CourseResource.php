@@ -184,12 +184,14 @@ class CourseResource extends Resource
                         ->collection('images')
                         ->disk('s3_public')
                         ->image()
+                        ->maxSize(10240)
                         ->previewable()
                         ->required(),
                     SpatieMediaLibraryFileUpload::make('thumbnail')
                         ->collection('thumbnails')
                         ->disk('s3_public')
                         ->image()
+                        ->maxSize(10240)
                         ->previewable()
                         ->required(),
                     SpatieMediaLibraryFileUpload::make('preview')

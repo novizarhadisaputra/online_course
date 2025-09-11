@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Tag;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Tag;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TagPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -61,7 +63,7 @@ class TagPolicy
      */
     public function forceDelete(User $user, Tag $tag): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_tag');
     }
 
     /**
@@ -69,7 +71,7 @@ class TagPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_tag');
     }
 
     /**
@@ -77,7 +79,7 @@ class TagPolicy
      */
     public function restore(User $user, Tag $tag): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_tag');
     }
 
     /**
@@ -85,7 +87,7 @@ class TagPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_tag');
     }
 
     /**
@@ -93,7 +95,7 @@ class TagPolicy
      */
     public function replicate(User $user, Tag $tag): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_tag');
     }
 
     /**
@@ -101,6 +103,6 @@ class TagPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_tag');
     }
 }

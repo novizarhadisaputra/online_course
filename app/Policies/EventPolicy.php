@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Event;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Event;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EventPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -61,7 +63,7 @@ class EventPolicy
      */
     public function forceDelete(User $user, Event $event): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_event');
     }
 
     /**
@@ -69,7 +71,7 @@ class EventPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_event');
     }
 
     /**
@@ -77,7 +79,7 @@ class EventPolicy
      */
     public function restore(User $user, Event $event): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_event');
     }
 
     /**
@@ -85,7 +87,7 @@ class EventPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_event');
     }
 
     /**
@@ -93,7 +95,7 @@ class EventPolicy
      */
     public function replicate(User $user, Event $event): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_event');
     }
 
     /**
@@ -101,6 +103,6 @@ class EventPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_event');
     }
 }

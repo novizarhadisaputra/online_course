@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\News;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\News;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class NewsPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -61,7 +63,7 @@ class NewsPolicy
      */
     public function forceDelete(User $user, News $news): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_news');
     }
 
     /**
@@ -69,7 +71,7 @@ class NewsPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_news');
     }
 
     /**
@@ -77,7 +79,7 @@ class NewsPolicy
      */
     public function restore(User $user, News $news): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_news');
     }
 
     /**
@@ -85,7 +87,7 @@ class NewsPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_news');
     }
 
     /**
@@ -93,7 +95,7 @@ class NewsPolicy
      */
     public function replicate(User $user, News $news): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_news');
     }
 
     /**
@@ -101,6 +103,6 @@ class NewsPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_news');
     }
 }

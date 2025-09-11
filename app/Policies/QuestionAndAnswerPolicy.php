@@ -2,12 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\QuestionAndAnswer;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\QuestionAndAnswer;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class QuestionAndAnswerPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -19,7 +21,7 @@ class QuestionAndAnswerPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function view(User $user, QuestionAndAnswer $questionAndAnswer): bool
     {
         return $user->can('view_question::and::answer');
     }
@@ -35,7 +37,7 @@ class QuestionAndAnswerPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function update(User $user, QuestionAndAnswer $questionAndAnswer): bool
     {
         return $user->can('update_question::and::answer');
     }
@@ -43,7 +45,7 @@ class QuestionAndAnswerPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function delete(User $user, QuestionAndAnswer $questionAndAnswer): bool
     {
         return $user->can('delete_question::and::answer');
     }
@@ -59,9 +61,9 @@ class QuestionAndAnswerPolicy
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function forceDelete(User $user, QuestionAndAnswer $questionAndAnswer): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_question::and::answer');
     }
 
     /**
@@ -69,15 +71,15 @@ class QuestionAndAnswerPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_question::and::answer');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function restore(User $user, QuestionAndAnswer $questionAndAnswer): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_question::and::answer');
     }
 
     /**
@@ -85,15 +87,15 @@ class QuestionAndAnswerPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_question::and::answer');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, QuestionAndAnswer $question_and_answer): bool
+    public function replicate(User $user, QuestionAndAnswer $questionAndAnswer): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_question::and::answer');
     }
 
     /**
@@ -101,6 +103,6 @@ class QuestionAndAnswerPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_question::and::answer');
     }
 }

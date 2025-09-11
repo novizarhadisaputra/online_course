@@ -2,18 +2,20 @@
 
 namespace App\Policies;
 
-use App\Models\Activity;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Spatie\Activitylog\Models\Activity;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ActivityPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_activi$activity');
+        return $user->can('view_any_activity');
     }
 
     /**
@@ -21,7 +23,7 @@ class ActivityPolicy
      */
     public function view(User $user, Activity $activity): bool
     {
-        return $user->can('view_activi$activity');
+        return $user->can('view_activity');
     }
 
     /**
@@ -29,7 +31,7 @@ class ActivityPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_activi$activity');
+        return $user->can('create_activity');
     }
 
     /**
@@ -37,7 +39,7 @@ class ActivityPolicy
      */
     public function update(User $user, Activity $activity): bool
     {
-        return $user->can('update_activi$activity');
+        return $user->can('update_activity');
     }
 
     /**
@@ -45,7 +47,7 @@ class ActivityPolicy
      */
     public function delete(User $user, Activity $activity): bool
     {
-        return $user->can('delete_activi$activity');
+        return $user->can('delete_activity');
     }
 
     /**
@@ -53,7 +55,7 @@ class ActivityPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_activi$activity');
+        return $user->can('delete_any_activity');
     }
 
     /**
@@ -61,7 +63,7 @@ class ActivityPolicy
      */
     public function forceDelete(User $user, Activity $activity): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_activity');
     }
 
     /**
@@ -69,7 +71,7 @@ class ActivityPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_activity');
     }
 
     /**
@@ -77,7 +79,7 @@ class ActivityPolicy
      */
     public function restore(User $user, Activity $activity): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_activity');
     }
 
     /**
@@ -85,7 +87,7 @@ class ActivityPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_activity');
     }
 
     /**
@@ -93,7 +95,7 @@ class ActivityPolicy
      */
     public function replicate(User $user, Activity $activity): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_activity');
     }
 
     /**
@@ -101,6 +103,6 @@ class ActivityPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_activity');
     }
 }
