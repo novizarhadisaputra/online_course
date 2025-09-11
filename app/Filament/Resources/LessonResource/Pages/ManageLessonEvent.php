@@ -4,6 +4,7 @@ namespace App\Filament\Resources\LessonResource\Pages;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Models\Event;
 use Filament\Actions;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -109,7 +110,17 @@ class ManageLessonEvent extends ManageRelatedRecords
             ->headerActions([
                 Tables\Actions\CreateAction::make()->slideOver(),
                 Tables\Actions\AttachAction::make()
-                    ->recordSelectOptionsQuery(fn(Builder $query) => $query->where('user_id', auth()->user()->id)),
+                    ->form([
+                        Select::make('event_id')
+                            ->label(label: 'Events')
+                            ->options(Event::whereNotIn('id', $this->record->events()->select('id')->pluck('id'))->select('name', 'id')->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                    ])
+                    ->action(function (array $data): void {
+                        $this->record->events()->attach($data['event_id']);
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -61,7 +61,7 @@ class Event extends Model implements HasMedia
      */
     public function lessons(): MorphToMany
     {
-        return $this->morphToMany(Lesson::class, 'model', ModelHasEvent::class);
+        return $this->morphedByMany(Lesson::class, 'model', ModelHasEvent::class);
     }
 
     /**
