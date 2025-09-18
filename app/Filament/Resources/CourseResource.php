@@ -99,7 +99,8 @@ class CourseResource extends Resource
                                 return;
                             }
                             $set('slug', Str::slug($state));
-                        }),
+                        })
+                        ->unique(ignoreRecord: true),
                     TextInput::make('slug')
                         ->readOnly()
                         ->required(),

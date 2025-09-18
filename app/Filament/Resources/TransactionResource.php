@@ -6,6 +6,8 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Transaction;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Number;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use App\Services\TransactionService;
@@ -16,7 +18,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use App\Filament\Resources\TransactionResource\Pages;
 use Hugomyb\FilamentMediaAction\Tables\Actions\MediaAction;
-use Illuminate\Support\Number;
 
 class TransactionResource extends Resource
 {
@@ -101,7 +102,7 @@ class TransactionResource extends Resource
                     Tables\Actions\EditAction::make()->visible(auth()->user()->can('update_transaction')),
                     MediaAction::make('proof')
                         ->icon(icon: 'heroicon-o-document-text')
-                        ->media(fn($record) => $record->hasMedia('proofs') ? $record->getMedia('proofs')->first()->getFullUrl() : null)
+                        ->media(fn($record) => $record->hasMedia('proofs') ? $record->getMedia('proofs')->first()->getTemporaryUrl(Carbon::now()->addHour()) : null)
                         ->visible(fn($record) => $record->hasMedia('proofs')),
                     Action::make('confirmation payment')
                         ->icon(icon: 'heroicon-o-check-circle')
